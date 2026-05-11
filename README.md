@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# alphagoat-client
 
-## Getting Started
+Frontend de una app de reseñas y puntuaciones con comentarios: los usuarios califican ítems en múltiples ejes, dejan comentarios y ven rankings, radar charts y un comparador.
 
-First, run the development server:
+## Stack
+
+Next.js 16 (App Router) · TypeScript · Tailwind v4 · TanStack Query · Zustand · React Hook Form + Zod · Recharts · Axios · Vitest + RTL.
+
+## Empezar
+
+Requiere Node 20+.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local      # apuntar a la URL del back
+npm install
+npm run dev                     # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+El backend (NestJS) debe estar corriendo en `http://localhost:3001`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Dev server con HMR |
+| `npm run build` | Build de producción |
+| `npm run start` | Sirve el build |
+| `npm run test` | Tests unitarios (Vitest) |
+| `npm run test:watch` | Tests en watch |
+| `npm run test:coverage` | Coverage (threshold 85%) |
+| `npm run lint` | ESLint |
+| `npm run format` | Prettier |
 
-## Learn More
+## Estructura
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/         # rutas (App Router) — páginas finitas
+├── features/    # cada feature con sus components/hooks/api/...
+├── shared/      # reutilizable entre features (ui, lib, providers)
+└── config/      # env, query-client
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Feature-based**: trabajamos una feature a la vez en `src/features/<nombre>/`.
+- **Server Components por default**, `'use client'` solo donde haga falta.
+- Llamadas a la API siempre vía hook (`useX`) que envuelve una función de `api/`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Variables de entorno
 
-## Deploy on Vercel
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Más info
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `docs/architecture.md` — arquitectura detallada, ejemplos de feature.
+- `docs/design-guidelines.md` — paleta, tipografía, componentes visuales.
+- `docs/progress.md` — qué features están hechas y qué falta.
+- `CLAUDE.md` — instrucciones para trabajar con Claude Code.

@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-bg: #6e2f11;
+  --color-bg-deep: #4f1f08;
+  --color-curry: #f4a02b;
+  --color-curry-bright: #ffb53d;
+  --color-curry-soft: #f6c977;
+  --color-cinnamon: #b86015;
+  --color-sienna: #5a2208;
+
+  --font-archivo: var(--font-archivo);
+  --font-inter: var(--font-inter);
+  --font-mono: var(--font-mono);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html,
+  body {
+    background: var(--color-bg);
+    color: var(--color-curry);
+    font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .h-mega {
+    font-family: var(--font-archivo);
+    font-size: clamp(64px, 14.5vw, 220px);
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+  }
+  .h-sub {
+    font-family: var(--font-archivo);
+    font-size: clamp(36px, 7.4vw, 112px);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+  .eyebrow {
+    font-family: var(--font-archivo);
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+  .coda {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  .btn-curry {
+    @apply inline-flex items-center rounded-full bg-curry px-[26px] py-3
+           text-[13px] font-bold uppercase tracking-[0.04em] text-sienna
+           transition-colors duration-200 hover:bg-curry-bright;
+  }
+  .btn-curry-lg {
+    @apply inline-flex items-center rounded-full bg-curry px-9 py-4
+           text-sm font-bold uppercase tracking-[0.06em] text-sienna
+           shadow-[0_8px_24px_-8px_rgba(244,160,43,0.6)]
+           transition-all duration-200 hover:-translate-y-px hover:bg-curry-bright;
+  }
+  .icon-btn {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-full
+           bg-curry text-sienna transition-colors hover:bg-curry-bright;
+  }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.drift { animation: drift 7s ease-in-out infinite; }
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .drift, .pulse-dot { animation: none; }
 }

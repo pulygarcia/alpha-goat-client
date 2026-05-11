@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# autoskills (each dev installs their own)
+/.agents
+/skills-lock.json
+/AGENTS.md

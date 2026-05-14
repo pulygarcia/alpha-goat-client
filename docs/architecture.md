@@ -26,9 +26,8 @@ src/
 │   ├── page.tsx                          # home
 │   ├── globals.css                       # Tailwind + variables
 │   ├── (auth)/                           # route group sin URL
-│   │   ├── layout.tsx                    # layout específico de auth
-│   │   ├── login/page.tsx
-│   │   └── register/page.tsx
+│   │   ├── login/page.tsx                # /login
+│   │   └── register/page.tsx             # /register
 │   ├── alfajores/
 │   │   ├── page.tsx                      # /alfajores
 │   │   └── [id]/page.tsx                 # /alfajores/:id

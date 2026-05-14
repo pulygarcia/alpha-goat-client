@@ -241,6 +241,39 @@ Grid de 3 columnas, full width, padding `24px 40px`.
 
 ---
 
+---
+
+## 12. Pantallas de auth (`/register` y `/login`)
+
+### Concepto
+Layout split: hero tipográfico interactivo a la izquierda (52%) + formulario a la derecha (flex-1). En mobile el hero se oculta y el form ocupa el 100%.
+
+### Hero (columna izquierda)
+- Fondo oscuro `#1a0c05` con `box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7)`.
+- Tres instancias de `CursorDrivenParticleTypography` apiladas en `flex-col` absolute fill: **Probá. / Opiná. / Puntuá.**
+  - Color de partículas: `#c87a20` (ámbar oscuro — visible sobre el fondo sin pelear con el formulario).
+  - Font: `'Archivo Black', sans-serif`, `fontSize={400}` (cap interno: `containerWidth * 0.18`).
+  - `particleSize={1.8}`, `particleDensity={4}`, `dispersionStrength={22}`, `returnSpeed={0.05}`.
+  - El cursor dispersa las partículas al pasar sobre ellas.
+- "made by Ignacio (Puly) G." — link a portfolio, posicionado `absolute bottom-6 left-8`, font mono `0.65rem`, color `rgba(246,201,119,0.6)`, glow sutil, hover ilumina.
+
+### Formulario (columna derecha)
+- Fondo `bg-bg-ink` (`#2c1209`) en el `<main>`.
+- Texto: títulos, labels, inputs, botones en `#fdf6e8` (blanco cremita cálido). Sub-copy en `rgba(246,201,119,0.55)`.
+- Campos: `InputGroup` — `48px` de alto, `border-radius: 12px`, fondo `#3b1a0a`, borde `rgba(244,160,43,0.18)`. Focus: border curry 60% + ring `3px rgba(244,160,43,0.12)`.
+- Error: borde `#ff7a59` (excepción de paleta — señal de error cálida).
+- Botón CTA: `.btn-curry-lg` con `!text-[#fdf6e8]`.
+- `PasswordStrength`: barra de 4 niveles bajo el campo de contraseña.
+- Animaciones de entrada: `.fade-in` (form completo), `.fade-up` con stagger (elementos del hero).
+
+### Tokens nuevos en `globals.css`
+| Token | Hex | Uso |
+|---|---|---|
+| `--color-bg-ink` | `#2c1209` | Fondo del `<main>` de auth |
+| `--color-field-bg` | `#3b1a0a` | Fondo de los `<input>` |
+
+---
+
 ## 11. Accesibilidad
 
 - Contraste curry `#f4a02b` sobre marrón `#6e2f11` ≈ **5.6:1** — WCAG AA.

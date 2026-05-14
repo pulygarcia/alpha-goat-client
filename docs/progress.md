@@ -22,17 +22,31 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ### Skills instaladas (autoskills)
 - accessibility, seo, frontend-design, tailwind-css-patterns, nodejs-best-practices, composition-patterns, next-cache-components, next-upgrade, typescript-advanced-types, nodejs-backend-patterns, next-best-practices, vitest, zod, react-hook-form, react-best-practices.
 
+### Feature `auth` — vistas (UI only, sin backend)
+- `/register` — registro: layout split 52/48, hero izquierdo + formulario derecho.
+- `/login` — inicio de sesión: mismo hero, form más liviano.
+- `src/features/auth/components/`:
+  - `Hero.tsx` — columna izquierda (server component). Fondo oscuro `#1a0c05` con sombra profunda.
+  - `ParticleWords.tsx` — tres instancias apiladas de `CursorDrivenParticleTypography` (Probá / Opiná / Puntuá), color ámbar `#c87a20`, interactivas con el cursor.
+  - `SignUpForm.tsx` — form RHF + Zod: nombre, apellido, mail, contraseña. Estados idle / submitting / success con mock de 1200ms.
+  - `LoginForm.tsx` — form RHF + Zod: mail, contraseña + "olvidé mi contraseña".
+  - `InputGroup.tsx` — field reutilizable con label, error, helper e ícono derecho (forwardRef).
+  - `PasswordStrength.tsx` — barra de 4 niveles (Frágil / Aceptable / Sólida / De fierro).
+  - `StepItem.tsx` — paso con estado idle / active / done (disponible para cuando se conecte el backend).
+- `src/shared/components/ui/cursor-driven-particle-typography.tsx` — instalado vía `npx shadcn@latest add @componentry/cursor-driven-particle-typography`. Import corregido a `@/shared/lib/utils`. Cap de font-size ajustado a `containerWidth * 0.18`.
+- Tokens nuevos en `globals.css`: `--color-bg-ink: #2c1209`, `--color-field-bg: #3b1a0a`. Animaciones de auth: `.fade-up`, `.fade-in`, `.spin-loader`, clase `.auth-input` para focus ring.
+- Tipografía del form: títulos, labels, inputs y botones en `#fdf6e8` (blanco cremita cálido).
+
 ## Pendiente
 
 ### Próximas features
-- `auth` (login, register, useCurrentUser, AuthProvider, Zustand store, middleware de rutas protegidas).
+- `auth` — backend: conectar `SignUpForm` y `LoginForm` a la API real, reemplazar mocks por `useMutation`. Agregar `AuthProvider`, Zustand store, middleware de Next para rutas protegidas.
 - `alfajores` (listado + detalle público).
 - `reviews` (form + listado en detalle de alfajor).
-- Layout principal (Header, Footer, nav del hero).
+- Layout principal (Header, Footer, nav).
 - `moderation` (admin), `ranking`, `comparador`, `perfil`.
 
 ### Deuda técnica conocida
-- Falta `docs/design-guidelines.md` con el detalle completo del hero (copy del `design alphagoat-adapted.md`).
 - Falta `AuthProvider` y middleware de Next para rutas protegidas (`/admin/*`).
-- Falta `HttpExceptionFilter` análogo del lado del cliente: handler global para 401 → redirect a `/login`.
+- Falta handler global para 401 → redirect a `/login`.
 - Sin shadcn init real (se creó `components.json` manual + Button/Input mínimos). Cuando hagan falta más componentes, correr `npx shadcn add <name>`.

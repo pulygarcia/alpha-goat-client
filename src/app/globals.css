@@ -3,6 +3,8 @@
 @theme {
   --color-bg: #6e2f11;
   --color-bg-deep: #4f1f08;
+  --color-bg-ink: #2c1209;
+  --color-field-bg: #3b1a0a;
   --color-curry: #f4a02b;
   --color-curry-bright: #ffb53d;
   --color-curry-soft: #f6c977;
@@ -78,4 +80,32 @@
 
 @media (prefers-reduced-motion: reduce) {
   .drift, .pulse-dot { animation: none; }
+}
+
+/* Auth animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes spin-loader {
+  to { transform: rotate(360deg); }
+}
+
+.fade-up    { animation: fade-up 0.5s ease-out both; }
+.fade-in    { animation: fade-in 0.8s ease-out both; }
+.spin-loader { animation: spin-loader 0.9s linear infinite; }
+
+/* Auth input focus */
+.auth-input:focus {
+  outline: none;
+  border-color: rgba(244, 160, 43, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(244, 160, 43, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .fade-in, .spin-loader { animation: none; }
 }

@@ -1,7 +1,7 @@
-# Alfajorímetro · Hero v4 — Next.js
+# AlphaGoat · Hero v5 — Next.js
 
-> Reseñas científicas del alfajor argentino. Hero section de la landing.
-> Stack: Next.js 14+ (App Router) · TypeScript · Tailwind CSS v4
+> Reseñas de alfajores argentinos. Hero section de la landing.
+> Stack: Next.js 16 (App Router) · TypeScript · Tailwind CSS v4
 
 ---
 
@@ -9,9 +9,7 @@
 
 **"El alfajor no se discute. Ahora se puntúa."**
 
-El hero plantea al alfajor como producto-héroe único, centrado y monumental — la página entera es una vidriera. Tono canchero, argentino, con humor sutil; estética cálida y saturada inspirada en marcas de salsas/condimentos premium (referencia: Hungry Tiger), no en panaderías de los 90.
-
-La promesa de la app (radar de 5 ejes + ranking) se sugiere con un solo dato visible — la pill de puntaje "8.4 / Top 3 nacional" sobre el producto — en vez de explicar todo en el hero. El detalle se desarrolla más abajo en la landing.
+El hero plantea al alfajor como producto-héroe único. Tono canchero, argentino, con humor sutil; estética cálida y saturada. Fondo WebGL líquido animado (marrón profundo). La promesa de la app se insinúa en el marquee de reseñas reales — sin explicar todo en el hero.
 
 ---
 
@@ -26,287 +24,227 @@ app/
     └── _components/
         ├── Hero.tsx            # Server Component — layout completo del hero
         ├── Nav.tsx             # Server Component — grid 3 cols
-        ├── LogoMonogram.tsx    # Server Component — círculo central de la nav
-        ├── AlfajorHero.tsx     # Server Component — placeholder CSS, reemplazable por <Image />
-        ├── ScorePill.tsx       # Server Component — pill rotada 8deg
-        └── BotanicalBg.tsx     # Server Component — SVG inline de fondo
+        ├── LogoMonogram.tsx    # Renderiza public/alphagoat-logo.svg con next/image (56×56)
+        ├── AlfajorReviews.tsx  # Client Component — marquee de reseñas ficticias
+        └── CtaButton.tsx       # (archivado — usar btn-curry-lg directo)
 
 public/
-└── alfajor/                # Acá van las fotos reales cuando estén
+├── alphagoat-logo.svg      # Logo oficial SVG circular (sello)
+└── alfajor/                # Fotos reales cuando estén
 ```
-
-> Ninguna pieza del hero necesita `"use client"`. Toda la interacción (hover, drift, pulse) se resuelve con CSS. Si más adelante agregás cycling del Top 3 o un modal de "Calificar", esos sí van marcados como client.
-
-### Fuentes (`app/layout.tsx`)
-
-```ts
-import { Archivo_Black, Inter, JetBrains_Mono } from "next/font/google";
-
-const archivo = Archivo_Black({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-archivo",
-});
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const mono  = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
-```
-
-Después en `<body className={`${archivo.variable} ${inter.variable} ${mono.variable}`}>` y las utilities de Tailwind las leen como `font-archivo`, `font-inter`, `font-mono`.
 
 ---
 
 ## 3. Sistema de color
 
-Paleta monocromática warm: un solo marrón profundo + un solo dorado curry. Sin azules, grises ni acentos de color. Toda la jerarquía se resuelve con **opacidad y peso tipográfico**, no con color.
+Paleta monocromática warm: marrón profundo + dorado curry. Sin azules, grises ni acentos. La jerarquía se resuelve con opacidad y peso tipográfico.
 
-Se definen en `globals.css` como tokens de Tailwind v4:
-
-```css
-@import "tailwindcss";
-
-@theme {
-  --color-bg:           #6e2f11;
-  --color-bg-deep:      #4f1f08;
-  --color-curry:        #f4a02b;
-  --color-curry-bright: #ffb53d;
-  --color-curry-soft:   #f6c977;
-  --color-cinnamon:     #b86015;
-  --color-sienna:       #5a2208;
-
-  --font-archivo: var(--font-archivo);
-  --font-inter:   var(--font-inter);
-  --font-mono:    var(--font-mono);
-}
-```
-
-Esto los expone como `bg-bg`, `text-curry`, `bg-curry-bright`, etc.
-
-| Token             | Hex        | Uso                                                  |
-| ----------------- | ---------- | ---------------------------------------------------- |
-| `--color-bg`            | `#6e2f11`  | Fondo principal (marrón chocolate cálido saturado)   |
-| `--color-bg-deep`       | `#4f1f08`  | Fondo del logo monograma, áreas más profundas        |
-| `--color-curry`         | `#f4a02b`  | Color principal de texto, botones, todo el contenido |
-| `--color-curry-bright`  | `#ffb53d`  | Hover de botones, acentos puntuales                  |
-| `--color-curry-soft`    | `#f6c977`  | Subtítulos, copy secundario, texto al 70%            |
-| `--color-cinnamon`      | `#b86015`  | Sombras del DDL del alfajor placeholder              |
+| Token                   | Hex        | Uso                                                  |
+| ----------------------- | ---------- | ---------------------------------------------------- |
+| `--color-bg`            | `#6e2f11`  | Fondo principal                                      |
+| `--color-bg-deep`       | `#4f1f08`  | Áreas más profundas                                  |
+| `--color-curry`         | `#f4a02b`  | Color principal: texto, botones, acentos             |
+| `--color-curry-bright`  | `#ffb53d`  | Hover de botones                                     |
+| `--color-curry-soft`    | `#f6c977`  | Copy secundario, texto al 70%                        |
+| `--color-cinnamon`      | `#b86015`  | Acentos oscuros, sombras                             |
 | `--color-sienna`        | `#5a2208`  | Texto sobre fondos curry (botones)                   |
 
-**Regla:** dorado curry sobre marrón profundo. Si necesitás contraste, no inventes un color: usá un curry más opaco (`curry-soft`) o el marrón mismo (`sienna`) sobre un bloque curry.
+**Regla:** curry sobre marrón profundo. Si necesitás contraste, usá `curry-soft` o `sienna`. No inventes colores.
 
 ---
 
 ## 4. Tipografía
 
-| Familia              | Variable CSS       | Uso                                                           |
-| -------------------- | ------------------ | ------------------------------------------------------------- |
-| **Archivo Black**    | `--font-archivo`   | Headline mega ("EL ALFAJOR / NO SE DISCUTE."), logo monograma |
-| **Inter**            | `--font-inter`     | Body copy, subtítulos                                         |
-| **JetBrains Mono**   | `--font-mono`      | Eyebrow, tags, datos pequeños, etiquetas                      |
+| Familia              | Variable CSS       | Uso                                       |
+| -------------------- | ------------------ | ----------------------------------------- |
+| **Archivo Black**    | `--font-archivo`   | Headlines (.h-mega, .h-sub), eyebrow      |
+| **Inter**            | `--font-inter`     | Body copy                                 |
+| **JetBrains Mono**   | `--font-mono`      | Eyebrow, tags, coda, datos pequeños       |
 
-### Escala del headline (en `globals.css`)
+### Escala de display
 
 ```css
-@layer components {
-  .h-mega {
-    font-family: var(--font-archivo);
-    font-size: clamp(64px, 14.5vw, 220px);
-    line-height: 0.88;
-    letter-spacing: -0.045em;
-  }
-  .h-sub {
-    font-family: var(--font-archivo);
-    font-size: clamp(36px, 7.4vw, 112px);
-    line-height: 0.92;
-    letter-spacing: -0.035em;
-  }
-}
+.h-mega { font-size: clamp(64px, 14.5vw, 220px); line-height: 0.88; letter-spacing: -0.045em; }
+.h-sub  { font-size: clamp(36px, 7.4vw, 112px);  line-height: 0.92; letter-spacing: -0.035em; }
 ```
-
-- Tracking **muy apretado** (-0.04em) — las letras casi se tocan.
-- Todo en mayúsculas para el display.
 
 ### Escala secundaria
 
-- Eyebrow: `0.78rem`, tracking `0.32em`, mayúsculas, Archivo Black
-- Coda mono: `0.78rem`, tracking `0.28em`, mayúsculas, JetBrains Mono
-- Body: `0.85rem`, tracking `0.14em`, uppercase, leading relajado
+- `.eyebrow`: `0.78rem`, tracking `0.32em`, uppercase, Archivo Black
+- `.coda`: `0.78rem`, tracking `0.28em`, uppercase, JetBrains Mono
 - Nav links: `11px`, tracking `0.16em`, uppercase, weight 700
 
 ---
 
-## 5. Layout
-
-Single column, full bleed, centrado vertical-arriba. **No hay grid de 12 columnas**: el contenido respira en una columna y la jerarquía la dan los tamaños.
+## 5. Layout actual del Hero
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  [Ranking · Comparador · Método]  [LOGO]   [Login · CALIFICAR]  │  ← <Nav />
-├─────────────────────────────────────────────────────┤
-│              EL ÍNDICE NACIONAL DEL ALFAJOR          │  ← eyebrow
-│                                                      │
-│              EL ALFAJOR                              │  ← .h-mega
-│              NO SE DISCUTE.                          │  ← .h-sub
-│                                                      │
-│           · Ahora se puntúa · 5 ejes ·               │  ← coda
-│                                                      │
-│                  ╭─ ─ ─ ─ ─ ─ ╮                      │
-│                 ( ALFAJOR HERO )    [ScorePill]      │  ← <AlfajorHero />
-│                  ╰─ ─ ─ ─ ─ ─ ╯                      │
-│                                                      │
-│  Reseñá cualquier...                  [⌕] [📊]      │  ← bottom row
-│  [EMPEZAR A CALIFICAR →]                             │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│  [Ranking · Comparador · Método]  [LOGO]  [Login · CTA]  │  ← <Nav />
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│              EL ÍNDICE NACIONAL DEL ALFAJOR              │  ← eyebrow
+│                                                          │
+│                      EL ALFAJOR                          │  ← .h-mega
+│                     NO SE DISCUTE.                       │  ← .h-sub
+│                                                          │
+│            · Ahora se puntúa, ningún chamuyo             │  ← coda + pulse-dot
+│                                                          │
+│  ◄═══════════ marquee de reseñas ════════════►           │  ← <AlfajorReviews />
+│                                                          │
+│               [ Dejá tus reseñas → ]                     │  ← btn-curry-lg
+│                                                          │
+└──────────────────────────────────────────────────────────┘
 ```
 
-### Breakpoints (Tailwind defaults)
-
-- **Mobile** (`< sm`, ≤640px): nav colapsa a Ranking + logo + Calificar. Bottom row se apila. Alfajor pasa a `clamp(340px, 56vw, ...)`.
-- **Tablet** (`sm:`, ≥640px): aparecen Comparador, Login, "Reseñado 1.247 veces" sobre el alfajor.
-- **Desktop** (`lg:`, ≥1024px): se muestra Top 100 y Método en la nav. Alfajor llega a 720px máx.
+**Fondo:** `<WebGLLiquid>` animado (`colorDeep #3a1606`, `colorMid #6e2f11`, `colorHighlight #a85820`) + overlay `bg-black/45` + glows radiales superior e inferior.
 
 ---
 
 ## 6. Componentes
 
-### `<Nav />` (grid de 3 columnas)
-- Izquierda: links de texto (`next/link`), separados con `gap-8`. Sin underline, sin caja.
-- Centro: `<LogoMonogram />` — círculo 56×56 con borde curry y texto "ALFA / JORÍ / METRO" apilado en 3 líneas (Archivo Black, 0.55rem).
-- Derecha: link "Iniciar sesión" + botón pill **"Calificar"** curry.
+### `<Nav />` — grid 3 columnas
+- Izquierda: links (Ranking, Comparador, Método)
+- Centro: `<LogoMonogram />` — `next/image` con `public/alphagoat-logo.svg`, 56×56px
+- Derecha: "Iniciar sesión" + `.btn-curry` "Calificar"
 
-### Botones (clases en `globals.css`)
+### `<AlfajorReviews />` — Client Component
+Marquee horizontal usando `TestimonialMarquee` (shadcn `@componentry/testimonial-marquee`, en `src/shared/components/ui/testimonial-marquee.tsx`). Variant `"default"`, speed `35`.
+
+Cards temizadas para el fondo oscuro del hero vía scope CSS `.alfajor-reviews`:
+- `bg-black/5` → `rgba(0,0,0,0.55)`
+- `text-muted-foreground` → `rgba(255,220,160,0.8)`
+- `text-foreground` → `rgba(255,240,200,1)`
+- `border-border` → `rgba(255,180,80,0.18)`
+
+Avatares via DiceBear (`https://api.dicebear.com/9.x/thumbs/svg?seed=X`).
+
+### Botones
 
 ```css
-@layer components {
-  .btn-curry {
-    @apply inline-flex items-center rounded-full bg-curry px-[26px] py-3
-           text-[13px] uppercase tracking-[0.04em] text-sienna font-bold
-           transition-colors duration-200 hover:bg-curry-bright;
-  }
-  .btn-curry-lg {
-    @apply inline-flex items-center rounded-full bg-curry px-9 py-4
-           text-sm uppercase tracking-[0.06em] text-sienna font-bold
-           shadow-[0_8px_24px_-8px_rgba(244,160,43,0.6)]
-           transition-all duration-200 hover:bg-curry-bright hover:-translate-y-px;
-  }
-  .icon-btn {
-    @apply inline-flex h-11 w-11 items-center justify-center rounded-full
-           bg-curry text-sienna transition-colors hover:bg-curry-bright;
-  }
-}
+.btn-curry    /* pill small — CTAs secundarios, nav */
+.btn-curry-lg /* pill grande, sombra dorada — CTA principal del hero */
+.icon-btn     /* 44×44 circular */
 ```
 
-- `.btn-curry` (small): pill, 13px uppercase. CTAs secundarios.
-- `.btn-curry-lg`: pill grande, sombra dorada drop. CTA principal del hero.
-- `.icon-btn`: 44×44 circular. Search + ranking abajo a la derecha. Cumple hit-target mínimo (44px).
-
-### `<AlfajorHero />` (placeholder)
-
-CSS-only. Dos discos chocolate (radial gradient) con franja DDL en el medio. Sombras internas profundas + glow dorado externo (`0 0 200px rgba(244, 160, 43, 0.18)`).
-
-**Cuando llegue la foto real**, reemplazar el contenido del componente por:
-
-```tsx
-import Image from "next/image";
-
-<Image
-  src="/alfajor/jorgito-hero.png"
-  alt="Alfajor Jorgito Triple visto desde arriba"
-  width={720}
-  height={720}
-  className="aspect-square rounded-full drift"
-  priority
-/>
-```
-
-`priority` porque es LCP del hero. Subí la imagen optimizada (WebP/AVIF Next se encarga si usás un loader compatible).
-
-### `<ScorePill />`
-Etiqueta rotada `8deg` flotando arriba a la derecha del alfajor. Muestra "Top 3 nacional · 8.4/10". Es el único elemento que insinúa la mecánica de la app en el hero.
+CTA del hero: `.btn-curry-lg` con `<ArrowRight size={16} />` de lucide-react.
 
 ---
 
-## 7. Texturas y atmósfera
+## 7. Atmósfera
 
-- **`<BotanicalBg />`**: SVG inline al 10% de opacidad, hojas/brotes/cuadrados estilizados. Replica la tracería del ref sin caer en flowers literales. Tile de 420×420. Va como `<div>` con `position: absolute; inset: 0; pointer-events: none;` dentro del `<section>` del hero.
-- **Glow radial inferior**: vignette oscuro abajo (`rgba(0,0,0,0.30)`) para que el alfajor "pise" el suelo.
-- **Glow superior**: leve highlight dorado arriba (`rgba(255,180,80,0.08)`) para iluminar el headline.
+- **WebGL líquido**: fondo animado orgánico en tonos marrones profundos. No es estático.
+- **Overlay negro** `bg-black/45` encima del WebGL para legibilidad del texto.
+- **Glow superior**: `radial-gradient` dorado tenue `rgba(255,180,80,0.08)`.
+- **Glow inferior**: `radial-gradient` negro `rgba(0,0,0,0.30)`.
 
-Nada de gradientes payasos, glassmorphism, ni borders punteados. La textura es atmosférica, no decorativa.
+Nada de glassmorphism, gradientes de colores, ni borders punteados.
 
 ---
 
 ## 8. Animaciones
 
-Solo CSS, todas opcionales (la página funciona estática):
-
-- **`.drift`**: el alfajor flota 8px arriba y abajo en loop de 7s.
-- **`.pulse-dot`**: el dot de "Ahora se puntúa" parpadea suave (1.6s).
-- **Botones**: `translateY(-1px)` en hover, transición de color `0.25s`.
-
-Definidas en `globals.css` con `@keyframes` y envueltas en:
+- **`.pulse-dot`**: punto curry que parpadea junto a la coda (1.6s, CSS).
+- **Botones**: `translateY(-1px)` en hover, `0.2s`.
+- **Marquee**: CSS keyframes `marquee-left` / `marquee-right`. Se pausa en hover sobre la fila.
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  .drift, .pulse-dot { animation: none; }
+  .pulse-dot { animation: none; }
 }
 ```
 
 ---
 
-## 9. Copywriting (tono argentino, humor sutil)
+## 9. Copywriting
 
-| Slot          | Copy                                                                      |
-| ------------- | ------------------------------------------------------------------------- |
-| Eyebrow       | EL ÍNDICE NACIONAL DEL ALFAJOR                                            |
-| Headline      | EL ALFAJOR / NO SE DISCUTE.                                               |
-| Coda          | Ahora se puntúa · 5 ejes · ningún chamuyo                                 |
-| Score         | Top 3 nacional · 8.4/10                                                   |
-| Bullet        | Reseñado 1.247 veces                                                      |
-| Body          | Reseñá cualquier alfajor en 5 ejes — dulzor, DDL, baño, ratio y textura.  |
-|               | Te devolvemos un radar y un puesto en el ranking.                         |
-| CTA principal | EMPEZAR A CALIFICAR →                                                     |
+| Slot          | Copy actual                              |
+| ------------- | ---------------------------------------- |
+| Eyebrow       | El índice nacional del alfajor           |
+| Headline      | EL ALFAJOR / NO SE DISCUTE.              |
+| Coda          | Ahora se puntúa, ningún chamuyo          |
+| CTA principal | Dejá tus reseñas →                       |
 
-**Reglas de copy:**
+**Reglas:**
 - Vos, no usted. Nunca tú.
+- Frases cortas, declarativas. Una idea por línea.
+- Humor en el contraste solemne, no en chistes.
 - Modismos OK ("ningún chamuyo") pero sin abusar.
-- Frases cortas, declarativas. Una sola idea por línea.
-- Humor en el contraste solemne ("EL ÍNDICE NACIONAL" para algo trivial), no en chistes.
 
 ---
 
-## 10. Accesibilidad y SEO
+## 10. Handoff para herramientas de diseño (Claude Design, Figma, etc.)
 
-- Contraste curry `#f4a02b` sobre marrón `#6e2f11` ≈ **5.6:1** — pasa WCAG AA para texto normal y AAA para texto grande.
-- Hit targets mínimo 44px.
-- Iconos con `aria-label` en `<button>` o `<Link>`.
-- Headline es un único `<h1>` (el sub va en `<span>` o `<p>`, no `<h2>` falso).
-- Animaciones decorativas; respetan `prefers-reduced-motion`.
-- `metadata` en `app/layout.tsx`:
-  ```ts
-  export const metadata: Metadata = {
-    title: "Alfajorímetro — El índice nacional del alfajor",
-    description: "Reseñá cualquier alfajor argentino en 5 ejes. Radar y ranking nacional.",
-    openGraph: { /* foto del alfajor hero */ },
-  };
-  ```
+> Usá esta sección textualmente cuando le pasés el diseño a otra herramienta. Describe el estado visual real, no el ideal.
 
----
+### Fondo del hero
 
-## 11. Próximos pasos sugeridos
+El fondo es un shader WebGL animado que simula líquido orgánico en movimiento. **No es un gradiente estático.** Para representarlo en diseño usá esto:
 
-1. **Reemplazar `<AlfajorHero />` placeholder** por `<Image />` con foto cenital real, fondo transparente, mismo treatment de glow.
-2. **Sección radar**: agregar un Server Component debajo del hero con la card de Jorgito Triple del v3 (radar SVG completo, datos de un JSON en `/data` o de una API route).
-3. **Marquee de marcas**: tira animada (CSS keyframe puro, server component) con Jorgito, Havanna, Cachafaz, Guaymallén, Fantoche, Balcarce, Block, Suchard.
-4. **Alternancia de producto**: cyclar el alfajor central entre los Top 3. Acá sí necesitás `"use client"` + `useState` + `setInterval` (o `useEffect` con `IntersectionObserver` si querés que se dispare on-scroll).
-5. **Modo "polémica"**: tomar un alfajor controversial (Guaymallén) y mostrar las dos puntuaciones extremas con sus reseñas.
+- Color base: `#3a1606` (marrón casi negro)
+- Color medio: `#6e2f11` (marrón chocolate)
+- Color de highlight: `#a85820` (marrón cobrizo cálido)
+- Encima del shader hay un overlay negro semitransparente: `rgba(0, 0, 0, 0.45)` full-bleed
+- Encima del overlay, en el borde superior: glow radial muy sutil dorado, `rgba(255, 180, 80, 0.08)`, ellipse centrada arriba, altura ~256px
+- En el borde inferior: glow radial negro `rgba(0, 0, 0, 0.30)`, ellipse centrada abajo, altura ~288px
 
----
+**Resultado visual:** fondo marrón muy oscuro, casi negro, con tonos cálidos que sugieren movimiento. El texto y elementos son legibles por el overlay negro. No hay bordes, no hay texturas geométricas, no hay gradientes de colores múltiples.
 
-## 12. Comandos
+### Cards del carrusel de reseñas
 
-```bash
-pnpm create next-app@latest alfajorimetro --typescript --tailwind --app
-cd alfajorimetro
-pnpm dev          # http://localhost:3000
-pnpm build && pnpm start
+El marquee tiene una fila de cards que desplazan de derecha a izquierda, ancho fijo 350px cada una.
+
+**Anatomía de cada card:**
 ```
+┌─────────────────────────────────────────┐
+│                                         │  ← borde: 1px solid rgba(255,180,80,0.18)
+│  "El texto de la reseña va acá,         │     fondo: rgba(0,0,0,0.55)
+│   puede tener dos o tres líneas         │     border-radius: 16px (rounded-2xl)
+│   de texto truncado."                   │     padding: 24px
+│                                         │
+│  ┌──┐  Nombre Usuario                   │
+│  │👤│  @username                        │  ← avatar circular 40×40px, borde 1px rgba(255,180,80,0.18)
+│  └──┘                                   │
+└─────────────────────────────────────────┘
+```
+
+**Colores internos de la card:**
+- Fondo: `rgba(0, 0, 0, 0.55)` — negro semitransparente, se ve el fondo del hero atrás
+- Fondo en hover: `rgba(0, 0, 0, 0.70)`
+- Borde: `1px solid rgba(255, 180, 80, 0.18)` — dorado muy tenue
+- Texto del review: `rgba(255, 220, 160, 0.8)` — dorado claro, 80% opacidad, `font-size: 14px`
+- Nombre: `rgba(255, 240, 200, 1)` — casi blanco cálido, `font-size: 14px`, `font-weight: 500`
+- Username: mismo que texto del review pero más chico, `font-size: 12px`
+- Avatar: círculo 40×40, borde igual al de la card
+
+**Lo que NO tienen las cards:**
+- No tienen sombra
+- No tienen fondo blanco ni gris
+- No tienen colores fríos
+- No tienen rating de estrellas
+
+### Tipografía en el hero (orden visual de arriba a abajo)
+
+1. **Eyebrow** — `"El índice nacional del alfajor"` — `0.78rem`, `letter-spacing: 0.32em`, uppercase, color `#f4a02b`
+2. **Headline** — `"EL ALFAJOR"` — Archivo Black, `clamp(64px, 14.5vw, 220px)`, `letter-spacing: -0.045em`, color blanco/crema
+3. **Sub-headline** — `"NO SE DISCUTE."` — Archivo Black, `clamp(36px, 7.4vw, 112px)`, mismo tracking
+4. **Coda** — `"Ahora se puntúa, ningún chamuyo"` — JetBrains Mono, `0.78rem`, `letter-spacing: 0.28em`, uppercase, color `#f4a02b`, con un punto animado a la izquierda
+5. **Marquee de reseñas** — ver cards arriba
+6. **CTA** — `"Dejá tus reseñas →"` — pill redondeada, fondo `#f4a02b`, texto `#5a2208`, `font-size: 14px`, uppercase, `letter-spacing: 0.06em`, sombra dorada `0 8px 24px -8px rgba(244,160,43,0.6)`
+
+### Nav
+
+Grid de 3 columnas, full width, padding `24px 40px`.
+- **Izquierda:** links de texto — "Ranking", "Comparador", "Método" — `11px`, uppercase, tracking `0.16em`, color `#f6c977`
+- **Centro:** logo SVG circular, `56×56px` — sello con texto "AG" grande en el centro, tipografía serif, borde doble circular, fondo crema `#f5ead6`, texto `#2b1810`
+- **Derecha:** link "Iniciar sesión" (mismo estilo que nav links) + botón pill "Calificar" (fondo `#f4a02b`, texto `#5a2208`)
+
+---
+
+## 11. Accesibilidad
+
+- Contraste curry `#f4a02b` sobre marrón `#6e2f11` ≈ **5.6:1** — WCAG AA.
+- Hit targets mínimo 44px.
+- Iconos y links con `aria-label`.
+- Un solo `<h1>` — el sub va en `<span>`, no `<h2>`.
+- Animaciones respetan `prefers-reduced-motion`.

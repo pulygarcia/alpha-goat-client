@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <title>AlphaGoat — sello circular</title>
+  <defs>
+    <path id="arcTop" d="M 60 200 A 140 140 0 0 1 340 200" fill="none"></path>
+    <path id="arcBot" d="M 60 208 A 140 140 0 0 0 340 208" fill="none"></path>
+  </defs>
+
+  
+  <circle cx="200" cy="200" r="190" fill="#f5ead6"></circle>
+
+  
+  <circle cx="200" cy="200" r="180" fill="none" stroke="#2b1810" stroke-width="6"></circle>
+  
+  <circle cx="200" cy="200" r="164" fill="none" stroke="#2b1810" stroke-width="2"></circle>
+
+  
+  <text font-family="&#39;DM Mono&#39;, ui-monospace, monospace" font-size="20" letter-spacing="6" fill="#2b1810" font-weight="500">
+    <textPath href="#arcTop" startOffset="50%" text-anchor="middle">ALPHAGOAT · REVIEWS</textPath>
+  </text>
+
+  
+  <text font-family="&#39;DM Mono&#39;, ui-monospace, monospace" font-size="20" letter-spacing="6" fill="#2b1810" font-weight="500">
+    <textPath href="#arcBot" startOffset="50%" text-anchor="middle">· ALFAJORES · ARG ·</textPath>
+  </text>
+
+  
+  <text x="50" y="210" text-anchor="middle" font-size="26" fill="#c98a47" font-family="serif">★</text>
+  <text x="350" y="210" text-anchor="middle" font-size="26" fill="#c98a47" font-family="serif">★</text>
+
+  
+  <text x="200" y="218" text-anchor="middle" font-family="&#39;Fraunces&#39;, Georgia, serif" font-weight="900" font-size="110" fill="#2b1810" letter-spacing="-4">AG</text>
+
+  
+  <rect x="140" y="238" width="120" height="10" fill="#c98a47"></rect>
+
+  
+  <text x="200" y="275" text-anchor="middle" font-family="&#39;DM Mono&#39;, ui-monospace, monospace" font-size="13" letter-spacing="4" fill="#6b3d22">PUNTUADOR · OFICIAL</text>
+</svg>

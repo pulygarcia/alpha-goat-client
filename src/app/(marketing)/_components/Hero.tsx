@@ -1,14 +1,31 @@
 import Link from 'next/link';
-import { Search, BarChart3, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Nav } from './Nav';
-import { AlfajorHero } from './AlfajorHero';
-import { ScorePill } from './ScorePill';
-import { BotanicalBg } from './BotanicalBg';
+import { AlfajorReviews } from './AlfajorReviews';
+import { WebGLLiquid } from '@/shared/components/ui/webgl-liquid';
 
 export function Hero() {
   return (
     <section className="relative isolate min-h-screen overflow-hidden">
-      <BotanicalBg />
+      <WebGLLiquid
+        title=""
+        subtitle=""
+        description=""
+        colorDeep="#3a1606"
+        colorMid="#6e2f11"
+        colorHighlight="#a85820"
+        speed={0.85}
+        flowStrength={1.1}
+        grain={0.04}
+        contrast={1.15}
+        opacity={0.9}
+        revealDuration={1.4}
+        className="absolute inset-0 min-h-0"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-black/45"
+      />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-64"
@@ -30,7 +47,7 @@ export function Hero() {
         <Nav />
 
         <div className="flex flex-1 flex-col items-center px-6 pb-12 pt-6 text-center sm:pt-10">
-          <p className="eyebrow text-curry-soft">
+          <p className="eyebrow text-curry">
             El índice nacional del alfajor
           </p>
 
@@ -39,55 +56,17 @@ export function Hero() {
             <span className="h-sub mt-2 block">NO SE DISCUTE.</span>
           </h1>
 
-          <p className="coda mt-8 flex items-center gap-3 text-curry-soft">
+          <p className="coda mt-8 flex items-center gap-3 text-curry">
             <span className="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-curry" />
-            Ahora se puntúa · 5 ejes · ningún chamuyo
+            Ahora se puntúa, ningún chamuyo
           </p>
 
-          <div className="relative mt-12 flex items-center justify-center">
-            <AlfajorHero />
-            <div className="absolute right-[-12px] top-[-8px] sm:right-[-32px] sm:top-[-16px]">
-              <ScorePill />
-            </div>
-            <p
-              className="absolute -bottom-2 left-1/2 hidden -translate-x-1/2 text-[0.7rem] uppercase tracking-[0.24em] text-curry-soft sm:block"
-              style={{ fontFamily: 'var(--font-mono)' }}
-            >
-              Reseñado 1.247 veces
-            </p>
-          </div>
+          <AlfajorReviews />
 
-          <div className="mt-20 flex w-full max-w-3xl flex-col items-center justify-between gap-8 sm:flex-row sm:items-end sm:text-left">
-            <p className="max-w-sm text-[0.85rem] uppercase leading-relaxed tracking-[0.14em] text-curry-soft">
-              Reseñá cualquier alfajor en 5 ejes — dulzor, DDL, baño, ratio y
-              textura. Te devolvemos un radar y un puesto en el ranking.
-            </p>
-
-            <div className="flex items-center gap-3">
-              <Link
-                href="/register"
-                className="btn-curry-lg gap-2"
-                aria-label="Empezar a calificar"
-              >
-                Empezar a calificar
-                <ArrowRight size={16} strokeWidth={2.5} />
-              </Link>
-              <button
-                type="button"
-                className="icon-btn"
-                aria-label="Buscar alfajor"
-              >
-                <Search size={18} strokeWidth={2.25} />
-              </button>
-              <Link
-                href="/ranking"
-                className="icon-btn"
-                aria-label="Ver ranking"
-              >
-                <BarChart3 size={18} strokeWidth={2.25} />
-              </Link>
-            </div>
-          </div>
+          <Link href="/register" className="btn-curry-lg mt-10 gap-2">
+            Dejá tus reseñas
+            <ArrowRight size={16} strokeWidth={2.5} />
+          </Link>
         </div>
       </div>
     </section>

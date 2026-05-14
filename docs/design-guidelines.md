@@ -1,283 +1,231 @@
-# AlphaGoat · Hero v5 — Next.js
+# Alphagoat · Design System
 
-> Reseñas de alfajores argentinos. Hero section de la landing.
-> Stack: Next.js 16 (App Router) · TypeScript · Tailwind CSS v4
-
----
-
-## 1. Concepto
-
-**"El alfajor no se discute. Ahora se puntúa."**
-
-El hero plantea al alfajor como producto-héroe único. Tono canchero, argentino, con humor sutil; estética cálida y saturada. Fondo WebGL líquido animado (marrón profundo). La promesa de la app se insinúa en el marquee de reseñas reales — sin explicar todo en el hero.
+Guía abstracta del lenguaje visual. Léela antes de generar cualquier UI nueva. No describe páginas — describe criterios.
 
 ---
 
-## 2. Estructura del proyecto
+## 1. Esencia
+
+**Cálido, oscuro, argentino, monumental.**
+
+Café tostado y dorado curry sobre marrón profundo. Tipografía pesada y declarativa. Ningún azul corporate, ningún gris frío, ningún gradiente de colores múltiples. Si dudás del color, andá al ámbar; si dudás del peso, andá al negro.
+
+Estética: editorial-moderna. Cercana a periódicos de cultura, sellos discográficos boutique y packaging artesanal. Lejos de SaaS genérico, dashboards y material design.
+
+---
+
+## 2. Paleta
+
+Toda la paleta es monocromática warm. La jerarquía se resuelve con **opacidad y peso**, no con hue.
+
+### Tierra (fondos)
+
+| Token | Hex | Cuándo usar |
+|---|---|---|
+| `bg` | `#6e2f11` | Fondo principal de páginas marketing/hero |
+| `bg-deep` | `#4f1f08` | Cards, botones secundarios, áreas hundidas |
+| `bg-ink` | `#2c1209` | Fondo de páginas funcionales (auth, app interna) |
+| `field-bg` | `#3b1a0a` | Fondo de `<input>`, selects, áreas de form |
+| `#1a0c05` | `#1a0c05` | Casi-negro cálido — hero con elementos interactivos (partículas, WebGL) |
+
+### Acentos (curry + sienna)
+
+| Token | Hex | Cuándo usar |
+|---|---|---|
+| `curry` | `#f4a02b` | Color de marca: CTA, acentos, palabras clave |
+| `curry-bright` | `#ffb53d` | Hover de botones y links curry |
+| `curry-soft` | `#f6c977` | Copy secundario, helpers, placeholders |
+| `cinnamon` | `#b86015` | Acentos profundos, divisores activos |
+| `sienna` | `#5a2208` | Texto sobre fondos curry (botones llenos) |
+
+### Crema (texto sobre oscuro)
+
+| Token | Hex | Cuándo usar |
+|---|---|---|
+| Crema cálida | `#fdf6e8` | Texto principal en pantallas funcionales (titles, labels, inputs, CTAs sobre curry). **Usar en lugar de white puro** |
+| `rgba(255,255,255,0.62)` | — | Sub-copy sobre fondos cálidos (hero, marketing) |
+| `rgba(246,201,119,0.55)` | — | Sub-copy sobre fondos oscuros funcionales |
+| `rgba(246,201,119,0.45)` | — | Helpers, microcopy, deshabilitado |
+
+### Excepciones (usar con criterio)
+
+| Hex | Uso único permitido |
+|---|---|
+| `#ff7a59` | Bordes/texto de error — único rojo, intencionalmente cálido |
+| `#7dd693` | Estado "perfecto" / reward — único verde, sólo como recompensa |
+
+**Reglas duras:**
+- Nunca inventar colores fuera de la paleta.
+- Si necesitás un tono intermedio, modulá opacidad de un color existente (`rgba(244,160,43,0.x)`).
+- Nunca usar `text-black`, `text-white` puros — siempre crema cálida o curry.
+- No mezclar warm con cool. Si un color tira a azul/violeta, está mal.
+
+---
+
+## 3. Tipografía
+
+Tres familias, roles fijos. No mezclar pesos arbitrarios.
+
+| Familia | Variable | Rol | Pesos |
+|---|---|---|---|
+| **Archivo Black** | `--font-archivo` | Display, headlines monumentales, palabras gigantes decorativas | 400 (único) |
+| **Inter** | `--font-inter` | Body, titulares de formularios, labels, botones, prosa | 300–700 |
+| **JetBrains Mono** | `--font-mono` | Microtags, eyebrows, coda, datos técnicos, etiquetas en caps | 400, 700 |
+
+### Cuándo usar cada una
+
+- **Archivo Black** — sólo en piezas que tienen que gritar. Headlines de hero, palabras decorativas de fondo, marcas tipográficas. Tracking siempre apretado (-0.035 a -0.045em). Nunca para body.
+- **Inter** — para todo lo que se lee de cerca: titulares medianos (clamp 26–44px, weight 500), párrafos, formularios. Weight 500 para headlines (no 600/700 — se ve sobreapurado). Weight 400 para body. Tracking apretado en titulares (-0.022 a -0.025em), normal en body.
+- **JetBrains Mono** — siempre uppercase, tracking ancho (0.22–0.32em). Tamaños chicos (0.6–0.78rem). Para "etiquetar" — números, versiones, microcategorías, taglines.
+
+### Escala disponible (en `globals.css`)
 
 ```
-app/
-├── layout.tsx              # Fuentes (next/font), metadata global, <body>
-├── page.tsx                # Landing — renderiza <Hero />
-├── globals.css             # @theme tokens + utilities base
-└── (marketing)/
-    └── _components/
-        ├── Hero.tsx            # Server Component — layout completo del hero
-        ├── Nav.tsx             # Server Component — grid 3 cols
-        ├── LogoMonogram.tsx    # Renderiza public/alphagoat-logo.svg con next/image (56×56)
-        ├── AlfajorReviews.tsx  # Client Component — marquee de reseñas ficticias
-        └── CtaButton.tsx       # (archivado — usar btn-curry-lg directo)
-
-public/
-├── alphagoat-logo.svg      # Logo oficial SVG circular (sello)
-└── alfajor/                # Fotos reales cuando estén
+.h-mega   → clamp(64px, 14.5vw, 220px)   line 0.88   tracking -0.045em
+.h-sub    → clamp(36px, 7.4vw, 112px)    line 0.92   tracking -0.035em
+.eyebrow  → 0.78rem   tracking 0.32em    uppercase   Archivo Black
+.coda     → 0.78rem   tracking 0.28em    uppercase   JetBrains Mono
 ```
+
+Para form headlines (no display) usar Inter directo: `clamp(26px, 2.6vw, 32px)`, weight 500, tracking `-0.022em`, color crema.
 
 ---
 
-## 3. Sistema de color
+## 4. Layout y espaciado
 
-Paleta monocromática warm: marrón profundo + dorado curry. Sin azules, grises ni acentos. La jerarquía se resuelve con opacidad y peso tipográfico.
+**Modernidad sin frialdad.** Mucho aire, radii grandes, asimetría cuando aporta.
 
-| Token                   | Hex        | Uso                                                  |
-| ----------------------- | ---------- | ---------------------------------------------------- |
-| `--color-bg`            | `#6e2f11`  | Fondo principal                                      |
-| `--color-bg-deep`       | `#4f1f08`  | Áreas más profundas                                  |
-| `--color-curry`         | `#f4a02b`  | Color principal: texto, botones, acentos             |
-| `--color-curry-bright`  | `#ffb53d`  | Hover de botones                                     |
-| `--color-curry-soft`    | `#f6c977`  | Copy secundario, texto al 70%                        |
-| `--color-cinnamon`      | `#b86015`  | Acentos oscuros, sombras                             |
-| `--color-sienna`        | `#5a2208`  | Texto sobre fondos curry (botones)                   |
+- **Radios**: `12px` (inputs, cards chicos), `16px` (cards medianos), `24px` (panels grandes), `9999px` (pills).
+- **Padding interno de paneles grandes**: 32–48px en desktop.
+- **Gap entre secciones**: usar `gap-8` a `gap-12` en flex/grid de formularios. Generoso.
+- **Splits**: layouts 50/50, 52/48, 60/40. Una columna funcional y otra atmosférica.
+- **Mobile**: hero atmosférico se oculta; el form/contenido ocupa todo el viewport con padding 24–48px lateral.
+- **Sombras**: profundas y suaves, no chips planos. Patrón: `0 30px 80px -30px rgba(0,0,0,0.6)` para panels flotantes; `0 8px 24px -8px rgba(244,160,43,0.6)` para botones curry destacados.
 
-**Regla:** curry sobre marrón profundo. Si necesitás contraste, usá `curry-soft` o `sienna`. No inventes colores.
-
----
-
-## 4. Tipografía
-
-| Familia              | Variable CSS       | Uso                                       |
-| -------------------- | ------------------ | ----------------------------------------- |
-| **Archivo Black**    | `--font-archivo`   | Headlines (.h-mega, .h-sub), eyebrow      |
-| **Inter**            | `--font-inter`     | Body copy                                 |
-| **JetBrains Mono**   | `--font-mono`      | Eyebrow, tags, coda, datos pequeños       |
-
-### Escala de display
-
-```css
-.h-mega { font-size: clamp(64px, 14.5vw, 220px); line-height: 0.88; letter-spacing: -0.045em; }
-.h-sub  { font-size: clamp(36px, 7.4vw, 112px);  line-height: 0.92; letter-spacing: -0.035em; }
-```
-
-### Escala secundaria
-
-- `.eyebrow`: `0.78rem`, tracking `0.32em`, uppercase, Archivo Black
-- `.coda`: `0.78rem`, tracking `0.28em`, uppercase, JetBrains Mono
-- Nav links: `11px`, tracking `0.16em`, uppercase, weight 700
+**No usar:**
+- Bordes finos de 1px estilo design system. Si hay borde, opacidad baja (`rgba(244,160,43,0.14)` o menos).
+- Glassmorphism / blur de fondo.
+- Drop-shadow chiquita estilo Bootstrap.
+- Grids rígidas de columnas iguales.
 
 ---
 
-## 5. Layout actual del Hero
-
-```
-┌──────────────────────────────────────────────────────────┐
-│  [Ranking · Comparador · Método]  [LOGO]  [Login · CTA]  │  ← <Nav />
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│              EL ÍNDICE NACIONAL DEL ALFAJOR              │  ← eyebrow
-│                                                          │
-│                      EL ALFAJOR                          │  ← .h-mega
-│                     NO SE DISCUTE.                       │  ← .h-sub
-│                                                          │
-│            · Ahora se puntúa, ningún chamuyo             │  ← coda + pulse-dot
-│                                                          │
-│  ◄═══════════ marquee de reseñas ════════════►           │  ← <AlfajorReviews />
-│                                                          │
-│               [ Dejá tus reseñas → ]                     │  ← btn-curry-lg
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
-
-**Fondo:** `<WebGLLiquid>` animado (`colorDeep #3a1606`, `colorMid #6e2f11`, `colorHighlight #a85820`) + overlay `bg-black/45` + glows radiales superior e inferior.
-
----
-
-## 6. Componentes
-
-### `<Nav />` — grid 3 columnas
-- Izquierda: links (Ranking, Comparador, Método)
-- Centro: `<LogoMonogram />` — `next/image` con `public/alphagoat-logo.svg`, 56×56px
-- Derecha: "Iniciar sesión" + `.btn-curry` "Calificar"
-
-### `<AlfajorReviews />` — Client Component
-Marquee horizontal usando `TestimonialMarquee` (shadcn `@componentry/testimonial-marquee`, en `src/shared/components/ui/testimonial-marquee.tsx`). Variant `"default"`, speed `35`.
-
-Cards temizadas para el fondo oscuro del hero vía scope CSS `.alfajor-reviews`:
-- `bg-black/5` → `rgba(0,0,0,0.55)`
-- `text-muted-foreground` → `rgba(255,220,160,0.8)`
-- `text-foreground` → `rgba(255,240,200,1)`
-- `border-border` → `rgba(255,180,80,0.18)`
-
-Avatares via DiceBear (`https://api.dicebear.com/9.x/thumbs/svg?seed=X`).
+## 5. Componentes — patrones recurrentes
 
 ### Botones
 
-```css
-.btn-curry    /* pill small — CTAs secundarios, nav */
-.btn-curry-lg /* pill grande, sombra dorada — CTA principal del hero */
-.icon-btn     /* 44×44 circular */
-```
+- **Pill primario** (`.btn-curry-lg`): fondo curry, texto sienna (o crema cuando el contexto lo pide), uppercase, tracking 0.06em, sombra dorada. Para CTAs principales.
+- **Pill secundario** (`.btn-curry`): variante chica del primario.
+- **Icon button** (`.icon-btn`): 44×44, circular, curry sólido.
+- **Tertiary**: link de texto, sin fondo, color curry o crema, underline sutil en hover.
+- **Cursor pointer en todo**: añadir `cursor-pointer` a `<button>` (Tailwind no lo agrega por default).
 
-CTA del hero: `.btn-curry-lg` con `<ArrowRight size={16} />` de lucide-react.
+### Inputs
 
----
+- Altura mínima 48px (hit target ok).
+- Fondo `field-bg`, borde curry @ 18% opacidad.
+- Focus: borde curry @ 60%, ring `3px rgba(244,160,43,0.12)`.
+- Error: borde `#ff7a59`. Texto del input en crema.
+- Label arriba en crema, helper/error abajo en mono o sans pequeño.
+- Ícono derecho (toggle password, etc.): botón 40×40, posicionado `absolute right-2`.
 
-## 7. Atmósfera
+### Cards / paneles
 
-- **WebGL líquido**: fondo animado orgánico en tonos marrones profundos. No es estático.
-- **Overlay negro** `bg-black/45` encima del WebGL para legibilidad del texto.
-- **Glow superior**: `radial-gradient` dorado tenue `rgba(255,180,80,0.08)`.
-- **Glow inferior**: `radial-gradient` negro `rgba(0,0,0,0.30)`.
+- Fondo `bg-deep` o `rgba(0,0,0,0.55)` si va sobre hero animado.
+- Borde opcional `rgba(244,160,43,0.14)`.
+- Radio 16–24px.
+- Sin sombras planas — si hay sombra, profunda.
 
-Nada de glassmorphism, gradientes de colores, ni borders punteados.
+### Microtags / etiquetas
 
----
-
-## 8. Animaciones
-
-- **`.pulse-dot`**: punto curry que parpadea junto a la coda (1.6s, CSS).
-- **Botones**: `translateY(-1px)` en hover, `0.2s`.
-- **Marquee**: CSS keyframes `marquee-left` / `marquee-right`. Se pausa en hover sobre la fila.
-
-```css
-@media (prefers-reduced-motion: reduce) {
-  .pulse-dot { animation: none; }
-}
-```
+- Mono, uppercase, tracking ancho (0.22–0.32em).
+- Tamaño 0.6–0.78rem.
+- Color: curry o `rgba(246,201,119,0.45)`.
+- Patrón típico: `AR · v1.0 · Ningún chamuyo` (separador `·`).
 
 ---
 
-## 9. Copywriting
+## 6. Motion
 
-| Slot          | Copy actual                              |
-| ------------- | ---------------------------------------- |
-| Eyebrow       | El índice nacional del alfajor           |
-| Headline      | EL ALFAJOR / NO SE DISCUTE.              |
-| Coda          | Ahora se puntúa, ningún chamuyo          |
-| CTA principal | Dejá tus reseñas →                       |
+Sutil, cálido, nunca histriónico.
 
-**Reglas:**
-- Vos, no usted. Nunca tú.
-- Frases cortas, declarativas. Una idea por línea.
-- Humor en el contraste solemne, no en chistes.
-- Modismos OK ("ningún chamuyo") pero sin abusar.
+- **`.fade-up`** (0.5s ease-out): traslación de 10px + opacidad. Para elementos que entran de a uno (stagger 150–200ms entre items).
+- **`.fade-in`** (0.8s ease-out): bloques completos.
+- **`.pulse-dot`** (1.6s loop): puntos cerca de la coda — indican "vivo".
+- **`.drift`** (7s loop): traslación vertical sutil de elementos atmosféricos.
+- **`.spin-loader`**: spinner de submit en CTAs.
+- **Hover de botones**: `translateY(-1px)` + bg → curry-bright. Transición 200ms.
+- **Hover de cards**: subir opacidad de fondo, no levantar.
 
----
+Todas respetan `prefers-reduced-motion`.
 
-## 10. Handoff para herramientas de diseño (Claude Design, Figma, etc.)
-
-> Usá esta sección textualmente cuando le pasés el diseño a otra herramienta. Describe el estado visual real, no el ideal.
-
-### Fondo del hero
-
-El fondo es un shader WebGL animado que simula líquido orgánico en movimiento. **No es un gradiente estático.** Para representarlo en diseño usá esto:
-
-- Color base: `#3a1606` (marrón casi negro)
-- Color medio: `#6e2f11` (marrón chocolate)
-- Color de highlight: `#a85820` (marrón cobrizo cálido)
-- Encima del shader hay un overlay negro semitransparente: `rgba(0, 0, 0, 0.45)` full-bleed
-- Encima del overlay, en el borde superior: glow radial muy sutil dorado, `rgba(255, 180, 80, 0.08)`, ellipse centrada arriba, altura ~256px
-- En el borde inferior: glow radial negro `rgba(0, 0, 0, 0.30)`, ellipse centrada abajo, altura ~288px
-
-**Resultado visual:** fondo marrón muy oscuro, casi negro, con tonos cálidos que sugieren movimiento. El texto y elementos son legibles por el overlay negro. No hay bordes, no hay texturas geométricas, no hay gradientes de colores múltiples.
-
-### Cards del carrusel de reseñas
-
-El marquee tiene una fila de cards que desplazan de derecha a izquierda, ancho fijo 350px cada una.
-
-**Anatomía de cada card:**
-```
-┌─────────────────────────────────────────┐
-│                                         │  ← borde: 1px solid rgba(255,180,80,0.18)
-│  "El texto de la reseña va acá,         │     fondo: rgba(0,0,0,0.55)
-│   puede tener dos o tres líneas         │     border-radius: 16px (rounded-2xl)
-│   de texto truncado."                   │     padding: 24px
-│                                         │
-│  ┌──┐  Nombre Usuario                   │
-│  │👤│  @username                        │  ← avatar circular 40×40px, borde 1px rgba(255,180,80,0.18)
-│  └──┘                                   │
-└─────────────────────────────────────────┘
-```
-
-**Colores internos de la card:**
-- Fondo: `rgba(0, 0, 0, 0.55)` — negro semitransparente, se ve el fondo del hero atrás
-- Fondo en hover: `rgba(0, 0, 0, 0.70)`
-- Borde: `1px solid rgba(255, 180, 80, 0.18)` — dorado muy tenue
-- Texto del review: `rgba(255, 220, 160, 0.8)` — dorado claro, 80% opacidad, `font-size: 14px`
-- Nombre: `rgba(255, 240, 200, 1)` — casi blanco cálido, `font-size: 14px`, `font-weight: 500`
-- Username: mismo que texto del review pero más chico, `font-size: 12px`
-- Avatar: círculo 40×40, borde igual al de la card
-
-**Lo que NO tienen las cards:**
-- No tienen sombra
-- No tienen fondo blanco ni gris
-- No tienen colores fríos
-- No tienen rating de estrellas
-
-### Tipografía en el hero (orden visual de arriba a abajo)
-
-1. **Eyebrow** — `"El índice nacional del alfajor"` — `0.78rem`, `letter-spacing: 0.32em`, uppercase, color `#f4a02b`
-2. **Headline** — `"EL ALFAJOR"` — Archivo Black, `clamp(64px, 14.5vw, 220px)`, `letter-spacing: -0.045em`, color blanco/crema
-3. **Sub-headline** — `"NO SE DISCUTE."` — Archivo Black, `clamp(36px, 7.4vw, 112px)`, mismo tracking
-4. **Coda** — `"Ahora se puntúa, ningún chamuyo"` — JetBrains Mono, `0.78rem`, `letter-spacing: 0.28em`, uppercase, color `#f4a02b`, con un punto animado a la izquierda
-5. **Marquee de reseñas** — ver cards arriba
-6. **CTA** — `"Dejá tus reseñas →"` — pill redondeada, fondo `#f4a02b`, texto `#5a2208`, `font-size: 14px`, uppercase, `letter-spacing: 0.06em`, sombra dorada `0 8px 24px -8px rgba(244,160,43,0.6)`
-
-### Nav
-
-Grid de 3 columnas, full width, padding `24px 40px`.
-- **Izquierda:** links de texto — "Ranking", "Comparador", "Método" — `11px`, uppercase, tracking `0.16em`, color `#f6c977`
-- **Centro:** logo SVG circular, `56×56px` — sello con texto "AG" grande en el centro, tipografía serif, borde doble circular, fondo crema `#f5ead6`, texto `#2b1810`
-- **Derecha:** link "Iniciar sesión" (mismo estilo que nav links) + botón pill "Calificar" (fondo `#f4a02b`, texto `#5a2208`)
+**No usar:**
+- Animaciones bouncy / spring exageradas.
+- Animaciones de entrada en cada scroll.
+- Carruseles auto-play que distraen del contenido principal.
 
 ---
 
----
+## 7. Atmósfera (fondos atmosféricos)
 
-## 12. Pantallas de auth (`/register` y `/login`)
+Para paneles "hero" o columnas decorativas se aceptan tres patrones:
 
-### Concepto
-Layout split: hero tipográfico interactivo a la izquierda (52%) + formulario a la derecha (flex-1). En mobile el hero se oculta y el form ocupa el 100%.
+1. **Gradiente cálido**: radiales dorados + linear marrón. Ej:
+   ```
+   radial-gradient(ellipse 60% 50% at 20% 10%, rgba(244,160,43,0.18) 0%, transparent 70%),
+   radial-gradient(ellipse 55% 60% at 85% 90%, rgba(44,18,9,0.8) 0%, transparent 65%),
+   linear-gradient(160deg, #6e2f11 0%, #4f1f08 60%, #2c1209 100%)
+   ```
+2. **WebGL líquido animado** (`<WebGLLiquid>`): tonos `#3a1606` → `#6e2f11` → `#a85820`, con overlay `bg-black/45` y glows radiales en top/bottom.
+3. **Partículas tipográficas interactivas** (`<CursorDrivenParticleTypography>`): Archivo Black, color `#c87a20` o curry, sobre fondo casi-negro `#1a0c05`. Las palabras decorativas (Probá / Opiná / Puntuá) son una opción.
 
-### Hero (columna izquierda)
-- Fondo oscuro `#1a0c05` con `box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7)`.
-- Tres instancias de `CursorDrivenParticleTypography` apiladas en `flex-col` absolute fill: **Probá. / Opiná. / Puntuá.**
-  - Color de partículas: `#c87a20` (ámbar oscuro — visible sobre el fondo sin pelear con el formulario).
-  - Font: `'Archivo Black', sans-serif`, `fontSize={400}` (cap interno: `containerWidth * 0.18`).
-  - `particleSize={1.8}`, `particleDensity={4}`, `dispersionStrength={22}`, `returnSpeed={0.05}`.
-  - El cursor dispersa las partículas al pasar sobre ellas.
-- "made by Ignacio (Puly) G." — link a portfolio, posicionado `absolute bottom-6 left-8`, font mono `0.65rem`, color `rgba(246,201,119,0.6)`, glow sutil, hover ilumina.
-
-### Formulario (columna derecha)
-- Fondo `bg-bg-ink` (`#2c1209`) en el `<main>`.
-- Texto: títulos, labels, inputs, botones en `#fdf6e8` (blanco cremita cálido). Sub-copy en `rgba(246,201,119,0.55)`.
-- Campos: `InputGroup` — `48px` de alto, `border-radius: 12px`, fondo `#3b1a0a`, borde `rgba(244,160,43,0.18)`. Focus: border curry 60% + ring `3px rgba(244,160,43,0.12)`.
-- Error: borde `#ff7a59` (excepción de paleta — señal de error cálida).
-- Botón CTA: `.btn-curry-lg` con `!text-[#fdf6e8]`.
-- `PasswordStrength`: barra de 4 niveles bajo el campo de contraseña.
-- Animaciones de entrada: `.fade-in` (form completo), `.fade-up` con stagger (elementos del hero).
-
-### Tokens nuevos en `globals.css`
-| Token | Hex | Uso |
-|---|---|---|
-| `--color-bg-ink` | `#2c1209` | Fondo del `<main>` de auth |
-| `--color-field-bg` | `#3b1a0a` | Fondo de los `<input>` |
+**Siempre:** el contenido lee sobre overlay oscuro. Si dudás de la legibilidad, sumá un linear-gradient negro abajo.
 
 ---
 
-## 11. Accesibilidad
+## 8. Voz / copywriting
 
-- Contraste curry `#f4a02b` sobre marrón `#6e2f11` ≈ **5.6:1** — WCAG AA.
-- Hit targets mínimo 44px.
-- Iconos y links con `aria-label`.
-- Un solo `<h1>` — el sub va en `<span>`, no `<h2>`.
-- Animaciones respetan `prefers-reduced-motion`.
+- **Vos**, nunca tú ni usted.
+- **Verbos en imperativo singular**: probá, opiná, puntuá, sumate, registrá, armá, seguí, ingresá.
+- **Frases cortas, declarativas**. Una idea por línea. Punto final cuando es titular.
+- **Humor en el contraste solemne**, no en chistes obvios. La gracia viene de tratar al alfajor como tema institucional.
+- **Modismos OK** con moderación: "ningún chamuyo", "de fierro", "vidriera".
+- **Universo Alfajorímetro**: usar el vocabulario propio — Instituto, Ficha, Catador, Paladar, Ranking. Son consistentes entre features.
+- **Microcopy**: en mono uppercase para taglines y datos técnicos. En sans para errores y helpers.
+
+Ejemplos buenos:
+- "El alfajor no se discute. Ahora se puntúa."
+- "Sumate al Instituto."
+- "Ningún chamuyo."
+- "Mínimo 8 caracteres."
+- "Emitiendo ficha…"
+
+Ejemplos malos:
+- "¡Bienvenido a Alphagoat!" (genérico)
+- "Por favor ingrese su dirección de correo electrónico." (frío, formal)
+- "Tu cuenta ha sido creada exitosamente." (corporate)
+
+---
+
+## 9. Accesibilidad
+
+- Contraste curry sobre marrón profundo ≥ 5.6:1 (AA). Crema sobre marrón profundo ≥ 11:1 (AAA).
+- Hit targets ≥ 44px.
+- `prefers-reduced-motion` siempre respetado.
+- `aria-label` en icon buttons; `aria-hidden` en elementos decorativos (palabras gigantes de fondo, gradientes).
+- Un solo `<h1>` por página — usar `<h2>` para titulares atmosféricos del hero si la página tiene un h1 funcional en el form/contenido.
+
+---
+
+## 10. Cheat sheet — antes de generar UI nueva
+
+1. ¿Es un panel funcional (form, dashboard) o atmosférico (hero, landing)? Funcional → `bg-ink` + crema. Atmosférico → `bg` + gradiente cálido o WebGL.
+2. ¿Qué titular? Si es monumental → Archivo Black + `.h-mega`/`.h-sub`. Si es funcional → Inter weight 500, clamp 26–32px.
+3. ¿Eyebrow / coda? Mono uppercase, tracking ancho.
+4. ¿Color de copy? Crema `#fdf6e8` sobre oscuro funcional. Curry sobre marrón. Nunca white puro.
+5. ¿CTA? `.btn-curry-lg` con texto crema o sienna según contraste.
+6. ¿Inputs? Altura 48, radio 12, fondo `field-bg`, focus ring curry @ 12%.
+7. ¿Necesitás un color que no está? Modulá opacidad de uno existente.
+8. ¿Es interactivo? Cursor pointer, hover sutil, transición 200ms.
+9. ¿Hay copy? Voz argentina, imperativo, frase corta.
+10. ¿Animación? Solo si suma — fade-up con stagger, sin springs.

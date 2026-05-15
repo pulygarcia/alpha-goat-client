@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Archivo_Black, Inter, JetBrains_Mono } from 'next/font/google';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
+import { AuthProvider } from '@/shared/providers/AuthProvider';
 import './globals.css';
 
 const archivo = Archivo_Black({
@@ -26,7 +27,9 @@ export default function RootLayout({
       className={`${archivo.variable} ${inter.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-bg text-curry">
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

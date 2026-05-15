@@ -1,0 +1,90 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, waitFor, act } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
+import { useLogin } from './useLogin';
+import { authApi } from '../api/auth.api';
+import { useAuthStore } from '../store/auth.store';
+
+const pushMock = vi.fn();
+let nextParam: string | null = null;
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: pushMock }),
+  useSearchParams: () => ({ get: (k: string) => (k === 'next' ? nextParam : null) }),
+}));
+
+vi.mock('../api/auth.api', () => ({
+  authApi: { login: vi.fn() },
+}));
+
+function wrapper({ children }: { children: React.ReactNode }) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  return React.createElement(QueryClientProvider, { client }, children);
+}
+
+describe('useLogin', () => {
+  beforeEach(() => {
+    pushMock.mockReset();
+    nextParam = null;
+    useAuthStore.setState({ user: null });
+    vi.mocked(authApi.login).mockReset();
+  });
+
+  it('on success stores the user and redirects home', async () => {
+    const user = { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' as const };
+    vi.mocked(authApi.login).mockResolvedValue({ user });
+
+    const { result } = renderHook(() => useLogin(), { wrapper });
+
+    await act(async () => {
+      result.current.mutate({ email: 'a@b.com', password: 'secret' });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(useAuthStore.getState().user).toEqual(user);
+    expect(pushMock).toHaveBeenCalledWith('/');
+  });
+
+  it('honors a safe ?next= redirect', async () => {
+    nextParam = '/perfil';
+    const user = { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' as const };
+    vi.mocked(authApi.login).mockResolvedValue({ user });
+
+    const { result } = renderHook(() => useLogin(), { wrapper });
+    await act(async () => {
+      result.current.mutate({ email: 'a@b.com', password: 'secret' });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(pushMock).toHaveBeenCalledWith('/perfil');
+  });
+
+  it('ignores an unsafe ?next= (open redirect protection)', async () => {
+    nextParam = '//evil.com';
+    const user = { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' as const };
+    vi.mocked(authApi.login).mockResolvedValue({ user });
+
+    const { result } = renderHook(() => useLogin(), { wrapper });
+    await act(async () => {
+      result.current.mutate({ email: 'a@b.com', password: 'secret' });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(pushMock).toHaveBeenCalledWith('/');
+  });
+
+  it('surfaces the error and does not redirect on failure', async () => {
+    vi.mocked(authApi.login).mockRejectedValue(new Error('boom'));
+
+    const { result } = renderHook(() => useLogin(), { wrapper });
+
+    await act(async () => {
+      result.current.mutate({ email: 'a@b.com', password: 'secret' });
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(useAuthStore.getState().user).toBeNull();
+    expect(pushMock).not.toHaveBeenCalled();
+  });
+});

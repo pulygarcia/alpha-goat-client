@@ -22,6 +22,17 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ### Skills instaladas (autoskills)
 - accessibility, seo, frontend-design, tailwind-css-patterns, nodejs-best-practices, composition-patterns, next-cache-components, next-upgrade, typescript-advanced-types, nodejs-backend-patterns, next-best-practices, vitest, zod, react-hook-form, react-best-practices.
 
+### Feature `auth` — login + register + provider conectados al backend
+- `features/auth/types/auth.types.ts` — `User`, `LoginInput`, `RegisterInput`, `AuthResponse`.
+- `features/auth/schemas/{login,register}.schema.ts` — Zod schemas.
+- `features/auth/api/auth.api.ts` — `authApi.login | register | me | logout` con `withCredentials`.
+- `features/auth/store/auth.store.ts` — Zustand simple (sin `persist`: el provider hidrata desde `/auth/me`).
+- Hooks: `useLogin`, `useRegister`, `useCurrentUser` (sincroniza el store), `useLogout` (limpia caché + redirige). Login/register cachean el user en `['auth','me']` con `setQueryData`.
+- `shared/providers/AuthProvider.tsx` — Context montado en `app/layout.tsx` dentro de `QueryProvider`. Expone `{ user, isLoading, isAuthenticated, logout }`. Escucha `auth:unauthorized` para limpiar la sesión.
+- Interceptor 401 global en `api-client.ts` — emite `auth:unauthorized` (excepto en las propias `/auth/*`) para que el provider reaccione.
+- `LoginForm` y `SignUpForm` conectados a sus hooks: `isPending` / `isError` (mensaje friendly en 401, 409, red, o `message` del backend) / `isSuccess`.
+- Tests: `useLogin`, `useRegister`, `LoginForm`, `SignUpForm` — 10 tests verdes.
+
 ### Feature `auth` — vistas (UI only, sin backend)
 - `/register` — registro: layout split 52/48, hero izquierdo + formulario derecho.
 - `/login` — inicio de sesión: mismo hero, form más liviano.
@@ -40,13 +51,13 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ## Pendiente
 
 ### Próximas features
-- `auth` — backend: conectar `SignUpForm` y `LoginForm` a la API real, reemplazar mocks por `useMutation`. Agregar `AuthProvider`, Zustand store, middleware de Next para rutas protegidas.
+- `auth` — middleware de Next para rutas protegidas (`/admin/*`, `/perfil`). Login/register/me/logout, AuthProvider e interceptor 401 ya están.
 - `alfajores` (listado + detalle público).
 - `reviews` (form + listado en detalle de alfajor).
 - Layout principal (Header, Footer, nav).
 - `moderation` (admin), `ranking`, `comparador`, `perfil`.
 
 ### Deuda técnica conocida
-- Falta `AuthProvider` y middleware de Next para rutas protegidas (`/admin/*`).
-- Falta handler global para 401 → redirect a `/login`.
+- Falta middleware de Next para rutas protegidas (`/admin/*`).
+- El interceptor 401 emite `auth:unauthorized` y limpia el store, pero no redirige automático a `/login` — definir UX (¿toast + redirect, o solo cuando se accede a una ruta gated?).
 - Sin shadcn init real (se creó `components.json` manual + Button/Input mínimos). Cuando hagan falta más componentes, correr `npx shadcn add <name>`.

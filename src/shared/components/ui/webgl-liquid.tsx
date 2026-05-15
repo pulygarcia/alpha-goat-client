@@ -207,6 +207,9 @@ export function WebGLLiquid({
     try {
       const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
       if (!gl) {
+        // One-shot fallback when WebGL is unavailable; the effect early-returns
+        // on the next render via the `hasWebGLError` guard above.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHasWebGLError(true);
         return;
       }

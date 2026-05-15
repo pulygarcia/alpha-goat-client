@@ -3,19 +3,14 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import axios from 'axios'
 import { Eye, EyeOff } from 'lucide-react'
 import InputGroup from './InputGroup'
 import Link from 'next/link'
+import { loginSchema, type LoginSchema } from '../schemas/login.schema'
+import { useLogin } from '../hooks/useLogin'
 
-const schema = z.object({
-  email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Mail inválido'),
-  password: z.string().min(1, 'Ingresá tu contraseña'),
-})
-
-type FormData = z.infer<typeof schema>
-
-type Status = 'idle' | 'submitting' | 'success'
+type FormData = LoginSchema
 
 function GoogleIcon() {
   return (
@@ -36,25 +31,36 @@ function AppleIcon() {
   )
 }
 
+function extractError(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    const status = err.response?.status
+    if (status === 401) return 'Mail o contraseña incorrectos.'
+    const msg = (err.response?.data as { message?: string | string[] } | undefined)?.message
+    if (Array.isArray(msg)) return msg[0]
+    if (typeof msg === 'string') return msg
+    if (err.code === 'ERR_NETWORK') return 'No pudimos contactar al servidor.'
+  }
+  return 'Algo salió mal. Probá de nuevo.'
+}
+
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
-  const [status, setStatus] = useState<Status>('idle')
+  const login = useLogin()
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(loginSchema),
     mode: 'onChange',
   })
 
-  function onSubmit(_data: FormData) {
-    setStatus('submitting')
-    setTimeout(() => setStatus('success'), 1200)
+  function onSubmit(data: FormData) {
+    login.mutate(data)
   }
 
-  if (status === 'success') {
+  if (login.isSuccess) {
     return (
       <div className="fade-in flex flex-col items-center gap-6 text-center">
         <div
@@ -123,12 +129,18 @@ export default function LoginForm() {
           </button>
         </div>
 
+        {login.isError && (
+          <p role="alert" className="text-[0.82rem]" style={{ color: '#ff9b6b' }}>
+            {extractError(login.error)}
+          </p>
+        )}
+
         <button
           type="submit"
-          disabled={!isValid || status === 'submitting'}
+          disabled={!isValid || login.isPending}
           className="btn-curry-lg mt-2 w-full cursor-pointer justify-center disabled:cursor-not-allowed disabled:opacity-40 !text-[#fdf6e8]"
         >
-          {status === 'submitting' ? (
+          {login.isPending ? (
             <>
               <span className="spin-loader mr-2 inline-block h-4 w-4 rounded-full border-2 border-current border-t-transparent" />
               Ingresando…

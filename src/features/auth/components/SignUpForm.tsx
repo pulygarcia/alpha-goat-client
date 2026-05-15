@@ -3,24 +3,27 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import axios from 'axios'
 import { Eye, EyeOff } from 'lucide-react'
 import InputGroup from './InputGroup'
 import PasswordStrength from './PasswordStrength'
 import Link from 'next/link'
+import { registerSchema, type RegisterSchema } from '../schemas/register.schema'
+import { useRegister } from '../hooks/useRegister'
 
-const schema = z.object({
-  firstName: z.string().min(1, 'Requerido'),
-  lastName: z.string().min(1, 'Requerido'),
-  email: z
-    .string()
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Mail inválido'),
-  password: z.string().min(8, 'Mínimo 8 caracteres'),
-})
+type FormData = RegisterSchema
 
-type FormData = z.infer<typeof schema>
-
-type Status = 'idle' | 'submitting' | 'success'
+function extractError(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    const status = err.response?.status
+    if (status === 409) return 'Ya hay una cuenta con ese mail.'
+    const msg = (err.response?.data as { message?: string | string[] } | undefined)?.message
+    if (Array.isArray(msg)) return msg[0]
+    if (typeof msg === 'string') return msg
+    if (err.code === 'ERR_NETWORK') return 'No pudimos contactar al servidor.'
+  }
+  return 'Algo salió mal. Probá de nuevo.'
+}
 
 function GoogleIcon() {
   return (
@@ -43,8 +46,7 @@ function AppleIcon() {
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false)
-  const [status, setStatus] = useState<Status>('idle')
-  const [submittedName, setSubmittedName] = useState('')
+  const signup = useRegister()
 
   const {
     register,
@@ -52,19 +54,18 @@ export default function SignUpForm() {
     watch,
     formState: { errors, isValid },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(registerSchema),
     mode: 'onChange',
   })
 
   const passwordValue = watch('password', '')
 
   function onSubmit(data: FormData) {
-    setStatus('submitting')
-    setSubmittedName(data.firstName)
-    setTimeout(() => setStatus('success'), 1200)
+    signup.mutate(data)
   }
 
-  if (status === 'success') {
+  if (signup.isSuccess) {
+    const submittedName = signup.data.user.firstName
     return (
       <div className="fade-in flex flex-col items-center gap-6 text-center">
         <div
@@ -145,12 +146,18 @@ export default function SignUpForm() {
           <PasswordStrength value={passwordValue} />
         </div>
 
+        {signup.isError && (
+          <p role="alert" className="text-[0.82rem]" style={{ color: '#ff9b6b' }}>
+            {extractError(signup.error)}
+          </p>
+        )}
+
         <button
           type="submit"
-          disabled={!isValid || status === 'submitting'}
+          disabled={!isValid || signup.isPending}
           className="btn-curry-lg mt-2 w-full cursor-pointer justify-center disabled:cursor-not-allowed disabled:opacity-40 !text-[#fdf6e8]"
         >
-          {status === 'submitting' ? (
+          {signup.isPending ? (
             <>
               <span
                 className="spin-loader mr-2 inline-block h-4 w-4 rounded-full border-2 border-current border-t-transparent"

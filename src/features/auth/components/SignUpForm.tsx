@@ -65,7 +65,7 @@ export default function SignUpForm() {
   }
 
   if (signup.isSuccess) {
-    const submittedName = signup.data.user.firstName
+    const submittedName = signup.data.user.username
     return (
       <div className="fade-in flex flex-col items-center gap-6 text-center">
         <div
@@ -109,20 +109,13 @@ export default function SignUpForm() {
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <InputGroup
-            label="Nombre"
-            placeholder="Belgrano"
-            error={errors.firstName?.message}
-            {...register('firstName')}
-          />
-          <InputGroup
-            label="Apellido"
-            placeholder="Mitre"
-            error={errors.lastName?.message}
-            {...register('lastName')}
-          />
-        </div>
+        <InputGroup
+          label="Usuario"
+          placeholder="belgrano.mitre"
+          error={errors.username?.message}
+          helper="Letras, números, _ y . — entre 3 y 50."
+          {...register('username')}
+        />
 
         <InputGroup
           label="Mail"

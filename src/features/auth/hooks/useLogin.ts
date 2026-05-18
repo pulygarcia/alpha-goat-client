@@ -8,8 +8,8 @@ import type { AuthResponse, LoginInput } from '../types/auth.types';
 import { CURRENT_USER_KEY } from './useCurrentUser';
 
 function safeNext(raw: string | null): string {
-  if (!raw) return '/';
-  if (!raw.startsWith('/') || raw.startsWith('//')) return '/';
+  if (!raw) return '/feed';
+  if (!raw.startsWith('/') || raw.startsWith('//')) return '/feed';
   return raw;
 }
 

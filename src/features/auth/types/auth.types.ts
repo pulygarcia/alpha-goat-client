@@ -3,9 +3,10 @@ export type UserRole = 'USER' | 'ADMIN';
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  avatarUrl: string | null;
   role: UserRole;
+  createdAt: string;
 }
 
 export interface LoginInput {
@@ -14,9 +15,8 @@ export interface LoginInput {
 }
 
 export interface RegisterInput {
-  firstName: string;
-  lastName: string;
   email: string;
+  username: string;
   password: string;
 }
 

@@ -34,13 +34,21 @@ describe('SignUpForm', () => {
     vi.mocked(authApi.register).mockReset();
   });
 
+  const fakeUser = {
+    id: '1',
+    email: 'a@b.com',
+    username: 'belgrano',
+    avatarUrl: null,
+    role: 'USER' as const,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  };
+
   it('disables submit until the form is valid', async () => {
     renderForm();
     const submit = screen.getByRole('button', { name: /crear cuenta/i });
     expect(submit).toBeDisabled();
 
-    await userEvent.type(screen.getByLabelText(/nombre/i), 'Belgrano');
-    await userEvent.type(screen.getByLabelText(/apellido/i), 'Mitre');
+    await userEvent.type(screen.getByLabelText(/usuario/i), 'belgrano');
     await userEvent.type(screen.getByLabelText(/mail/i), 'a@b.com');
     await userEvent.type(screen.getByLabelText(/contraseña/i), 'short');
     expect(submit).toBeDisabled();
@@ -51,24 +59,21 @@ describe('SignUpForm', () => {
   });
 
   it('submits valid data and shows the success screen', async () => {
-    vi.mocked(authApi.register).mockResolvedValue({
-      user: { id: '1', email: 'a@b.com', firstName: 'Belgrano', lastName: 'Mitre', role: 'USER' },
-    });
+    vi.mocked(authApi.register).mockResolvedValue({ accessToken: 't', user: fakeUser });
 
     renderForm();
 
-    await userEvent.type(screen.getByLabelText(/nombre/i), 'Belgrano');
-    await userEvent.type(screen.getByLabelText(/apellido/i), 'Mitre');
+    await userEvent.type(screen.getByLabelText(/usuario/i), 'belgrano');
     await userEvent.type(screen.getByLabelText(/mail/i), 'a@b.com');
     await userEvent.type(screen.getByLabelText(/contraseña/i), 'longenough');
     await userEvent.click(screen.getByRole('button', { name: /crear cuenta/i }));
 
     expect(authApi.register).toHaveBeenCalledWith(
-      { firstName: 'Belgrano', lastName: 'Mitre', email: 'a@b.com', password: 'longenough' },
+      { username: 'belgrano', email: 'a@b.com', password: 'longenough' },
       expect.anything(),
     );
     expect(await screen.findByText(/¡bienvenido, belgrano/i)).toBeInTheDocument();
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/feed');
   });
 
   it('shows a friendly message on 409', async () => {
@@ -83,8 +88,7 @@ describe('SignUpForm', () => {
 
     renderForm();
 
-    await userEvent.type(screen.getByLabelText(/nombre/i), 'Belgrano');
-    await userEvent.type(screen.getByLabelText(/apellido/i), 'Mitre');
+    await userEvent.type(screen.getByLabelText(/usuario/i), 'belgrano');
     await userEvent.type(screen.getByLabelText(/mail/i), 'a@b.com');
     await userEvent.type(screen.getByLabelText(/contraseña/i), 'longenough');
     await userEvent.click(screen.getByRole('button', { name: /crear cuenta/i }));

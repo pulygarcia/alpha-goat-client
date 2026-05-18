@@ -17,7 +17,7 @@ export function useRegister() {
     onSuccess: (data) => {
       setUser(data.user);
       queryClient.setQueryData(CURRENT_USER_KEY, data.user);
-      router.push('/');
+      router.push('/feed');
     },
   });
 }

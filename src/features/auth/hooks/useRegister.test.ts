@@ -28,19 +28,27 @@ describe('useRegister', () => {
     vi.mocked(authApi.register).mockReset();
   });
 
-  it('on success stores the user and redirects home', async () => {
-    const user = { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' as const };
-    vi.mocked(authApi.register).mockResolvedValue({ user });
+  const fakeUser = {
+    id: '1',
+    email: 'a@b.com',
+    username: 'a',
+    avatarUrl: null,
+    role: 'USER' as const,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  };
+
+  it('on success stores the user and redirects to /feed', async () => {
+    vi.mocked(authApi.register).mockResolvedValue({ user: fakeUser });
 
     const { result } = renderHook(() => useRegister(), { wrapper });
 
     await act(async () => {
-      result.current.mutate({ email: 'a@b.com', password: 'secret123', firstName: 'A', lastName: 'B' });
+      result.current.mutate({ email: 'a@b.com', password: 'secret123', username: 'a' });
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(useAuthStore.getState().user).toEqual(user);
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(useAuthStore.getState().user).toEqual(fakeUser);
+    expect(pushMock).toHaveBeenCalledWith('/feed');
   });
 
   it('does not store user on failure', async () => {
@@ -49,7 +57,7 @@ describe('useRegister', () => {
     const { result } = renderHook(() => useRegister(), { wrapper });
 
     await act(async () => {
-      result.current.mutate({ email: 'a@b.com', password: 'secret123', firstName: 'A', lastName: 'B' });
+      result.current.mutate({ email: 'a@b.com', password: 'secret123', username: 'a' });
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));

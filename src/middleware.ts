@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 const COOKIE_NAME = 'accessToken';
 
-const PROTECTED_PREFIXES = ['/perfil', '/admin'];
+const PROTECTED_PREFIXES = ['/feed', '/perfil', '/admin'];
 const GUEST_ONLY_PREFIXES = ['/login', '/register'];
 
 function matches(pathname: string, prefixes: string[]): boolean {
@@ -22,7 +22,7 @@ export function middleware(req: NextRequest) {
 
   if (matches(pathname, GUEST_ONLY_PREFIXES) && hasCookie) {
     const url = req.nextUrl.clone();
-    url.pathname = '/';
+    url.pathname = '/feed';
     url.search = '';
     return NextResponse.redirect(url);
   }
@@ -31,5 +31,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/perfil/:path*', '/admin/:path*', '/login', '/register'],
+  matcher: ['/feed/:path*', '/perfil/:path*', '/admin/:path*', '/login', '/register'],
 };

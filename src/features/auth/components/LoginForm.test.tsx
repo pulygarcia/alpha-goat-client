@@ -51,7 +51,8 @@ describe('LoginForm', () => {
 
   it('submits valid credentials and shows the success screen', async () => {
     vi.mocked(authApi.login).mockResolvedValue({
-      user: { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' },
+      accessToken: 't',
+      user: { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER', createdAt: '2026-01-01T00:00:00.000Z' },
     });
 
     renderForm();
@@ -62,7 +63,7 @@ describe('LoginForm', () => {
 
     expect(authApi.login).toHaveBeenCalledWith({ email: 'a@b.com', password: 'secret' }, expect.anything());
     expect(await screen.findByText(/de vuelta por acá/i)).toBeInTheDocument();
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/feed');
   });
 
   it('shows a friendly message on 401', async () => {

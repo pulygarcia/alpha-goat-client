@@ -32,7 +32,7 @@ describe('useLogin', () => {
   });
 
   it('on success stores the user and redirects home', async () => {
-    const user = { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' as const };
+    const user = { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER' as const, createdAt: '2026-01-01T00:00:00.000Z' };
     vi.mocked(authApi.login).mockResolvedValue({ user });
 
     const { result } = renderHook(() => useLogin(), { wrapper });
@@ -43,12 +43,12 @@ describe('useLogin', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(useAuthStore.getState().user).toEqual(user);
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/feed');
   });
 
   it('honors a safe ?next= redirect', async () => {
     nextParam = '/perfil';
-    const user = { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' as const };
+    const user = { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER' as const, createdAt: '2026-01-01T00:00:00.000Z' };
     vi.mocked(authApi.login).mockResolvedValue({ user });
 
     const { result } = renderHook(() => useLogin(), { wrapper });
@@ -62,7 +62,7 @@ describe('useLogin', () => {
 
   it('ignores an unsafe ?next= (open redirect protection)', async () => {
     nextParam = '//evil.com';
-    const user = { id: '1', email: 'a@b.com', firstName: 'A', lastName: 'B', role: 'USER' as const };
+    const user = { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER' as const, createdAt: '2026-01-01T00:00:00.000Z' };
     vi.mocked(authApi.login).mockResolvedValue({ user });
 
     const { result } = renderHook(() => useLogin(), { wrapper });
@@ -71,7 +71,7 @@ describe('useLogin', () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(pushMock).toHaveBeenCalledWith('/');
+    expect(pushMock).toHaveBeenCalledWith('/feed');
   });
 
   it('surfaces the error and does not redirect on failure', async () => {

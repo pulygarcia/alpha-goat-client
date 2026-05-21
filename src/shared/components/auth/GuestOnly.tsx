@@ -9,7 +9,7 @@ interface GuestOnlyProps {
   redirectTo?: string;
 }
 
-export function GuestOnly({ children, redirectTo = '/' }: GuestOnlyProps) {
+export function GuestOnly({ children, redirectTo = '/feed' }: GuestOnlyProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 

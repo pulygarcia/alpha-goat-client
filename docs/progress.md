@@ -22,42 +22,24 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ### Skills instaladas (autoskills)
 - accessibility, seo, frontend-design, tailwind-css-patterns, nodejs-best-practices, composition-patterns, next-cache-components, next-upgrade, typescript-advanced-types, nodejs-backend-patterns, next-best-practices, vitest, zod, react-hook-form, react-best-practices.
 
-### Feature `auth` — login + register + provider conectados al backend
-- `features/auth/types/auth.types.ts` — `User`, `LoginInput`, `RegisterInput`, `AuthResponse`.
-- `features/auth/schemas/{login,register}.schema.ts` — Zod schemas.
-- `features/auth/api/auth.api.ts` — `authApi.login | register | me | logout` con `withCredentials`.
-- `features/auth/store/auth.store.ts` — Zustand simple (sin `persist`: el provider hidrata desde `/auth/me`).
-- Hooks: `useLogin`, `useRegister`, `useCurrentUser` (sincroniza el store), `useLogout` (limpia caché + redirige). Login/register cachean el user en `['auth','me']` con `setQueryData`.
-- `shared/providers/AuthProvider.tsx` — Context montado en `app/layout.tsx` dentro de `QueryProvider`. Expone `{ user, isLoading, isAuthenticated, logout }`. Escucha `auth:unauthorized` para limpiar la sesión.
-- Interceptor 401 global en `api-client.ts` — emite `auth:unauthorized` (excepto en las propias `/auth/*`) para que el provider reaccione.
-- `LoginForm` y `SignUpForm` conectados a sus hooks: `isPending` / `isError` (mensaje friendly en 401, 409, red, o `message` del backend) / `isSuccess`.
-- Tests: `useLogin`, `useRegister`, `LoginForm`, `SignUpForm` — 10 tests verdes.
-
-### Feature `auth` — vistas (UI only, sin backend)
-- `/register` — registro: layout split 52/48, hero izquierdo + formulario derecho.
-- `/login` — inicio de sesión: mismo hero, form más liviano.
-- `src/features/auth/components/`:
-  - `Hero.tsx` — columna izquierda (server component). Fondo oscuro `#1a0c05` con sombra profunda.
-  - `ParticleWords.tsx` — tres instancias apiladas de `CursorDrivenParticleTypography` (Probá / Opiná / Puntuá), color ámbar `#c87a20`, interactivas con el cursor.
-  - `SignUpForm.tsx` — form RHF + Zod: nombre, apellido, mail, contraseña. Estados idle / submitting / success con mock de 1200ms.
-  - `LoginForm.tsx` — form RHF + Zod: mail, contraseña + "olvidé mi contraseña".
-  - `InputGroup.tsx` — field reutilizable con label, error, helper e ícono derecho (forwardRef).
-  - `PasswordStrength.tsx` — barra de 4 niveles (Frágil / Aceptable / Sólida / De fierro).
-  - `StepItem.tsx` — paso con estado idle / active / done (disponible para cuando se conecte el backend).
-- `src/shared/components/ui/cursor-driven-particle-typography.tsx` — instalado vía `npx shadcn@latest add @componentry/cursor-driven-particle-typography`. Import corregido a `@/shared/lib/utils`. Cap de font-size ajustado a `containerWidth * 0.18`.
-- Tokens nuevos en `globals.css`: `--color-bg-ink: #2c1209`, `--color-field-bg: #3b1a0a`. Animaciones de auth: `.fade-up`, `.fade-in`, `.spin-loader`, clase `.auth-input` para focus ring.
-- Tipografía del form: títulos, labels, inputs y botones en `#fdf6e8` (blanco cremita cálido).
+### Feature `auth`
+- Endpoints: `authApi.login | register | me | logout` (axios `withCredentials`). JWT en cookie HTTP-only seteada por el backend.
+- Estado: Zustand sin `persist` (hidrata desde `/auth/me`) + cache TanStack Query en `['auth','me']`. Hooks `useLogin`, `useRegister`, `useCurrentUser`, `useLogout`.
+- `AuthProvider` (en `app/layout.tsx`) expone `{ user, isLoading, isAuthenticated, logout }` y reacciona al evento `auth:unauthorized` emitido por el interceptor 401 (que excluye los propios `/auth/*`).
+- Guards: `GuestOnly` (login/register → redirige a `/feed` si ya autenticado), `RequireAuth` (rutas privadas → `/login?next=...`), y `middleware.ts` con prefijos `PROTECTED` / `GUEST_ONLY` chequeando cookie `accessToken`.
+- Vistas: `/login` y `/register` con layout split (hero ParticleWords + form RHF/Zod). Login/register exitoso redirige directo a `/feed` (sin pantalla intermedia).
+- Mensajes de error: 401 → "incorrectos", 409 → diferencia username vs email según `message` del backend, red → "no pudimos contactar al servidor".
+- Tokens nuevos en `globals.css`: `--color-bg-ink`, `--color-field-bg`. Utilities `.fade-up`, `.fade-in`, `.spin-loader`, `.auth-input`.
+- Tests: hooks (`useLogin`, `useRegister`) + forms (`LoginForm`, `SignUpForm`) — 12 verdes.
 
 ## Pendiente
 
 ### Próximas features
-- `auth` — middleware de Next para rutas protegidas (`/admin/*`, `/perfil`). Login/register/me/logout, AuthProvider e interceptor 401 ya están.
 - `alfajores` (listado + detalle público).
 - `reviews` (form + listado en detalle de alfajor).
 - Layout principal (Header, Footer, nav).
 - `moderation` (admin), `ranking`, `comparador`, `perfil`.
 
 ### Deuda técnica conocida
-- Falta middleware de Next para rutas protegidas (`/admin/*`).
-- El interceptor 401 emite `auth:unauthorized` y limpia el store, pero no redirige automático a `/login` — definir UX (¿toast + redirect, o solo cuando se accede a una ruta gated?).
-- Sin shadcn init real (se creó `components.json` manual + Button/Input mínimos). Cuando hagan falta más componentes, correr `npx shadcn add <name>`.
+- El interceptor 401 emite `auth:unauthorized` y limpia el store, pero no redirige automático a `/login` — definir UX (toast + redirect, o sólo en rutas gated).
+- Feedback post-register/login es sólo redirect; falta toast/onboarding si se decide sumarlo.

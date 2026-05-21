@@ -49,7 +49,7 @@ describe('LoginForm', () => {
     expect(submit).toBeEnabled();
   });
 
-  it('submits valid credentials and shows the success screen', async () => {
+  it('submits valid credentials and redirects to the feed', async () => {
     vi.mocked(authApi.login).mockResolvedValue({
       accessToken: 't',
       user: { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER', createdAt: '2026-01-01T00:00:00.000Z' },
@@ -62,8 +62,7 @@ describe('LoginForm', () => {
     await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
 
     expect(authApi.login).toHaveBeenCalledWith({ email: 'a@b.com', password: 'secret' }, expect.anything());
-    expect(await screen.findByText(/de vuelta por acá/i)).toBeInTheDocument();
-    expect(pushMock).toHaveBeenCalledWith('/feed');
+    await vi.waitFor(() => expect(pushMock).toHaveBeenCalledWith('/feed'));
   });
 
   it('shows a friendly message on 401', async () => {

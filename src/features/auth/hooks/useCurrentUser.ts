@@ -19,8 +19,7 @@ export function useCurrentUser() {
 
   useEffect(() => {
     if (query.isSuccess) setUser(query.data);
-    else if (query.isError) setUser(null);
-  }, [query.isSuccess, query.isError, query.data, setUser]);
+  }, [query.isSuccess, query.data, setUser]);
 
   return query;
 }

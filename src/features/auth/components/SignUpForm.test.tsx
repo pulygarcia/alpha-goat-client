@@ -58,7 +58,7 @@ describe('SignUpForm', () => {
     expect(submit).toBeEnabled();
   });
 
-  it('submits valid data and shows the success screen', async () => {
+  it('submits valid data and redirects to the feed', async () => {
     vi.mocked(authApi.register).mockResolvedValue({ accessToken: 't', user: fakeUser });
 
     renderForm();
@@ -72,15 +72,14 @@ describe('SignUpForm', () => {
       { username: 'belgrano', email: 'a@b.com', password: 'longenough' },
       expect.anything(),
     );
-    expect(await screen.findByText(/¡bienvenido, belgrano/i)).toBeInTheDocument();
-    expect(pushMock).toHaveBeenCalledWith('/feed');
+    await vi.waitFor(() => expect(pushMock).toHaveBeenCalledWith('/feed'));
   });
 
   it('shows a friendly message on 409', async () => {
     const err = new AxiosError('Conflict', '409', undefined, null, {
       status: 409,
       statusText: 'Conflict',
-      data: { message: 'taken' },
+      data: { message: 'email already taken' },
       headers: {},
       config: { headers: new AxiosHeaders() },
     });

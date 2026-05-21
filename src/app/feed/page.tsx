@@ -1,58 +1,68 @@
 'use client';
 
 import { RequireAuth } from '@/shared/components/auth/RequireAuth';
-import { useAuth } from '@/shared/providers/AuthProvider';
-import { useLogout } from '@/features/auth/hooks/useLogout';
+import { FeedSubnav } from '@/features/feed/components/FeedSubnav';
+import { FeedTopbar } from '@/features/feed/components/FeedTopbar';
 
 function FeedContent() {
-  const { user } = useAuth();
-  const logout = useLogout();
-
-  if (!user) return null;
-
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-10 px-6 py-16">
-      <header className="flex flex-col gap-2">
-        <span className="eyebrow text-curry-soft">Tu feed</span>
-        <h1 className="h-sub text-curry-bright">Hola, {user.username}</h1>
-        <p className="text-curry-soft">
-          Acá vas a ver las últimas reseñas de la comunidad y tus alfajores
-          guardados. Por ahora está vacío — se viene.
-        </p>
-      </header>
+    <main className="min-h-screen bg-paper text-ink">
+      <FeedTopbar />
+      <FeedSubnav />
 
-      <section className="rounded-2xl border border-curry-soft/20 bg-bg-deep p-6">
-        <h2 className="eyebrow mb-4 text-curry-soft">Tu cuenta</h2>
-        <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-          <div>
-            <dt className="text-curry-soft">Usuario</dt>
-            <dd className="text-curry-bright">{user.username}</dd>
-          </div>
-          <div>
-            <dt className="text-curry-soft">Email</dt>
-            <dd className="text-curry-bright">{user.email}</dd>
-          </div>
-          <div>
-            <dt className="text-curry-soft">Rol</dt>
-            <dd className="text-curry-bright">{user.role}</dd>
-          </div>
-          <div>
-            <dt className="text-curry-soft">Miembro desde</dt>
-            <dd className="text-curry-bright">
-              {new Date(user.createdAt).toLocaleDateString('es-AR')}
-            </dd>
-          </div>
-        </dl>
+      <section className="mx-auto grid max-w-[1280px] grid-cols-[1fr_320px]">
+        <div className="border-r border-[rgba(74,30,8,0.14)] px-8 py-9">
+          <p
+            className="text-[rgba(44,18,9,0.62)]"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.7rem',
+              letterSpacing: '0.26em',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+            }}
+          >
+            Próximamente
+          </p>
+          <h1
+            className="mt-2 text-ink"
+            style={{
+              fontFamily: 'var(--font-archivo)',
+              fontSize: 56,
+              letterSpacing: '-0.045em',
+              lineHeight: 0.94,
+            }}
+          >
+            Hero del goat,
+            <br />
+            reseñas destacadas.
+          </h1>
+          <p className="mt-4 max-w-[520px] text-[15px] leading-relaxed text-sienna">
+            Estamos armando el feed pieza por pieza. Por ahora ves el header y
+            el subnav del Diario; en los próximos pasos vienen el hero, las
+            review rows con radar y el rail lateral.
+          </p>
+        </div>
+
+        <aside className="bg-paper-raised px-7 py-9">
+          <p
+            className="text-cinnamon"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.7rem',
+              letterSpacing: '0.26em',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+            }}
+          >
+            Rail
+          </p>
+          <p className="mt-3 text-[13px] leading-relaxed text-sienna">
+            Ranking semanal, marcas en foco y recomendaciones — se construyen
+            en el próximo trozo.
+          </p>
+        </aside>
       </section>
-
-      <button
-        type="button"
-        onClick={() => logout.mutate()}
-        disabled={logout.isPending}
-        className="btn-curry self-start"
-      >
-        {logout.isPending ? 'Cerrando sesión…' : 'Cerrar sesión'}
-      </button>
     </main>
   );
 }

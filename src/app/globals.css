@@ -11,6 +11,17 @@
   --color-cinnamon: #b86015;
   --color-sienna: #5a2208;
 
+  /* Cream paper palette — used by the post-login feed ("El Diario").
+     Coexists with the dark curry palette used in marketing/auth. */
+  --color-paper: #f5ead0;
+  --color-paper-raised: #f9efd9;
+  --color-paper-sunken: #efe0b6;
+  --color-paper-field: #e7d3a0;
+  --color-paper-emph: #d9b569;
+  --color-ink: #2c1209;
+  --color-deep: #4f1f08;
+  --color-curry-deep: #d68715;
+
   --font-archivo: var(--font-archivo);
   --font-inter: var(--font-inter);
   --font-mono: var(--font-mono);

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import Hero from '@/features/auth/components/Hero'
 import LoginForm from '@/features/auth/components/LoginForm'
 import { GuestOnly } from '@/shared/components/auth/GuestOnly'
@@ -14,7 +15,9 @@ export default function LoginPage() {
         <Hero />
         <div className="flex flex-1 items-center justify-center px-6 py-12 lg:overflow-hidden">
           <div className="w-full max-w-[560px]">
-            <LoginForm />
+            <Suspense fallback={null}>
+              <LoginForm />
+            </Suspense>
           </div>
         </div>
       </main>

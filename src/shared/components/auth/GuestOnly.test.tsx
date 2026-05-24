@@ -27,10 +27,10 @@ describe('GuestOnly', () => {
     expect(replaceMock).not.toHaveBeenCalled();
   });
 
-  it('redirects to / when already authenticated', async () => {
+  it('redirects to /feed when already authenticated', async () => {
     authState.isAuthenticated = true;
     render(<GuestOnly><div>signup</div></GuestOnly>);
     expect(screen.queryByText('signup')).not.toBeInTheDocument();
-    await waitFor(() => expect(replaceMock).toHaveBeenCalledWith('/'));
+    await waitFor(() => expect(replaceMock).toHaveBeenCalledWith('/feed'));
   });
 });

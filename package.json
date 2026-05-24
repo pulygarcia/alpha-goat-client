@@ -2,7 +2,9 @@
   "name": "alphagoat-client",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.2.2",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

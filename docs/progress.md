@@ -36,9 +36,12 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Mockup de referencia en `docs/_design-refs/feed.html` (gitignored, sólo local).
 - Tokens cream agregados en `globals.css`: `--color-paper`, `--color-paper-raised`, `--color-paper-sunken`, `--color-paper-field`, `--color-paper-emph`, `--color-ink`, `--color-deep`, `--color-curry-deep`. Coexisten con la paleta dark curry de auth/landing.
 - Trozo 1 (hecho): `FeedTopbar` (brand + nav activa por pathname + search + CTA Reseñar con gradiente marrón-chocolate + avatar con iniciales) y `FeedSubnav` (fecha-edición con pulse, chips Hoy/Semana/Siguiendo/Provincia con state local, slots de stats con "—" hasta tener API). `/feed/page.tsx` reemplazado por el shell cream con `RequireAuth`.
+- Trozo 2 (hecho): `FeedHero` consumiendo `GET /feed/hero`.
+  - `features/feed/api/feed.api.ts` → `feedApi.hero()`. Mapea `204 No Content` a `null` (sin loading infinito en empty state).
+  - `useFeedHero` (TanStack Query, `staleTime: 60s`, queryKey `['feed','hero']`).
+  - `FeedHero.tsx`: eyebrow "Goat del momento" + nombre/marca/provincia/tipo + 3 stats (general, reseñas-semana con ▲/▼ deltaPct, total) + radar Recharts sobre los 5 ejes (dulzor, DDL, baño, tapa/relleno, textura). Empty/error/loading inline. Sin tests por la regla del shell visual (el hook arranca tests cuando lo amerite la lógica).
 - Tests del feed: se difieren hasta que enchufemos los endpoints reales y aparezcan los hooks `api/`. El shell visual no se testea — sólo cuando haya lógica de datos (mockeando el módulo `api/`, como manda CLAUDE.md).
 - Trozos pendientes:
-  - 2. Hero "goat del momento" + radar overlay (Recharts).
   - 3. Lista de reseñas destacadas (review rows con radar mini, switch Más likes/Recientes/Mejor puntuadas).
   - 4. Rail: ranking semanal, marcas en foco, recomendado para vos.
   - 5. Estados loading (Skeleton + Suspense streaming) y empty (usuario nuevo).
@@ -54,10 +57,10 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - `moderation` (admin), `ranking`, `comparador`, `perfil`.
 
 ### Endpoints backend faltantes (alfajorimetro-back)
-Bloquean trozos 2-4 del feed. El back hoy sólo tiene CRUD básico en `alfajores`, `reviews`, `marcas`.
+Bloquean trozos 3-4 del feed.
 
 - `GET /feed` — lista paginada de reseñas con orden `likes | recent | rating` y filtros `scope=today|week|following|province`. Devuelve `{ items: Review[], nextCursor }` con `author`, `alfajor`, `marca`, `photoUrl`, `quote`, `overall`, `axes (5)`, `likes`, `commentsCount`, `sharesCount`, `createdAt`.
-- `GET /feed/hero` — pick editorial del día/semana: alfajor destacado + delta vs semana anterior + total de reseñas.
+- ~~`GET /feed/hero`~~ — listo (alfajorimetro-back commit `42dda73`).
 - `GET /ranking/weekly` — top N alfajores de la semana con `score`, `trend (▲▼ delta)`, `marca`.
 - `GET /marcas/featured` — marcas en foco con `productCount` y `avgScore`.
 - `GET /recommendations` — recomendaciones personalizadas por huella del usuario (`matchPct`, `score`).

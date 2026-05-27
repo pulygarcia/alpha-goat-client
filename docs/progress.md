@@ -40,9 +40,14 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
   - `features/feed/api/feed.api.ts` → `feedApi.hero()`. Mapea `204 No Content` a `null` (sin loading infinito en empty state).
   - `useFeedHero` (TanStack Query, `staleTime: 60s`, queryKey `['feed','hero']`).
   - `FeedHero.tsx`: eyebrow "Goat del momento" + nombre/marca/provincia/tipo + 3 stats (general, reseñas-semana con ▲/▼ deltaPct, total) + radar Recharts sobre los 5 ejes (dulzor, DDL, baño, tapa/relleno, textura). Empty/error/loading inline. Sin tests por la regla del shell visual (el hook arranca tests cuando lo amerite la lógica).
-- Tests del feed: se difieren hasta que enchufemos los endpoints reales y aparezcan los hooks `api/`. El shell visual no se testea — sólo cuando haya lógica de datos (mockeando el módulo `api/`, como manda CLAUDE.md).
+- Trozo 3 (hecho): lista de reseñas destacadas consumiendo `GET /feed`.
+  - `feedApi.list(params)` (sort/scope/province/page/limit) + tipos `FeedItem`/`FeedList`/`FeedListParams` en `feed.types.ts`.
+  - `useFeedReviews` (`useInfiniteQuery`, `staleTime: 30s`, queryKey `['feed','reviews',{sort,scope,province}]`, paginación page/limit con `getNextPageParam`).
+  - `ReviewRow.tsx`: foto (placeholder cream si no hay), autor (avatar iniciales + provincia + hace X), título alfajor·marca, quote, meta-row likes/comentarios (sin compartidas — no hay feature de shares), radar mini Recharts (5 ejes) y rating grande.
+  - `FeedReviews.tsx`: head "Reseñas destacadas" + switch Más likes/Recientes/Mejor puntuadas (mapea a `sort`), estados loading/error/empty y botón "Cargar más". Cableado en `/feed/page.tsx` reemplazando el placeholder.
+  - Tests: `useFeedReviews` (mock `api/`, 4) + `FeedReviews` (mock hook + `ReviewRow`, 6) — 10 verdes.
+- Tests del feed: el shell visual no se testea — sólo donde hay lógica de datos (mockeando el módulo `api/`, como manda CLAUDE.md).
 - Trozos pendientes:
-  - 3. Lista de reseñas destacadas (review rows con radar mini, switch Más likes/Recientes/Mejor puntuadas).
   - 4. Rail: ranking semanal, marcas en foco, recomendado para vos.
   - 5. Estados loading (Skeleton + Suspense streaming) y empty (usuario nuevo).
   - 6. Microinteracción radar fill-in con IntersectionObserver.
@@ -57,9 +62,9 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - `moderation` (admin), `ranking`, `comparador`, `perfil`.
 
 ### Endpoints backend faltantes (alfajorimetro-back)
-Bloquean trozos 3-4 del feed.
+Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 
-- `GET /feed` — lista paginada de reseñas con orden `likes | recent | rating` y filtros `scope=today|week|following|province`. Devuelve `{ items: Review[], nextCursor }` con `author`, `alfajor`, `marca`, `photoUrl`, `quote`, `overall`, `axes (5)`, `likes`, `commentsCount`, `createdAt`. Sin `sharesCount`: no habrá feature de compartir.
+- ~~`GET /feed`~~ — listo. Lista paginada de reseñas (auth) con orden `sort=likes|recent|rating` (default `recent`) y filtros `scope=today|week|following|province` (+ `province` requerido si `scope=province`). Paginación `page`/`limit` (no cursor): devuelve `{ items, total, page, limit }`. Cada item: `author {id, username, avatarUrl}`, `alfajor {id, nombre, tipo, imagenUrl}`, `marca {id, nombre, provincia}`, `quote`, `photoUrl`, `overall`, `axes (5)`, `likes`, `commentsCount`, `createdAt`. Sin `sharesCount`: no habrá feature de compartir. `scope=following` apoyado en el módulo `follows` (`PUT/DELETE /follows/:userId`). Likes de reviews vía `PUT/DELETE /reviews/:id/like`.
 - ~~`GET /feed/hero`~~ — listo (alfajorimetro-back commit `42dda73`).
 - `GET /ranking/weekly` — top N alfajores de la semana con `score`, `trend (▲▼ delta)`, `marca`.
 - `GET /marcas/featured` — marcas en foco con `productCount` y `avgScore`.

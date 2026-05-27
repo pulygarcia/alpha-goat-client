@@ -48,3 +48,65 @@ export interface FeedHero {
   stats: FeedHeroStats;
   period: FeedHeroPeriod;
 }
+
+// --- GET /feed (lista paginada de reseñas) ---
+
+export type FeedSort = 'likes' | 'recent' | 'rating';
+export type FeedScope = 'today' | 'week' | 'following' | 'province';
+
+export interface FeedAuthor {
+  id: string;
+  username: string;
+  avatarUrl: string | null;
+}
+
+export interface FeedItemAlfajor {
+  id: string;
+  nombre: string;
+  tipo: AlfajorTipo;
+  imagenUrl: string | null;
+}
+
+export interface FeedItemMarca {
+  id: string;
+  nombre: string;
+  provincia: string | null;
+}
+
+/** Los 5 ejes de la reseña (sin el general, que va en `overall`). */
+export interface FeedAxes {
+  dulzor: number;
+  cantidadDDL: number;
+  calidadBano: number;
+  ratioTapaRelleno: number;
+  textura: number;
+}
+
+export interface FeedItem {
+  id: string;
+  author: FeedAuthor;
+  alfajor: FeedItemAlfajor;
+  marca: FeedItemMarca;
+  quote: string | null;
+  photoUrl: string | null;
+  overall: number;
+  axes: FeedAxes;
+  likes: number;
+  commentsCount: number;
+  createdAt: string;
+}
+
+export interface FeedList {
+  items: FeedItem[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface FeedListParams {
+  sort?: FeedSort;
+  scope?: FeedScope;
+  province?: string;
+  page?: number;
+  limit?: number;
+}

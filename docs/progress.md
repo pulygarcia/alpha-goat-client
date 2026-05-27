@@ -59,7 +59,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ### Endpoints backend faltantes (alfajorimetro-back)
 Bloquean trozos 3-4 del feed.
 
-- `GET /feed` — lista paginada de reseñas con orden `likes | recent | rating` y filtros `scope=today|week|following|province`. Devuelve `{ items: Review[], nextCursor }` con `author`, `alfajor`, `marca`, `photoUrl`, `quote`, `overall`, `axes (5)`, `likes`, `commentsCount`, `sharesCount`, `createdAt`.
+- `GET /feed` — lista paginada de reseñas con orden `likes | recent | rating` y filtros `scope=today|week|following|province`. Devuelve `{ items: Review[], nextCursor }` con `author`, `alfajor`, `marca`, `photoUrl`, `quote`, `overall`, `axes (5)`, `likes`, `commentsCount`, `createdAt`. Sin `sharesCount`: no habrá feature de compartir.
 - ~~`GET /feed/hero`~~ — listo (alfajorimetro-back commit `42dda73`).
 - `GET /ranking/weekly` — top N alfajores de la semana con `score`, `trend (▲▼ delta)`, `marca`.
 - `GET /marcas/featured` — marcas en foco con `productCount` y `avgScore`.

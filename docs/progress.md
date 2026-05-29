@@ -69,7 +69,7 @@ Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 - `GET /ranking/weekly` — top N alfajores de la semana con `score`, `trend (▲▼ delta)`, `marca`.
 - `GET /marcas/featured` — marcas en foco con `productCount` y `avgScore`.
 - `GET /recommendations` — recomendaciones personalizadas por huella del usuario (`matchPct`, `score`).
-- `GET /feed/stats` — `{ todayCount, weekCount }` para el subnav.
+- ✅ **`GET /feed/stats` — LISTO EN BACK, falta conectar en FE.** Público (no requiere auth), devuelve `{ todayCount, weekCount }`. `todayCount` = reseñas de alfajores aprobados creadas hoy (desde las 00:00 local); `weekCount` = últimas 7 días (ventana móvil). Mismas ventanas que `scope=today`/`scope=week` del feed. Pendiente FE: cablear en `FeedSubnav` para reemplazar los slots `"—"`.
 - (Soporte) Módulo de imágenes/uploads aún no expone URLs públicas → el front usa placeholders cream (`ph`) hasta que esté.
 
 ### Deuda técnica conocida

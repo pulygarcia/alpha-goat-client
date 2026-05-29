@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  PolarAngleAxis,
-  PolarGrid,
-  PolarRadiusAxis,
-  Radar,
-  RadarChart,
-  ResponsiveContainer,
-} from 'recharts';
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from 'recharts';
 import type { FeedAxes, FeedItem } from '../types/feed.types';
 
 const AXIS_LABELS: Record<keyof FeedAxes, string> = {
@@ -126,20 +119,18 @@ export function ReviewRow({ item }: { item: FeedItem }) {
 
       {/* Radar mini */}
       <div className="h-[100px] w-[100px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <RadarChart data={toRadarData(axes)} outerRadius="78%">
-            <PolarGrid stroke="rgba(74,30,8,0.18)" />
-            <PolarAngleAxis dataKey="axis" tick={false} />
-            <PolarRadiusAxis domain={[0, 10]} tick={false} axisLine={false} />
-            <Radar
-              dataKey="value"
-              stroke="var(--color-curry-deep)"
-              fill="var(--color-curry-deep)"
-              fillOpacity={0.28}
-              isAnimationActive={false}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
+        <RadarChart width={100} height={100} data={toRadarData(axes)} outerRadius="78%">
+          <PolarGrid stroke="rgba(74,30,8,0.18)" />
+          <PolarAngleAxis dataKey="axis" tick={false} />
+          <PolarRadiusAxis domain={[0, 10]} tick={false} axisLine={false} />
+          <Radar
+            dataKey="value"
+            stroke="var(--color-curry-deep)"
+            fill="var(--color-curry-deep)"
+            fillOpacity={0.28}
+            isAnimationActive={false}
+          />
+        </RadarChart>
       </div>
 
       {/* Rating */}

@@ -106,7 +106,7 @@ export function FeedHero() {
         </div>
 
         <div className="h-[280px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <RadarChart data={toRadarData(ratings)} outerRadius="78%">
               <PolarGrid stroke="rgba(74,30,8,0.18)" />
               <PolarAngleAxis

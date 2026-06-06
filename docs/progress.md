@@ -35,7 +35,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ### Feature `feed` (en curso — diseño "El Diario", cream paper)
 - Mockup de referencia en `docs/_design-refs/feed.html` (gitignored, sólo local).
 - Tokens cream agregados en `globals.css`: `--color-paper`, `--color-paper-raised`, `--color-paper-sunken`, `--color-paper-field`, `--color-paper-emph`, `--color-ink`, `--color-deep`, `--color-curry-deep`. Coexisten con la paleta dark curry de auth/landing.
-- Trozo 1 (hecho): `FeedTopbar` (brand + nav activa por pathname + search + CTA Reseñar con gradiente marrón-chocolate + avatar con iniciales) y `FeedSubnav` (fecha-edición con pulse, chips Hoy/Semana/Siguiendo/Provincia con state local, slots de stats con "—" hasta tener API). `/feed/page.tsx` reemplazado por el shell cream con `RequireAuth`.
+- Trozo 1 (hecho): `FeedTopbar` (brand + nav activa por pathname + search + CTA Reseñar con gradiente marrón-chocolate + avatar con iniciales) y `FeedSubnav` (fecha-edición con pulse, chips Hoy/Semana/Siguiendo/Provincia con state local). `/feed/page.tsx` reemplazado por el shell cream con `RequireAuth`. Los slots de stats consumen `GET /feed/stats` vía `useFeedStats` (`feedApi.stats()`, queryKey `['feed','stats']`, `staleTime: 60s`); muestran "—" mientras carga/error y el número cuando hay data. Tests del hook (mock `api/`, 2).
 - Trozo 2 (hecho): `FeedHero` consumiendo `GET /feed/hero`.
   - `features/feed/api/feed.api.ts` → `feedApi.hero()`. Mapea `204 No Content` a `null` (sin loading infinito en empty state).
   - `useFeedHero` (TanStack Query, `staleTime: 60s`, queryKey `['feed','hero']`).
@@ -69,7 +69,7 @@ Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 - `GET /ranking/weekly` — top N alfajores de la semana con `score`, `trend (▲▼ delta)`, `marca`.
 - `GET /marcas/featured` — marcas en foco con `productCount` y `avgScore`.
 - `GET /recommendations` — recomendaciones personalizadas por huella del usuario (`matchPct`, `score`).
-- ✅ **`GET /feed/stats` — LISTO EN BACK, falta conectar en FE.** Público (no requiere auth), devuelve `{ todayCount, weekCount }`. `todayCount` = reseñas de alfajores aprobados creadas hoy (desde las 00:00 local); `weekCount` = últimas 7 días (ventana móvil). Mismas ventanas que `scope=today`/`scope=week` del feed. Pendiente FE: cablear en `FeedSubnav` para reemplazar los slots `"—"`.
+- ~~`GET /feed/stats`~~ — listo y conectado en FE. Público (no requiere auth), devuelve `{ todayCount, weekCount }`. `todayCount` = reseñas de alfajores aprobados creadas hoy (desde las 00:00 local); `weekCount` = últimas 7 días (ventana móvil). Mismas ventanas que `scope=today`/`scope=week` del feed. Cableado en `FeedSubnav` vía `useFeedStats`.
 - (Soporte) Módulo de imágenes/uploads aún no expone URLs públicas → el front usa placeholders cream (`ph`) hasta que esté.
 
 ### Deuda técnica conocida

@@ -110,3 +110,12 @@ export interface FeedListParams {
   page?: number;
   limit?: number;
 }
+
+// --- GET /feed/stats (contadores del subnav, público) ---
+
+export interface FeedStats {
+  /** Reseñas de alfajores aprobados creadas hoy (desde las 00:00 local). */
+  todayCount: number;
+  /** Reseñas de los últimos 7 días (ventana móvil). */
+  weekCount: number;
+}

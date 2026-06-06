@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useFeedStats } from '../hooks/useFeedStats';
 
 const PERIOD_CHIPS = [
   { id: 'hoy', label: 'Hoy' },
@@ -27,6 +28,7 @@ function formatIssueDate(date: Date): string {
 export function FeedSubnav() {
   const [active, setActive] = useState<ChipId>('hoy');
   const issue = formatIssueDate(new Date());
+  const { data: stats } = useFeedStats();
 
   return (
     <div className="flex items-center gap-6 border-b border-[rgba(74,30,8,0.14)] bg-paper px-7 py-4">
@@ -75,8 +77,14 @@ export function FeedSubnav() {
           textTransform: 'uppercase',
         }}
       >
-        <Stat value="—" label="reseñas hoy" />
-        <Stat value="—" label="esta semana" />
+        <Stat
+          value={stats ? String(stats.todayCount) : '—'}
+          label="reseñas hoy"
+        />
+        <Stat
+          value={stats ? String(stats.weekCount) : '—'}
+          label="esta semana"
+        />
       </div>
     </div>
   );

@@ -1,0 +1,49 @@
+schema: spec-driven
+
+context: |
+  ## Project: alphagoat-client
+  Frontend for Alfajorimetro: an Untappd-style app for Argentine alfajores. Users
+  review alfajores with an overall rating plus 5 axes (sweetness, dulce-de-leche
+  amount, coating quality, top-to-filling ratio, texture). The app produces radar
+  charts, rankings and a comparator.
+
+  ## Tech Stack
+  - Framework: Next.js 16 (App Router, Server Components by default, src/, alias @/)
+  - Language: TypeScript strict
+  - Styling: TailwindCSS v4 (tokens in globals.css) + shadcn/ui (src/shared/components/ui)
+  - Server state: TanStack Query
+  - Client state: Zustand
+  - Forms: React Hook Form + Zod
+  - Charts: Recharts
+  - HTTP: Axios (withCredentials: true)
+  - Auth: JWT in HTTP-only cookie set by the backend
+  - Testing: Vitest + React Testing Library, coverage >= 85%
+
+  ## Backend
+  - alfajorimetro-back (separate repo). The front consumes its REST endpoints.
+  - Image uploads do not yet expose public URLs -> the front uses cream placeholders.
+
+  ## Conventions
+  - Feature-based: src/features/<feature>/ with components/ hooks/ api/ schemas/ types/ store/.
+  - Pages in src/app/ are thin: compose from features/ and shared/.
+  - Never call the API from a component: always via a hook (useX) using an api/ function.
+  - Anything used by 2+ features lives in src/shared/.
+  - Conventional commits, in English. Small atomic commits. Features on feat/<short-name>.
+
+rules:
+  proposal:
+    - State which feature under src/features/ the change touches (or if it is new)
+    - Note any backend endpoint the change depends on and whether it already exists
+    - Include a Non-goals section
+  specs:
+    - Use Given/When/Then for user flows
+    - Be explicit about the 5 review axes vocabulary (dulzor, DDL, bano, tapa/relleno, textura)
+    - Specify loading / empty / error states (never leave a blank screen)
+  design:
+    - Respect the feature-based architecture; new shared code only when used by 2+ features
+    - Server Components by default; add 'use client' only on the component that needs it
+    - Data fetching via a useX hook backed by an api/ function, never from components
+  tasks:
+    - Co-locate tests in the same change (.test.tsx / .test.ts), mock the api/ module
+    - Include verification with npm run lint and npm run test
+    - Update docs/progress.md when the change closes

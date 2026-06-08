@@ -1,6 +1,7 @@
 'use client';
 
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from 'recharts';
+import { FollowButton } from '@/features/follows/components/FollowButton';
 import type { FeedAxes, FeedItem } from '../types/feed.types';
 
 const AXIS_LABELS: Record<keyof FeedAxes, string> = {
@@ -88,6 +89,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
           >
             {marca.provincia ? `· ${marca.provincia} ` : ''}· {timeAgo(item.createdAt)}
           </span>
+          <FollowButton userId={author.id} isFollowing={author.isFollowing} />
         </div>
 
         <h5 className="mb-2 text-[18px] font-medium tracking-[-0.018em] text-ink">

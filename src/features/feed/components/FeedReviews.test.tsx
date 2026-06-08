@@ -18,7 +18,7 @@ const mocked = vi.mocked(useFeedReviews);
 function makeItem(id: string, nombre: string): FeedItem {
   return {
     id,
-    author: { id: 'u1', username: 'pepe', avatarUrl: null },
+    author: { id: 'u1', username: 'pepe', avatarUrl: null, isFollowing: false },
     alfajor: { id: 'a1', nombre, tipo: 'CHOCOLATE', imagenUrl: null },
     marca: { id: 'm1', nombre: 'Havanna', provincia: 'CABA' },
     quote: null,

@@ -47,11 +47,23 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
   - `FeedReviews.tsx`: head "Reseñas destacadas" + switch Más likes/Recientes/Mejor puntuadas (mapea a `sort`), estados loading/error/empty y botón "Cargar más". Cableado en `/feed/page.tsx` reemplazando el placeholder.
   - Tests: `useFeedReviews` (mock `api/`, 4) + `FeedReviews` (mock hook + `ReviewRow`, 6) — 10 verdes.
 - Tests del feed: el shell visual no se testea — sólo donde hay lógica de datos (mockeando el módulo `api/`, como manda CLAUDE.md).
+- Follows en el feed (hecho): cada `ReviewRow` muestra un `FollowButton` en el bloque del autor. Ver feature `follows` abajo. El back ya manda `author.isFollowing` en `GET /feed`.
 - Trozos pendientes:
   - 4. Rail: ranking semanal, marcas en foco, recomendado para vos.
   - 5. Estados loading (Skeleton + Suspense streaming) y empty (usuario nuevo).
   - 6. Microinteracción radar fill-in con IntersectionObserver.
   - 7. Responsive 1280 / 768 / 375.
+
+### Feature `follows`
+- Slice nuevo en `src/features/follows/` (api, hooks, components, types — sólo lo necesario).
+- Contrato backend ya en producción: `GET /feed` devuelve `author.isFollowing: boolean` por item (computado contra el usuario autenticado; `false` para reseñas propias y pedidos anónimos). Sin `followersCount` en esta iteración. El front trata un `isFollowing` ausente como `false`. Endpoints de acción ya existían: `PUT /follows/:userId` (seguir) y `DELETE /follows/:userId` (dejar de seguir), ambos `204`.
+- `follows.api.ts` → `followsApi.follow(userId)` / `followsApi.unfollow(userId)`.
+- `useToggleFollow`: mutación con update optimista sobre el cache del feed. En `onMutate` cancela las queries `['feed','reviews', ...]` (match por prefijo: cubre todos los sort/scope cacheados), snapshotea, y reescribe `isFollowing` para todo autor que matchee el `userId` en cada página del `useInfiniteQuery`. Rollback en `onError`; invalida al `onSettled`. Expone `isPending`. Soluciona el caso "mismo autor en varias filas": todas se actualizan juntas.
+- `FollowButton.tsx` (`'use client'`): props `userId` + `isFollowing`, labels "Seguir"/"Siguiendo", deshabilitado mientras `isPending`, `aria-pressed`. Devuelve `null` cuando el autor es el usuario actual (vía `useCurrentUser`).
+- Integrado en el bloque del autor de `ReviewRow`.
+- `FeedAuthor` (en `feed.types.ts`) ganó el campo `isFollowing: boolean`.
+- Tests: `useToggleFollow` (flip optimista, dirección follow/unfollow, autores duplicados, rollback, no-doble-request mientras pending — 5) + `FollowButton` (labels por estado, toggle on click con estado actual, disabled+no-toggle pending, oculto para el usuario actual — 5). Mockean el módulo `api/` y los hooks. 10 verdes.
+- Deuda: el gate global `test:coverage` (85%) sigue en rojo, pero por el shell visual del feed sin tests (pre-existente, no por este cambio — números idénticos pre/post). El código nuevo de follows sí está cubierto.
 
 ## Pendiente
 

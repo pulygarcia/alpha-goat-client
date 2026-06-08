@@ -58,6 +58,12 @@ export interface FeedAuthor {
   id: string;
   username: string;
   avatarUrl: string | null;
+  /**
+   * Si el usuario autenticado sigue a este autor. Lo computa el backend contra
+   * el usuario actual; `false` para reseñas propias y para pedidos anónimos.
+   * Tratar un valor ausente como `false`.
+   */
+  isFollowing: boolean;
 }
 
 export interface FeedItemAlfajor {

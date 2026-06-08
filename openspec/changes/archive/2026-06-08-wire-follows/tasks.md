@@ -29,7 +29,7 @@
 
 - [x] 6.1 `npm run lint` (0 errors, 3 pre-existing warnings) and `npm run test` (39/39 green). NOTE: the global `test:coverage` 85% gate is RED, but it was already red before this change (byte-identical numbers pre/post: 43.33% lines) — caused by the intentionally-untested feed visual shell (FeedHero/FeedSubnav/FeedTopbar/ReviewRow/AuthProvider/api). This change is coverage-neutral. New follows code IS covered: FollowButton 90%/100%, useToggleFollow 95%/100%; follows.api.ts is a thin axios wrapper mocked in the hook test.
 - [x] 6.2 Update `docs/progress.md` (new `follows` feature wired; note backend `isFollowing` contract landed)
-- [ ] 6.3 Archive the change with `/opsx:archive` once implemented and verified
+- [x] 6.3 Archive the change with `/opsx:archive` once implemented and verified. Delta spec synced to `openspec/specs/user-follows/spec.md` (first canonical spec in the repo).
 
 ## Next session kickoff (resume here — 2026-06-07)
 

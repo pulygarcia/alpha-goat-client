@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Archivo_Black, Inter, JetBrains_Mono } from 'next/font/google';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { AuthProvider } from '@/shared/providers/AuthProvider';
+import { getCurrentUser } from '@/features/auth/api/getCurrentUser.server';
 import './globals.css';
 
 const archivo = Archivo_Black({
@@ -18,9 +19,11 @@ export const metadata: Metadata = {
     'Reseñá cualquier alfajor argentino en 5 ejes. Radar y ranking nacional.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const initialUser = await getCurrentUser();
+
   return (
     <html
       lang="es"
@@ -28,7 +31,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col bg-bg text-curry">
         <QueryProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
         </QueryProvider>
       </body>
     </html>

@@ -24,8 +24,9 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 
 ### Feature `auth`
 - Endpoints: `authApi.login | register | me | logout` (axios `withCredentials`). JWT en cookie HTTP-only seteada por el backend.
-- Estado: Zustand sin `persist` (hidrata desde `/auth/me`) + cache TanStack Query en `['auth','me']`. Hooks `useLogin`, `useRegister`, `useCurrentUser`, `useLogout`.
-- `AuthProvider` (en `app/layout.tsx`) expone `{ user, isLoading, isAuthenticated, logout }` y reacciona al evento `auth:unauthorized` emitido por el interceptor 401 (que excluye los propios `/auth/*`).
+- Estado: Zustand sin `persist` + cache TanStack Query en `['auth','me']` como fuente de verdad de la UI. Hooks `useLogin`, `useRegister`, `useCurrentUser`, `useLogout`.
+- **SSR hydration (sin parpadeo)**: el `RootLayout` (Server Component, ahora `async`) llama a `getCurrentUser()` (`features/auth/api/getCurrentUser.server.ts`, `server-only`), que lee la cookie HTTP-only de la request con `cookies()` de `next/headers` y la reenvía a `GET /auth/me` vía `fetch` (`cache: 'no-store'`). El resultado (`User | null`) baja como `initialUser` al `AuthProvider` y se siembra en la query como `initialData` → el primer render (servidor + hidratación) ya conoce la sesión, sin el flash "invitado → autenticado" ni round-trip extra a `/me` en el cliente. Consecuencia: leer cookies en el root layout opta a todas las rutas a **render dinámico** (esperado para una app con sesión). `authApi.me` (axios `withCredentials`) sigue usándose en el cliente cuando `useCurrentUser()` se llama sin `initialUser` (ej. `FollowButton`).
+- `AuthProvider` (en `app/layout.tsx`) expone `{ user, isLoading, isAuthenticated, logout }` derivados de la query, y reacciona al evento `auth:unauthorized` (emitido por el interceptor 401, que excluye los propios `/auth/*`) limpiando la cache `['auth','me']`.
 - Guards: `GuestOnly` (login/register → redirige a `/feed` si ya autenticado), `RequireAuth` (rutas privadas → `/login?next=...`), y `middleware.ts` con prefijos `PROTECTED` / `GUEST_ONLY` chequeando cookie `accessToken`.
 - Vistas: `/login` y `/register` con layout split (hero ParticleWords + form RHF/Zod). Login/register exitoso redirige directo a `/feed` (sin pantalla intermedia).
 - Mensajes de error: 401 → "incorrectos", 409 → diferencia username vs email según `message` del backend, red → "no pudimos contactar al servidor".
@@ -85,5 +86,6 @@ Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 - (Soporte) Módulo de imágenes/uploads aún no expone URLs públicas → el front usa placeholders cream (`ph`) hasta que esté.
 
 ### Deuda técnica conocida
-- El interceptor 401 emite `auth:unauthorized` y limpia el store, pero no redirige automático a `/login` — definir UX (toast + redirect, o sólo en rutas gated).
+- El interceptor 401 emite `auth:unauthorized` y limpia la cache `['auth','me']`, pero no redirige automático a `/login` — definir UX (toast + redirect, o sólo en rutas gated).
+- `getCurrentUser()` (SSR) trata cualquier respuesta no-OK como invitado. Si el server de Next no pudiera alcanzar al backend estando el usuario logueado, el primer render caería a invitado; la sesión se recuperaría igual ante la próxima acción autenticada. Si molesta, hacer que el cliente revalide ante error de red (≠ 401).
 - Feedback post-register/login es sólo redirect; falta toast/onboarding si se decide sumarlo.

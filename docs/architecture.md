@@ -384,6 +384,15 @@ Usás A) cuando la pantalla solo lee datos y no necesita refetch interactivo. B)
 6. Para rutas protegidas, usamos un **middleware de Next** (`middleware.ts`) que valida la cookie y redirige a `/login` si no existe.
 7. Para rutas admin, además validamos `user.role === 'ADMIN'` desde el AuthProvider.
 
+### Hidratación en SSR (evitar el flash invitado → autenticado)
+
+El estado de auth se resuelve **en el servidor** en el primer render, no solo en el cliente:
+
+- El `RootLayout` es un Server Component `async` que llama `getCurrentUser()` (`features/auth/api/getCurrentUser.server.ts`, marcado `server-only`).
+- En el navegador la cookie HTTP-only viaja sola, pero en el servidor no hay "cookie jar": `getCurrentUser()` lee la cookie de la request con `cookies()` de `next/headers` y la reenvía a `GET /auth/me` con `fetch` (`cache: 'no-store'`). Por eso vive aparte del `api-client` axios (que es client-side).
+- El `User | null` resultante baja como `initialUser` al `AuthProvider` y se siembra en la query `['auth','me']` como `initialData`. Así el HTML del servidor y el primer render del cliente ya conocen la sesión: sin parpadeo ni `/me` redundante en el cliente.
+- Trade-off: leer cookies en el root layout opta a todas las rutas a **render dinámico** (correcto para una app con sesión por-request).
+
 ```typescript
 // shared/lib/api-client.ts
 import axios from 'axios';

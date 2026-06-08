@@ -1,9 +1,12 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo } from 'react';
-import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+  CURRENT_USER_KEY,
+  useCurrentUser,
+} from '@/features/auth/hooks/useCurrentUser';
 import { useLogout } from '@/features/auth/hooks/useLogout';
-import { useAuthStore } from '@/features/auth/store/auth.store';
 import type { User } from '@/features/auth/types/auth.types';
 
 interface AuthContextValue {
@@ -15,19 +18,25 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { isLoading } = useCurrentUser();
-  const user = useAuthStore((s) => s.user);
-  const clear = useAuthStore((s) => s.logout);
+export function AuthProvider({
+  initialUser = null,
+  children,
+}: {
+  initialUser?: User | null;
+  children: React.ReactNode;
+}) {
+  const { data, isLoading } = useCurrentUser(initialUser);
+  const user = data ?? null;
+  const queryClient = useQueryClient();
   const logout = useLogout();
 
   useEffect(() => {
     function onUnauthorized() {
-      clear();
+      queryClient.setQueryData(CURRENT_USER_KEY, null);
     }
     window.addEventListener('auth:unauthorized', onUnauthorized);
     return () => window.removeEventListener('auth:unauthorized', onUnauthorized);
-  }, [clear]);
+  }, [queryClient]);
 
   const value = useMemo<AuthContextValue>(
     () => ({

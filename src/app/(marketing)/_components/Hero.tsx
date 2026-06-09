@@ -31,7 +31,7 @@ export function Hero() {
         className="pointer-events-none absolute inset-x-0 top-0 h-64"
         style={{
           background:
-            'radial-gradient(ellipse at top, rgba(255,180,80,0.08), transparent 70%)',
+            'radial-gradient(ellipse at top, rgba(244,160,43,0.08), transparent 70%)',
         }}
       />
       <div
@@ -47,23 +47,32 @@ export function Hero() {
         <Nav />
 
         <div className="flex flex-1 flex-col items-center px-6 pb-12 pt-6 text-center sm:pt-10">
-          <p className="eyebrow text-curry">
+          <p className="eyebrow fade-up text-curry">
             El índice nacional del alfajor
           </p>
 
-          <h1 className="h-mega mt-6">
+          <h1 className="h-mega fade-up mt-6" style={{ animationDelay: '120ms' }}>
             EL ALFAJOR
             <span className="h-sub mt-2 block">NO SE DISCUTE.</span>
           </h1>
 
-          <p className="coda mt-8 flex items-center gap-3 text-curry">
+          <p
+            className="coda fade-up mt-8 flex items-center gap-3 text-curry"
+            style={{ animationDelay: '300ms' }}
+          >
             <span className="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-curry" />
             Ahora se puntúa, ningún chamuyo
           </p>
 
-          <AlfajorReviews />
+          <div className="fade-up w-full" style={{ animationDelay: '460ms' }}>
+            <AlfajorReviews />
+          </div>
 
-          <Link href="/register" className="btn-curry-lg mt-10 gap-2">
+          <Link
+            href="/register"
+            className="btn-curry-lg fade-up mt-10 gap-2"
+            style={{ animationDelay: '620ms' }}
+          >
             Dejá tus reseñas
             <ArrowRight size={16} strokeWidth={2.5} />
           </Link>

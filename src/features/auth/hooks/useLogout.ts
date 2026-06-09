@@ -15,8 +15,9 @@ export function useLogout() {
     mutationFn: authApi.logout,
     onSettled: () => {
       clear();
+      // Sin removeQueries: el observer de AuthProvider recrearía la query y
+      // initialData volvería a sembrar el usuario stale del server render.
       queryClient.setQueryData(CURRENT_USER_KEY, null);
-      queryClient.removeQueries({ queryKey: CURRENT_USER_KEY });
       router.push('/login');
     },
   });

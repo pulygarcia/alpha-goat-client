@@ -2,8 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Plus, Search } from 'lucide-react';
+import { LogOut, Plus, Search } from 'lucide-react';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/shared/components/ui/dropdown-menu';
 import { useAuth } from '@/shared/providers/AuthProvider';
 
 const NAV_ITEMS = [
@@ -23,7 +31,7 @@ function initialsFromUsername(username: string): string {
 
 export function FeedTopbar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const initials = user ? initialsFromUsername(user.username) : '?';
 
   return (
@@ -94,12 +102,36 @@ export function FeedTopbar() {
         Reseñar
       </Link>
 
-      <div
-        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border-[1.5px] border-sienna bg-gradient-to-br from-cinnamon to-curry text-[13px] font-bold text-sienna"
-        title={user?.username ?? ''}
-      >
-        {initials}
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          aria-label="Menú de usuario"
+          className="flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-[1.5px] border-sienna bg-gradient-to-br from-cinnamon to-curry text-[13px] font-bold text-sienna transition-[filter] hover:brightness-110"
+        >
+          {initials}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          sideOffset={10}
+          className="min-w-[224px] rounded-[12px] border-[rgba(74,30,8,0.22)] bg-paper-raised p-1.5 text-ink shadow-[0_18px_40px_-18px_rgba(44,18,9,0.5)]"
+        >
+          <DropdownMenuLabel className="px-[10px] py-2">
+            <span className="block text-[14px] font-semibold leading-tight">
+              {user?.username}
+            </span>
+            <span className="mt-0.5 block text-[12.5px] font-normal text-[rgba(44,18,9,0.62)]">
+              {user?.email}
+            </span>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator className="bg-[rgba(74,30,8,0.14)]" />
+          <DropdownMenuItem
+            onSelect={logout}
+            className="cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium focus:bg-paper-sunken focus:text-ink"
+          >
+            <LogOut className="h-4 w-4" strokeWidth={2} />
+            Cerrar sesión
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

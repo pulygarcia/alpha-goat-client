@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAuth } from '@/shared/providers/AuthProvider';
+import { SessionLoader } from './SessionLoader';
 
 interface GuestOnlyProps {
   children: React.ReactNode;
@@ -19,6 +20,6 @@ export function GuestOnly({ children, redirectTo = '/feed' }: GuestOnlyProps) {
     }
   }, [isLoading, isAuthenticated, redirectTo, router]);
 
-  if (isAuthenticated) return null;
+  if (isAuthenticated) return <SessionLoader />;
   return <>{children}</>;
 }

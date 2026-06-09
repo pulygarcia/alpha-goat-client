@@ -3,13 +3,17 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAuth } from '@/shared/providers/AuthProvider';
+import { SessionLoader } from './SessionLoader';
 
 interface RequireAuthProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
 
-export function RequireAuth({ children, fallback = null }: RequireAuthProps) {
+export function RequireAuth({
+  children,
+  fallback = <SessionLoader />,
+}: RequireAuthProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();

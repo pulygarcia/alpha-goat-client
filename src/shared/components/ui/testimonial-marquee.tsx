@@ -38,6 +38,12 @@ const MarqueeStyles = React.memo(() => (
         .animate-marquee-right {
            animation: marquee-right var(--duration) linear infinite;
         }
+        .group:hover .marquee-pause-on-hover {
+           animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-marquee-left, .animate-marquee-right { animation: none; }
+        }
         `}
     </style>
 ))
@@ -61,7 +67,7 @@ const MarqueeRow = React.memo(({
             <div
                 className={cn("flex shrink-0 justify-start [gap:var(--gap)] min-w-full pr-[var(--gap)] will-change-transform [backface-visibility:hidden]",
                     direction === "left" ? "animate-marquee-left" : "animate-marquee-right",
-                    pauseOnHover && "group-hover:[animation-play-state:paused]"
+                    pauseOnHover && "marquee-pause-on-hover"
                 )}
                 style={{
                     "--duration": `${speed}s`,
@@ -73,7 +79,7 @@ const MarqueeRow = React.memo(({
                 aria-hidden="true"
                 className={cn("flex shrink-0 justify-start [gap:var(--gap)] min-w-full pr-[var(--gap)] will-change-transform [backface-visibility:hidden]",
                     direction === "left" ? "animate-marquee-left" : "animate-marquee-right",
-                    pauseOnHover && "group-hover:[animation-play-state:paused]"
+                    pauseOnHover && "marquee-pause-on-hover"
                 )}
                 style={{
                     "--duration": `${speed}s`,

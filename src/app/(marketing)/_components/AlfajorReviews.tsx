@@ -57,9 +57,9 @@ export function AlfajorReviews() {
   return (
     <div className="alfajor-reviews w-full mt-12">
       <style>{`
-        .alfajor-reviews .text-muted-foreground { color: rgba(255,220,160,0.8) !important; }
-        .alfajor-reviews .text-foreground { color: rgba(255,240,200,1) !important; }
-        .alfajor-reviews .border-border { border-color: rgba(255,180,80,0.18) !important; }
+        .alfajor-reviews .text-muted-foreground { color: rgba(246,201,119,0.8) !important; }
+        .alfajor-reviews .text-foreground { color: #fdf6e8 !important; }
+        .alfajor-reviews .border-border { border-color: rgba(244,160,43,0.16) !important; }
         .alfajor-reviews .bg-black\\/5 { background: rgba(0,0,0,0.55) !important; }
         .alfajor-reviews .hover\\:bg-black\\/10:hover { background: rgba(0,0,0,0.70) !important; }
       `}</style>

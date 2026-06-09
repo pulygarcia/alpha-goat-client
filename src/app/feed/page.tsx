@@ -2,6 +2,7 @@
 
 import { RequireAuth } from '@/shared/components/auth/RequireAuth';
 import { FeedHero } from '@/features/feed/components/FeedHero';
+import { FeedRail } from '@/features/feed/components/FeedRail';
 import { FeedReviews } from '@/features/feed/components/FeedReviews';
 import { FeedSubnav } from '@/features/feed/components/FeedSubnav';
 import { FeedTopbar } from '@/features/feed/components/FeedTopbar';
@@ -18,24 +19,7 @@ function FeedContent() {
           <FeedReviews />
         </div>
 
-        <aside className="bg-paper-raised px-7 py-9">
-          <p
-            className="text-cinnamon"
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.7rem',
-              letterSpacing: '0.26em',
-              textTransform: 'uppercase',
-              fontWeight: 700,
-            }}
-          >
-            Rail
-          </p>
-          <p className="mt-3 text-[13px] leading-relaxed text-sienna">
-            Ranking semanal, marcas en foco y recomendaciones — se construyen
-            en el próximo trozo.
-          </p>
-        </aside>
+        <FeedRail />
       </section>
     </main>
   );

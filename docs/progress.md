@@ -49,8 +49,9 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
   - Tests: `useFeedReviews` (mock `api/`, 4) + `FeedReviews` (mock hook + `ReviewRow`, 6) — 10 verdes.
 - Tests del feed: el shell visual no se testea — sólo donde hay lógica de datos (mockeando el módulo `api/`, como manda CLAUDE.md).
 - Follows en el feed (hecho): cada `ReviewRow` muestra un `FollowButton` en el bloque del autor. Ver feature `follows` abajo. El back ya manda `author.isFollowing` en `GET /feed`.
+- Trozo 4 (parcial — sólo "Marcas en foco"): `FeedRail.tsx` reemplaza el placeholder del aside en `/feed/page.tsx`. Compone tres secciones: "Ranking semanal" y "Recomendado para vos" como `PendingSection` (nota de endpoint faltante) y `FeaturedMarcas` (feature `marcas`, ver abajo) ya conectado a `GET /marcas/featured`.
 - Trozos pendientes:
-  - 4. Rail: ranking semanal, marcas en foco, recomendado para vos.
+  - 4 (resto). Rail: ranking semanal (`GET /ranking/weekly`) y recomendado para vos (`GET /recommendations`) — bloqueados por back.
   - 5. Estados loading (Skeleton + Suspense streaming) y empty (usuario nuevo).
   - 6. Microinteracción radar fill-in con IntersectionObserver.
   - 7. Responsive 1280 / 768 / 375.
@@ -66,6 +67,13 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Tests: `useToggleFollow` (flip optimista, dirección follow/unfollow, autores duplicados, rollback, no-doble-request mientras pending — 5) + `FollowButton` (labels por estado, toggle on click con estado actual, disabled+no-toggle pending, oculto para el usuario actual — 5). Mockean el módulo `api/` y los hooks. 10 verdes.
 - Deuda: el gate global `test:coverage` (85%) sigue en rojo, pero por el shell visual del feed sin tests (pre-existente, no por este cambio — números idénticos pre/post). El código nuevo de follows sí está cubierto.
 
+### Feature `marcas` (sólo "Marcas en foco" por ahora)
+- Slice nuevo en `src/features/marcas/` (api, hooks, components, types).
+- `marcas.api.ts` → `marcasApi.featured()` (`GET /marcas/featured`, público, devuelve `FeaturedMarca[]`).
+- `useFeaturedMarcas` (queryKey `['marcas','featured']`, `staleTime: 5 min` — ranking de ventana de 30 días, cambia lento).
+- `FeaturedMarcas.tsx`: sección del rail con cards por marca (logo o inicial sobre `paper-sunken`, nombre, meta "N productos · X.X prom. · provincia"). Estados: skeleton pulse (3 filas) / error / empty inline.
+- Tests: `useFeaturedMarcas` (mock `api/`, 2) + `FeaturedMarcas` (mock hook: cards con singular/plural y provincia opcional, logo vs inicial, error, empty — 4). 6 verdes.
+
 ## Pendiente
 
 ### Próximas features
@@ -80,7 +88,7 @@ Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 - ~~`GET /feed`~~ — listo. Lista paginada de reseñas (auth) con orden `sort=likes|recent|rating` (default `recent`) y filtros `scope=today|week|following|province` (+ `province` requerido si `scope=province`). Paginación `page`/`limit` (no cursor): devuelve `{ items, total, page, limit }`. Cada item: `author {id, username, avatarUrl}`, `alfajor {id, nombre, tipo, imagenUrl}`, `marca {id, nombre, provincia}`, `quote`, `photoUrl`, `overall`, `axes (5)`, `likes`, `commentsCount`, `createdAt`. Sin `sharesCount`: no habrá feature de compartir. `scope=following` apoyado en el módulo `follows` (`PUT/DELETE /follows/:userId`). Likes de reviews vía `PUT/DELETE /reviews/:id/like`.
 - ~~`GET /feed/hero`~~ — listo (alfajorimetro-back commit `42dda73`).
 - `GET /ranking/weekly` — top N alfajores de la semana con `score`, `trend (▲▼ delta)`, `marca`.
-- ~~`GET /marcas/featured`~~ — **listo en back, falta conectar en FE**. Público. "Marcas en foco" del rail seleccionadas por **controversia** (las marcas sobre las que más dividida está la opinión reciente): el back rankea por dispersión del `ratingGeneral` en 30 días con piso de muestra, top 5. La controversia es interna; devuelve la shape pactada `{ id, nombre, provincia, logoUrl, productCount, avgScore }` (ambos históricos). OpenSpec change `add-marcas-featured` (alfajorimetro-back).
+- ~~`GET /marcas/featured`~~ — listo y conectado en FE (feature `marcas`, rail del feed). Público. "Marcas en foco" del rail seleccionadas por **controversia** (las marcas sobre las que más dividida está la opinión reciente): el back rankea por dispersión del `ratingGeneral` en 30 días con piso de muestra, top 5. La controversia es interna; devuelve la shape pactada `{ id, nombre, provincia, logoUrl, productCount, avgScore }` (ambos históricos). OpenSpec change `add-marcas-featured` (alfajorimetro-back).
 - `GET /recommendations` — recomendaciones personalizadas por huella del usuario (`matchPct`, `score`).
 - ~~`GET /feed/stats`~~ — listo y conectado en FE. Público (no requiere auth), devuelve `{ todayCount, weekCount }`. `todayCount` = reseñas de alfajores aprobados creadas hoy (desde las 00:00 local); `weekCount` = últimas 7 días (ventana móvil). Mismas ventanas que `scope=today`/`scope=week` del feed. Cableado en `FeedSubnav` vía `useFeedStats`.
 - (Soporte) Módulo de imágenes/uploads aún no expone URLs públicas → el front usa placeholders cream (`ph`) hasta que esté.

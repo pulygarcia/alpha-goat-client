@@ -35,7 +35,8 @@ export function AuthProvider({
       queryClient.setQueryData(CURRENT_USER_KEY, null);
     }
     window.addEventListener('auth:unauthorized', onUnauthorized);
-    return () => window.removeEventListener('auth:unauthorized', onUnauthorized);
+    return () =>
+      window.removeEventListener('auth:unauthorized', onUnauthorized);
   }, [queryClient]);
 
   const value = useMemo<AuthContextValue>(

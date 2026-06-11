@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from 'react';
 
 interface Props {
-  icon: ReactNode
-  label: string
-  onClick?: () => void
+  icon: ReactNode;
+  label: string;
+  onClick?: () => void;
 }
 
 export default function SocialButton({ icon, label, onClick }: Props) {
@@ -11,7 +11,7 @@ export default function SocialButton({ icon, label, onClick }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className="flex h-[52px] w-full items-center justify-center gap-2.5 rounded-xl border text-sm font-medium text-curry-soft transition-all duration-200 hover:border-[rgba(244,160,43,0.30)] hover:bg-[rgba(244,160,43,0.06)]"
+      className="text-curry-soft flex h-[52px] w-full items-center justify-center gap-2.5 rounded-xl border text-sm font-medium transition-all duration-200 hover:border-[rgba(244,160,43,0.30)] hover:bg-[rgba(244,160,43,0.06)]"
       style={{
         background: '#4f1f08',
         borderColor: 'rgba(244,160,43,0.14)',
@@ -20,5 +20,5 @@ export default function SocialButton({ icon, label, onClick }: Props) {
       {icon}
       <span>{label}</span>
     </button>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { cn } from "@/shared/lib/utils";
-import * as React from "react";
+import { cn } from '@/shared/lib/utils';
+import * as React from 'react';
 
 interface WebGLErrorBoundaryProps {
   children: React.ReactNode;
@@ -42,12 +42,12 @@ interface WebGLFallbackProps {
 
 export function WebGLFallback({
   className,
-  message = "Interactive WebGL content is unavailable on this device/browser.",
+  message = 'Interactive WebGL content is unavailable on this device/browser.',
 }: WebGLFallbackProps) {
   return (
     <div
       className={cn(
-        "flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-950 via-slate-900 to-zinc-900 px-4 text-center text-sm text-white/75",
+        'flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-950 via-slate-900 to-zinc-900 px-4 text-center text-sm text-white/75',
         className,
       )}
       role="status"

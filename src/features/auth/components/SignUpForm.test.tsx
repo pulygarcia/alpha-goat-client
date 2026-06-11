@@ -19,7 +19,9 @@ vi.mock('../api/auth.api', () => ({
 }));
 
 function renderForm() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   return render(
     <QueryClientProvider client={client}>
       <SignUpForm />
@@ -59,14 +61,19 @@ describe('SignUpForm', () => {
   });
 
   it('submits valid data and redirects to the feed', async () => {
-    vi.mocked(authApi.register).mockResolvedValue({ accessToken: 't', user: fakeUser });
+    vi.mocked(authApi.register).mockResolvedValue({
+      accessToken: 't',
+      user: fakeUser,
+    });
 
     renderForm();
 
     await userEvent.type(screen.getByLabelText(/usuario/i), 'belgrano');
     await userEvent.type(screen.getByLabelText(/mail/i), 'a@b.com');
     await userEvent.type(screen.getByLabelText(/contraseña/i), 'longenough');
-    await userEvent.click(screen.getByRole('button', { name: /crear cuenta/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /crear cuenta/i }),
+    );
 
     expect(authApi.register).toHaveBeenCalledWith(
       { username: 'belgrano', email: 'a@b.com', password: 'longenough' },
@@ -90,9 +97,13 @@ describe('SignUpForm', () => {
     await userEvent.type(screen.getByLabelText(/usuario/i), 'belgrano');
     await userEvent.type(screen.getByLabelText(/mail/i), 'a@b.com');
     await userEvent.type(screen.getByLabelText(/contraseña/i), 'longenough');
-    await userEvent.click(screen.getByRole('button', { name: /crear cuenta/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /crear cuenta/i }),
+    );
 
-    expect(await screen.findByRole('alert')).toHaveTextContent(/ya hay una cuenta/i);
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      /ya hay una cuenta/i,
+    );
     expect(pushMock).not.toHaveBeenCalled();
   });
 });

@@ -9,7 +9,12 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/perfil',
 }));
 
-const authState = { user: null as unknown, isAuthenticated: false, isLoading: false, logout: vi.fn() };
+const authState = {
+  user: null as unknown,
+  isAuthenticated: false,
+  isLoading: false,
+  logout: vi.fn(),
+};
 
 vi.mock('@/shared/providers/AuthProvider', () => ({
   useAuth: () => authState,
@@ -25,20 +30,34 @@ describe('RequireAuth', () => {
 
   it('renders children when authenticated', () => {
     authState.isAuthenticated = true;
-    render(<RequireAuth><div>secret</div></RequireAuth>);
+    render(
+      <RequireAuth>
+        <div>secret</div>
+      </RequireAuth>,
+    );
     expect(screen.getByText('secret')).toBeInTheDocument();
     expect(replaceMock).not.toHaveBeenCalled();
   });
 
   it('redirects to /login with next param when not authenticated', async () => {
-    render(<RequireAuth fallback={<div>loading</div>}><div>secret</div></RequireAuth>);
+    render(
+      <RequireAuth fallback={<div>loading</div>}>
+        <div>secret</div>
+      </RequireAuth>,
+    );
     expect(screen.getByText('loading')).toBeInTheDocument();
-    await waitFor(() => expect(replaceMock).toHaveBeenCalledWith('/login?next=%2Fperfil'));
+    await waitFor(() =>
+      expect(replaceMock).toHaveBeenCalledWith('/login?next=%2Fperfil'),
+    );
   });
 
   it('shows fallback while loading and does not redirect', () => {
     authState.isLoading = true;
-    render(<RequireAuth fallback={<div>loading</div>}><div>secret</div></RequireAuth>);
+    render(
+      <RequireAuth fallback={<div>loading</div>}>
+        <div>secret</div>
+      </RequireAuth>,
+    );
     expect(screen.getByText('loading')).toBeInTheDocument();
     expect(replaceMock).not.toHaveBeenCalled();
   });

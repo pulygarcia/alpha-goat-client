@@ -11,7 +11,9 @@ let nextParam: string | null = null;
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: pushMock }),
-  useSearchParams: () => ({ get: (k: string) => (k === 'next' ? nextParam : null) }),
+  useSearchParams: () => ({
+    get: (k: string) => (k === 'next' ? nextParam : null),
+  }),
 }));
 
 vi.mock('../api/auth.api', () => ({
@@ -19,7 +21,9 @@ vi.mock('../api/auth.api', () => ({
 }));
 
 function wrapper({ children }: { children: React.ReactNode }) {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   return React.createElement(QueryClientProvider, { client }, children);
 }
 
@@ -32,7 +36,14 @@ describe('useLogin', () => {
   });
 
   it('on success stores the user and redirects home', async () => {
-    const user = { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER' as const, createdAt: '2026-01-01T00:00:00.000Z' };
+    const user = {
+      id: '1',
+      email: 'a@b.com',
+      username: 'a',
+      avatarUrl: null,
+      role: 'USER' as const,
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
     vi.mocked(authApi.login).mockResolvedValue({ user });
 
     const { result } = renderHook(() => useLogin(), { wrapper });
@@ -48,7 +59,14 @@ describe('useLogin', () => {
 
   it('honors a safe ?next= redirect', async () => {
     nextParam = '/perfil';
-    const user = { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER' as const, createdAt: '2026-01-01T00:00:00.000Z' };
+    const user = {
+      id: '1',
+      email: 'a@b.com',
+      username: 'a',
+      avatarUrl: null,
+      role: 'USER' as const,
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
     vi.mocked(authApi.login).mockResolvedValue({ user });
 
     const { result } = renderHook(() => useLogin(), { wrapper });
@@ -62,7 +80,14 @@ describe('useLogin', () => {
 
   it('ignores an unsafe ?next= (open redirect protection)', async () => {
     nextParam = '//evil.com';
-    const user = { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER' as const, createdAt: '2026-01-01T00:00:00.000Z' };
+    const user = {
+      id: '1',
+      email: 'a@b.com',
+      username: 'a',
+      avatarUrl: null,
+      role: 'USER' as const,
+      createdAt: '2026-01-01T00:00:00.000Z',
+    };
     vi.mocked(authApi.login).mockResolvedValue({ user });
 
     const { result } = renderHook(() => useLogin(), { wrapper });

@@ -31,7 +31,7 @@ export function FeedHero() {
 
   if (isLoading) {
     return (
-      <div className="border-b border-[rgba(74,30,8,0.14)] px-8 py-9 text-sienna">
+      <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
         Cargando el goat del momento...
       </div>
     );
@@ -39,7 +39,7 @@ export function FeedHero() {
 
   if (isError) {
     return (
-      <div className="border-b border-[rgba(74,30,8,0.14)] px-8 py-9 text-sienna">
+      <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
         No pudimos contactar al servidor. Probá recargar.
       </div>
     );
@@ -47,14 +47,15 @@ export function FeedHero() {
 
   if (!data) {
     return (
-      <div className="border-b border-[rgba(74,30,8,0.14)] px-8 py-9 text-sienna">
+      <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
         Todavía no hay reseñas. Sé el primero en reseñar un alfajor.
       </div>
     );
   }
 
   const { alfajor, ratings, stats } = data;
-  const deltaSign = stats.deltaPct === null ? '' : stats.deltaPct >= 0 ? '▲' : '▼';
+  const deltaSign =
+    stats.deltaPct === null ? '' : stats.deltaPct >= 0 ? '▲' : '▼';
   const deltaText =
     stats.deltaPct === null
       ? 'sin base previa'
@@ -75,7 +76,7 @@ export function FeedHero() {
         Goat del momento
       </p>
 
-      <div className="mt-3 grid grid-cols-[1fr_360px] gap-10 items-start">
+      <div className="mt-3 grid grid-cols-[1fr_360px] items-start gap-10">
         <div>
           <h2
             className="text-ink"
@@ -88,13 +89,14 @@ export function FeedHero() {
           >
             {alfajor.nombre}
           </h2>
-          <p className="mt-2 text-sienna text-[15px]">
+          <p className="text-sienna mt-2 text-[15px]">
             {alfajor.marca.nombre}
-            {alfajor.marca.provincia ? ` · ${alfajor.marca.provincia}` : ''} ·{' '}
-            <span className="lowercase">{alfajor.tipo}</span>
+            {alfajor.marca.provincia
+              ? ` · ${alfajor.marca.provincia}`
+              : ''} · <span className="lowercase">{alfajor.tipo}</span>
           </p>
 
-          <dl className="mt-6 grid grid-cols-3 gap-6 max-w-[520px]">
+          <dl className="mt-6 grid max-w-[520px] grid-cols-3 gap-6">
             <Stat label="Rating gral." value={ratings.general.toFixed(1)} />
             <Stat
               label="Reseñas semana"
@@ -106,7 +108,12 @@ export function FeedHero() {
         </div>
 
         <div className="h-[280px] w-full">
-          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            minWidth={0}
+            minHeight={0}
+          >
             <RadarChart data={toRadarData(ratings)} outerRadius="78%">
               <PolarGrid stroke="rgba(74,30,8,0.18)" />
               <PolarAngleAxis
@@ -134,7 +141,15 @@ export function FeedHero() {
   );
 }
 
-function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Stat({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
   return (
     <div>
       <p
@@ -151,11 +166,15 @@ function Stat({ label, value, hint }: { label: string; value: string; hint?: str
       </p>
       <p
         className="text-ink mt-1"
-        style={{ fontFamily: 'var(--font-archivo)', fontSize: 28, letterSpacing: '-0.02em' }}
+        style={{
+          fontFamily: 'var(--font-archivo)',
+          fontSize: 28,
+          letterSpacing: '-0.02em',
+        }}
       >
         {value}
       </p>
-      {hint && <p className="mt-1 text-[11px] text-sienna">{hint}</p>}
+      {hint && <p className="text-sienna mt-1 text-[11px]">{hint}</p>}
     </div>
   );
 }

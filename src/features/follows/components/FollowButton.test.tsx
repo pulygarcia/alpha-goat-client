@@ -47,7 +47,9 @@ describe('FollowButton', () => {
     setUser('me');
     setToggle();
     render(<FollowButton userId="other" isFollowing={true} />);
-    expect(screen.getByRole('button', { name: 'Siguiendo' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Siguiendo' }),
+    ).toBeInTheDocument();
   });
 
   it('toggles with the current state on click', () => {
@@ -55,7 +57,10 @@ describe('FollowButton', () => {
     const mutate = setToggle();
     render(<FollowButton userId="other" isFollowing={false} />);
     fireEvent.click(screen.getByRole('button'));
-    expect(mutate).toHaveBeenCalledWith({ userId: 'other', isFollowing: false });
+    expect(mutate).toHaveBeenCalledWith({
+      userId: 'other',
+      isFollowing: false,
+    });
   });
 
   it('is disabled and does not toggle while pending', () => {
@@ -71,7 +76,9 @@ describe('FollowButton', () => {
   it('renders nothing for the current user', () => {
     setUser('me');
     setToggle();
-    const { container } = render(<FollowButton userId="me" isFollowing={false} />);
+    const { container } = render(
+      <FollowButton userId="me" isFollowing={false} />,
+    );
     expect(container).toBeEmptyDOMElement();
   });
 });

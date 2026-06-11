@@ -55,7 +55,7 @@ const REVIEWS = [
 
 export function AlfajorReviews() {
   return (
-    <div className="alfajor-reviews w-full mt-12">
+    <div className="alfajor-reviews mt-12 w-full">
       <style>{`
         .alfajor-reviews .text-muted-foreground { color: rgba(246,201,119,0.8) !important; }
         .alfajor-reviews .text-foreground { color: #fdf6e8 !important; }

@@ -27,7 +27,7 @@ export function FeedReviews() {
   return (
     <section className="px-8 py-9">
       <div className="mb-5 flex flex-col gap-[14px] border-b border-[rgba(74,30,8,0.14)] pb-4">
-        <h4 className="text-[24px] font-semibold tracking-[-0.02em] text-ink">
+        <h4 className="text-ink text-[24px] font-semibold tracking-[-0.02em]">
           Reseñas destacadas
         </h4>
         <div
@@ -46,8 +46,8 @@ export function FeedReviews() {
               onClick={() => setSort(s.value)}
               className={
                 sort === s.value
-                  ? 'rounded-[6px] bg-paper-sunken px-3 py-[7px] font-bold text-ink'
-                  : 'rounded-[6px] px-3 py-[7px] font-medium text-sienna hover:bg-paper-sunken hover:text-ink'
+                  ? 'bg-paper-sunken text-ink rounded-[6px] px-3 py-[7px] font-bold'
+                  : 'text-sienna hover:bg-paper-sunken hover:text-ink rounded-[6px] px-3 py-[7px] font-medium'
               }
             >
               {s.label}

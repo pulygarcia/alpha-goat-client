@@ -39,14 +39,22 @@ describe('FeaturedMarcas', () => {
       baseReturn({
         data: [
           makeMarca(),
-          makeMarca({ id: 'm2', nombre: 'Tatín', provincia: null, productCount: 1, avgScore: 7.6 }),
+          makeMarca({
+            id: 'm2',
+            nombre: 'Tatín',
+            provincia: null,
+            productCount: 1,
+            avgScore: 7.6,
+          }),
         ],
       }),
     );
     render(<FeaturedMarcas />);
 
     expect(screen.getByText('Cachafaz')).toBeInTheDocument();
-    expect(screen.getByText(/14 productos · 7\.8 prom\. · Buenos Aires/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/14 productos · 7\.8 prom\. · Buenos Aires/),
+    ).toBeInTheDocument();
     // singular y sin provincia
     expect(screen.getByText('Tatín')).toBeInTheDocument();
     expect(screen.getByText(/^1 producto · 7\.6 prom\.$/)).toBeInTheDocument();
@@ -73,12 +81,16 @@ describe('FeaturedMarcas', () => {
   it('shows an error message on failure', () => {
     mocked.mockReturnValue(baseReturn({ isError: true }));
     render(<FeaturedMarcas />);
-    expect(screen.getByText(/no pudimos cargar las marcas/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/no pudimos cargar las marcas/i),
+    ).toBeInTheDocument();
   });
 
   it('shows the empty state when there are no marcas', () => {
     mocked.mockReturnValue(baseReturn({ data: [] }));
     render(<FeaturedMarcas />);
-    expect(screen.getByText(/todavía no hay marcas en foco/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/todavía no hay marcas en foco/i),
+    ).toBeInTheDocument();
   });
 });

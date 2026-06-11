@@ -14,10 +14,10 @@ const RAIL_HEADING = {
 function PendingSection({ title, note }: { title: string; note: string }) {
   return (
     <section className="mb-8">
-      <h5 className="mb-4 text-cinnamon" style={RAIL_HEADING}>
+      <h5 className="text-cinnamon mb-4" style={RAIL_HEADING}>
         {title}
       </h5>
-      <p className="text-[13px] leading-relaxed text-sienna">{note}</p>
+      <p className="text-sienna text-[13px] leading-relaxed">{note}</p>
     </section>
   );
 }

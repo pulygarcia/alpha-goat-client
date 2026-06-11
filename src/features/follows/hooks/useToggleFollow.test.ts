@@ -21,16 +21,31 @@ const FEED_KEY = [
   { sort: 'recent', scope: null, province: null },
 ] as const;
 
-function makeItem(id: string, authorId: string, isFollowing: boolean): FeedItem {
+function makeItem(
+  id: string,
+  authorId: string,
+  isFollowing: boolean,
+): FeedItem {
   return {
     id,
     author: { id: authorId, username: 'pepe', avatarUrl: null, isFollowing },
-    alfajor: { id: 'a1', nombre: 'Jorgito', tipo: 'CHOCOLATE', imagenUrl: null },
+    alfajor: {
+      id: 'a1',
+      nombre: 'Jorgito',
+      tipo: 'CHOCOLATE',
+      imagenUrl: null,
+    },
     marca: { id: 'm1', nombre: 'Havanna', provincia: 'CABA' },
     quote: null,
     photoUrl: null,
     overall: 8,
-    axes: { dulzor: 8, cantidadDDL: 7, calidadBano: 9, ratioTapaRelleno: 6, textura: 8 },
+    axes: {
+      dulzor: 8,
+      cantidadDDL: 7,
+      calidadBano: 9,
+      ratioTapaRelleno: 6,
+      textura: 8,
+    },
     likes: 10,
     commentsCount: 2,
     createdAt: '2026-05-27T00:00:00.000Z',
@@ -111,8 +126,8 @@ describe('useToggleFollow', () => {
     });
 
     await waitFor(() => {
-      const items = client.getQueryData<InfiniteData<FeedList>>(key)!.pages[0]
-        .items;
+      const items =
+        client.getQueryData<InfiniteData<FeedList>>(key)!.pages[0].items;
       expect(items.every((i) => i.author.isFollowing)).toBe(true);
     });
   });

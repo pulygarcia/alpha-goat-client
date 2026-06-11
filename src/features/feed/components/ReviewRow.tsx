@@ -1,6 +1,12 @@
 'use client';
 
-import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from 'recharts';
+import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+} from 'recharts';
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import type { FeedAxes, FeedItem } from '../types/feed.types';
 
@@ -36,8 +42,17 @@ function timeAgo(iso: string) {
 }
 
 export function ReviewRow({ item }: { item: FeedItem }) {
-  const { author, alfajor, marca, quote, photoUrl, overall, axes, likes, commentsCount } =
-    item;
+  const {
+    author,
+    alfajor,
+    marca,
+    quote,
+    photoUrl,
+    overall,
+    axes,
+    likes,
+    commentsCount,
+  } = item;
 
   return (
     <article className="grid grid-cols-[96px_1fr_110px_64px] items-start gap-6 border-b border-[rgba(74,30,8,0.14)] py-[22px] last:border-b-0">
@@ -50,7 +65,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
           className="aspect-square w-full rounded-[10px] object-cover"
         />
       ) : (
-        <div className="flex aspect-square w-full items-center justify-center rounded-[10px] bg-paper-sunken text-[0.55rem] uppercase tracking-[0.18em] text-cinnamon">
+        <div className="bg-paper-sunken text-cinnamon flex aspect-square w-full items-center justify-center rounded-[10px] text-[0.55rem] tracking-[0.18em] uppercase">
           {alfajor.tipo}
         </div>
       )}
@@ -67,7 +82,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
             />
           ) : (
             <div
-              className="flex h-[26px] w-[26px] items-center justify-center rounded-full text-[10px] font-bold text-paper"
+              className="text-paper flex h-[26px] w-[26px] items-center justify-center rounded-full text-[10px] font-bold"
               style={{
                 background:
                   'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
@@ -76,7 +91,9 @@ export function ReviewRow({ item }: { item: FeedItem }) {
               {initials(author.username)}
             </div>
           )}
-          <span className="text-[13px] font-semibold text-ink">{author.username}</span>
+          <span className="text-ink text-[13px] font-semibold">
+            {author.username}
+          </span>
           <span
             className="text-cinnamon"
             style={{
@@ -87,21 +104,25 @@ export function ReviewRow({ item }: { item: FeedItem }) {
               fontWeight: 500,
             }}
           >
-            {marca.provincia ? `· ${marca.provincia} ` : ''}· {timeAgo(item.createdAt)}
+            {marca.provincia ? `· ${marca.provincia} ` : ''}·{' '}
+            {timeAgo(item.createdAt)}
           </span>
           <FollowButton userId={author.id} isFollowing={author.isFollowing} />
         </div>
 
-        <h5 className="mb-2 text-[18px] font-medium tracking-[-0.018em] text-ink">
-          {alfajor.nombre} · <em className="not-italic text-cinnamon">{marca.nombre}</em>
+        <h5 className="text-ink mb-2 text-[18px] font-medium tracking-[-0.018em]">
+          {alfajor.nombre} ·{' '}
+          <em className="text-cinnamon not-italic">{marca.nombre}</em>
         </h5>
 
         {quote && (
-          <p className="mb-[10px] text-[14px] leading-[1.5] text-sienna">“{quote}”</p>
+          <p className="text-sienna mb-[10px] text-[14px] leading-[1.5]">
+            “{quote}”
+          </p>
         )}
 
         <div
-          className="flex gap-4 text-cinnamon"
+          className="text-cinnamon flex gap-4"
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '0.6rem',
@@ -110,7 +131,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
             fontWeight: 700,
           }}
         >
-          <span className="inline-flex items-center gap-[5px] text-curry-deep">
+          <span className="text-curry-deep inline-flex items-center gap-[5px]">
             ★ {likes} likes
           </span>
           <span className="inline-flex items-center gap-[5px]">
@@ -121,7 +142,12 @@ export function ReviewRow({ item }: { item: FeedItem }) {
 
       {/* Radar mini */}
       <div className="h-[100px] w-[100px]">
-        <RadarChart width={100} height={100} data={toRadarData(axes)} outerRadius="78%">
+        <RadarChart
+          width={100}
+          height={100}
+          data={toRadarData(axes)}
+          outerRadius="78%"
+        >
           <PolarGrid stroke="rgba(74,30,8,0.18)" />
           <PolarAngleAxis dataKey="axis" tick={false} />
           <PolarRadiusAxis domain={[0, 10]} tick={false} axisLine={false} />
@@ -149,7 +175,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
           {overall.toFixed(1)}
         </span>
         <span
-          className="block text-cinnamon"
+          className="text-cinnamon block"
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '0.6rem',

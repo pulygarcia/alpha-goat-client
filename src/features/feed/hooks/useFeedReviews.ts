@@ -6,8 +6,16 @@ import type { FeedScope, FeedSort } from '../types/feed.types';
 
 const LIMIT = 20;
 
-export const feedReviewsKey = (sort: FeedSort, scope?: FeedScope, province?: string) =>
-  ['feed', 'reviews', { sort, scope: scope ?? null, province: province ?? null }] as const;
+export const feedReviewsKey = (
+  sort: FeedSort,
+  scope?: FeedScope,
+  province?: string,
+) =>
+  [
+    'feed',
+    'reviews',
+    { sort, scope: scope ?? null, province: province ?? null },
+  ] as const;
 
 interface UseFeedReviewsArgs {
   sort: FeedSort;

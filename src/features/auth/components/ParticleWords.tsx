@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { CursorDrivenParticleTypography } from '@/shared/components/ui/cursor-driven-particle-typography'
+import { CursorDrivenParticleTypography } from '@/shared/components/ui/cursor-driven-particle-typography';
 
-const words = ['Probá.', 'Opiná.', 'Puntuá.']
+const words = ['Probá.', 'Opiná.', 'Puntuá.'];
 
 export default function ParticleWords() {
   return (
@@ -22,5 +22,5 @@ export default function ParticleWords() {
         />
       ))}
     </div>
-  )
+  );
 }

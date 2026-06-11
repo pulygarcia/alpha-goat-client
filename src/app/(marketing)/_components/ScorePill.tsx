@@ -1,11 +1,11 @@
 export function ScorePill() {
   return (
     <div
-      className="inline-flex flex-col items-start rounded-2xl bg-curry px-5 py-3 text-sienna shadow-[0_10px_30px_-8px_rgba(0,0,0,0.55)]"
+      className="bg-curry text-sienna inline-flex flex-col items-start rounded-2xl px-5 py-3 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.55)]"
       style={{ transform: 'rotate(8deg)' }}
     >
       <span
-        className="text-[0.62rem] font-bold uppercase tracking-[0.22em]"
+        className="text-[0.62rem] font-bold tracking-[0.22em] uppercase"
         style={{ fontFamily: 'var(--font-mono)' }}
       >
         Top 3 nacional

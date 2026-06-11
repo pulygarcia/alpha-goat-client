@@ -29,7 +29,7 @@ export default async function RootLayout({
       lang="es"
       className={`${archivo.variable} ${inter.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-bg text-curry">
+      <body className="bg-bg text-curry flex min-h-full flex-col">
         <QueryProvider>
           <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
         </QueryProvider>

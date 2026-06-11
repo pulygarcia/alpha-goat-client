@@ -31,9 +31,9 @@ export function FeedSubnav() {
   const { data: stats } = useFeedStats();
 
   return (
-    <div className="flex items-center gap-6 border-b border-[rgba(74,30,8,0.14)] bg-paper px-7 py-4">
+    <div className="bg-paper flex items-center gap-6 border-b border-[rgba(74,30,8,0.14)] px-7 py-4">
       <div
-        className="flex items-center gap-[10px] whitespace-nowrap border-r border-[rgba(74,30,8,0.14)] pr-5 font-bold text-sienna"
+        className="text-sienna flex items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-5 font-bold whitespace-nowrap"
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.62rem',
@@ -41,7 +41,7 @@ export function FeedSubnav() {
           textTransform: 'uppercase',
         }}
       >
-        <span className="relative inline-block h-2 w-2 rounded-full bg-curry-deep before:absolute before:inset-[-4px] before:rounded-full before:bg-[rgba(244,160,43,0.22)] before:content-['']" />
+        <span className="bg-curry-deep relative inline-block h-2 w-2 rounded-full before:absolute before:inset-[-4px] before:rounded-full before:bg-[rgba(244,160,43,0.22)] before:content-['']" />
         <span>{issue}</span>
       </div>
 
@@ -103,10 +103,10 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`whitespace-nowrap rounded-full border px-[14px] py-[7px] text-[13px] font-medium transition-colors ${
+      className={`rounded-full border px-[14px] py-[7px] text-[13px] font-medium whitespace-nowrap transition-colors ${
         isActive
           ? 'border-ink bg-ink text-paper'
-          : 'border-transparent text-sienna hover:bg-paper-sunken'
+          : 'text-sienna hover:bg-paper-sunken border-transparent'
       }`}
     >
       {label}
@@ -118,7 +118,7 @@ function Stat({ value, label }: { value: string; label: string }) {
   return (
     <span className="inline-flex items-baseline gap-1">
       <span
-        className="mr-[6px] align-middle text-cinnamon"
+        className="text-cinnamon mr-[6px] align-middle"
         style={{
           fontFamily: 'var(--font-archivo)',
           fontSize: 18,

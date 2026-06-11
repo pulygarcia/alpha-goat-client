@@ -17,7 +17,9 @@ vi.mock('../api/auth.api', () => ({
 }));
 
 function wrapper({ children }: { children: React.ReactNode }) {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   return React.createElement(QueryClientProvider, { client }, children);
 }
 
@@ -43,7 +45,11 @@ describe('useRegister', () => {
     const { result } = renderHook(() => useRegister(), { wrapper });
 
     await act(async () => {
-      result.current.mutate({ email: 'a@b.com', password: 'secret123', username: 'a' });
+      result.current.mutate({
+        email: 'a@b.com',
+        password: 'secret123',
+        username: 'a',
+      });
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
@@ -57,7 +63,11 @@ describe('useRegister', () => {
     const { result } = renderHook(() => useRegister(), { wrapper });
 
     await act(async () => {
-      result.current.mutate({ email: 'a@b.com', password: 'secret123', username: 'a' });
+      result.current.mutate({
+        email: 'a@b.com',
+        password: 'secret123',
+        username: 'a',
+      });
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));

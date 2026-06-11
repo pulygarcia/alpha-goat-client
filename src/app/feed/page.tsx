@@ -9,7 +9,7 @@ import { FeedTopbar } from '@/features/feed/components/FeedTopbar';
 
 function FeedContent() {
   return (
-    <main className="min-h-screen bg-paper text-ink">
+    <main className="bg-paper text-ink min-h-screen">
       <FeedTopbar />
       <FeedSubnav />
 

@@ -1,4 +1,4 @@
-import ParticleWords from './ParticleWords'
+import ParticleWords from './ParticleWords';
 
 export default function Hero() {
   return (
@@ -11,12 +11,12 @@ export default function Hero() {
     >
       <ParticleWords />
 
-{/* Made by */}
+      {/* Made by */}
       <a
         href="https://pp-v5.vercel.app"
         target="_blank"
         rel="noopener noreferrer"
-        className="absolute bottom-6 left-8 z-10 w-fit font-mono text-[0.65rem] uppercase tracking-[0.2em] transition-all duration-200 hover:text-curry-soft"
+        className="hover:text-curry-soft absolute bottom-6 left-8 z-10 w-fit font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-all duration-200"
         style={{
           color: 'rgba(246,201,119,0.6)',
           textShadow: '0 0 12px rgba(200,122,32,0.4)',
@@ -28,5 +28,5 @@ export default function Hero() {
         made by Ignacio (Puly) G.
       </a>
     </aside>
-  )
+  );
 }

@@ -1,14 +1,14 @@
 interface Props {
-  value: string
+  value: string;
 }
 
 function getScore(value: string): number {
-  let score = 0
-  if (value.length >= 8) score++
-  if (/[A-Z]/.test(value)) score++
-  if (/[0-9]/.test(value)) score++
-  if (/[^A-Za-z0-9]/.test(value)) score++
-  return score
+  let score = 0;
+  if (value.length >= 8) score++;
+  if (/[A-Z]/.test(value)) score++;
+  if (/[0-9]/.test(value)) score++;
+  if (/[^A-Za-z0-9]/.test(value)) score++;
+  return score;
 }
 
 const levels = [
@@ -17,13 +17,13 @@ const levels = [
   { label: 'Aceptable', color: '#f4a02b', width: '50%' },
   { label: 'Sólida', color: '#f4a02b', width: '75%' },
   { label: 'De fierro', color: '#7dd693', width: '100%' },
-]
+];
 
 export default function PasswordStrength({ value }: Props) {
-  if (!value) return null
+  if (!value) return null;
 
-  const score = getScore(value)
-  const level = levels[score]
+  const score = getScore(value);
+  const level = levels[score];
 
   return (
     <div className="flex flex-col gap-1">
@@ -34,10 +34,13 @@ export default function PasswordStrength({ value }: Props) {
         />
       </div>
       {level.label && (
-        <p className="font-mono text-[0.65rem] uppercase tracking-[0.28em]" style={{ color: level.color }}>
+        <p
+          className="font-mono text-[0.65rem] tracking-[0.28em] uppercase"
+          style={{ color: level.color }}
+        >
           Fuerza: {level.label}
         </p>
       )}
     </div>
-  )
+  );
 }

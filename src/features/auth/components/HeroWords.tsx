@@ -1,9 +1,9 @@
 interface Props {
-  activeStep: 1 | 2 | 3
+  activeStep: 1 | 2 | 3;
 }
 
-const words = ['Probá.', 'Opiná.', 'Puntuá.'] as const
-const baseOpacity = [0.12, 0.09, 0.14]
+const words = ['Probá.', 'Opiná.', 'Puntuá.'] as const;
+const baseOpacity = [0.12, 0.09, 0.14];
 
 export default function HeroWords({ activeStep }: Props) {
   return (
@@ -15,7 +15,7 @@ export default function HeroWords({ activeStep }: Props) {
       {words.map((word, i) => (
         <span
           key={word}
-          className="block font-archivo uppercase leading-[0.92] tracking-[-0.045em] transition-all duration-[600ms]"
+          className="font-archivo block leading-[0.92] tracking-[-0.045em] uppercase transition-all duration-[600ms]"
           style={{
             fontSize: '30vh',
             opacity: activeStep === i + 1 ? 0.35 : baseOpacity[i],
@@ -26,5 +26,5 @@ export default function HeroWords({ activeStep }: Props) {
         </span>
       ))}
     </div>
-  )
+  );
 }

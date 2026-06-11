@@ -17,7 +17,7 @@ export function AlfajorHero() {
       aria-hidden="true"
     >
       <div
-        className="absolute left-0 right-0 top-1/2 h-[14%] -translate-y-1/2"
+        className="absolute top-1/2 right-0 left-0 h-[14%] -translate-y-1/2"
         style={{
           background:
             'linear-gradient(to bottom, #c97a26 0%, #b86015 45%, #8a4510 100%)',

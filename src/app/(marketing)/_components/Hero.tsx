@@ -46,21 +46,24 @@ export function Hero() {
       <div className="relative z-10 flex min-h-screen flex-col">
         <Nav />
 
-        <div className="flex flex-1 flex-col items-center px-6 pb-12 pt-6 text-center sm:pt-10">
+        <div className="flex flex-1 flex-col items-center px-6 pt-6 pb-12 text-center sm:pt-10">
           <p className="eyebrow fade-up text-curry">
             El índice nacional del alfajor
           </p>
 
-          <h1 className="h-mega fade-up mt-6" style={{ animationDelay: '120ms' }}>
+          <h1
+            className="h-mega fade-up mt-6"
+            style={{ animationDelay: '120ms' }}
+          >
             EL ALFAJOR
             <span className="h-sub mt-2 block">NO SE DISCUTE.</span>
           </h1>
 
           <p
-            className="coda fade-up mt-8 flex items-center gap-3 text-curry"
+            className="coda fade-up text-curry mt-8 flex items-center gap-3"
             style={{ animationDelay: '300ms' }}
           >
-            <span className="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-curry" />
+            <span className="pulse-dot bg-curry inline-block h-1.5 w-1.5 rounded-full" />
             Ahora se puntúa, ningún chamuyo
           </p>
 

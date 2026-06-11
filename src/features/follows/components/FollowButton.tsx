@@ -34,7 +34,7 @@ export function FollowButton({ userId, isFollowing }: FollowButtonProps) {
       className={
         'rounded-full border px-3 py-[3px] text-[11px] font-semibold transition-colors disabled:opacity-60 ' +
         (isFollowing
-          ? 'border-[rgba(74,30,8,0.22)] text-cinnamon hover:border-curry-deep hover:text-curry-deep'
+          ? 'text-cinnamon hover:border-curry-deep hover:text-curry-deep border-[rgba(74,30,8,0.22)]'
           : 'border-curry-deep bg-curry-deep text-paper hover:bg-curry-bright')
       }
     >

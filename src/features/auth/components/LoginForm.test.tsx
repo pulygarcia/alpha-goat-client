@@ -20,7 +20,9 @@ vi.mock('../api/auth.api', () => ({
 }));
 
 function renderForm() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   return render(
     <QueryClientProvider client={client}>
       <LoginForm />
@@ -52,7 +54,14 @@ describe('LoginForm', () => {
   it('submits valid credentials and redirects to the feed', async () => {
     vi.mocked(authApi.login).mockResolvedValue({
       accessToken: 't',
-      user: { id: '1', email: 'a@b.com', username: 'a', avatarUrl: null, role: 'USER', createdAt: '2026-01-01T00:00:00.000Z' },
+      user: {
+        id: '1',
+        email: 'a@b.com',
+        username: 'a',
+        avatarUrl: null,
+        role: 'USER',
+        createdAt: '2026-01-01T00:00:00.000Z',
+      },
     });
 
     renderForm();
@@ -61,7 +70,10 @@ describe('LoginForm', () => {
     await userEvent.type(screen.getByLabelText(/contraseña/i), 'secret');
     await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
 
-    expect(authApi.login).toHaveBeenCalledWith({ email: 'a@b.com', password: 'secret' }, expect.anything());
+    expect(authApi.login).toHaveBeenCalledWith(
+      { email: 'a@b.com', password: 'secret' },
+      expect.anything(),
+    );
     await vi.waitFor(() => expect(pushMock).toHaveBeenCalledWith('/feed'));
   });
 

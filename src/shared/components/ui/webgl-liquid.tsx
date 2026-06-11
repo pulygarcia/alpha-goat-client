@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { cn } from "@/shared/lib/utils";
-import { WebGLErrorBoundary, WebGLFallback } from "./webgl-error-boundary";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { cn } from '@/shared/lib/utils';
+import { WebGLErrorBoundary, WebGLFallback } from './webgl-error-boundary';
 
 const VERTEX_SHADER = `
 attribute vec2 position;
@@ -99,20 +99,20 @@ void main() {
 `;
 
 const HEX_COLOR_REGEX = /^#?[0-9a-fA-F]{6}$/;
-const FALLBACK_DEEP = "#04050b";
-const FALLBACK_MID = "#134d93";
-const FALLBACK_HIGHLIGHT = "#8cecff";
+const FALLBACK_DEEP = '#04050b';
+const FALLBACK_MID = '#134d93';
+const FALLBACK_HIGHLIGHT = '#8cecff';
 
 function sanitizeHexColor(value: string, fallback: string) {
   const trimmed = value.trim();
   if (!HEX_COLOR_REGEX.test(trimmed)) {
     return fallback;
   }
-  return trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
+  return trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
 }
 
 function hexToRgb01(hex: string): [number, number, number] {
-  const normalized = sanitizeHexColor(hex, FALLBACK_DEEP).replace("#", "");
+  const normalized = sanitizeHexColor(hex, FALLBACK_DEEP).replace('#', '');
   const r = parseInt(normalized.slice(0, 2), 16) / 255;
   const g = parseInt(normalized.slice(2, 4), 16) / 255;
   const b = parseInt(normalized.slice(4, 6), 16) / 255;
@@ -138,12 +138,12 @@ export interface WebGLLiquidProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const LIQUID_HEADLINE_CLASS =
-  "pb-[0.08em] text-[11cqi] md:text-[7cqi] lg:text-[5.5cqi] leading-[0.92] tracking-[-0.03em] font-semibold text-white";
+  'pb-[0.08em] text-[11cqi] md:text-[7cqi] lg:text-[5.5cqi] leading-[0.92] tracking-[-0.03em] font-semibold text-white';
 
 export function WebGLLiquid({
-  title = "Fluid Motion",
-  subtitle = "Premium Presence",
-  description = "A cinematic liquid field tuned for modern hero sections with polished depth and restrained motion.",
+  title = 'Fluid Motion',
+  subtitle = 'Premium Presence',
+  description = 'A cinematic liquid field tuned for modern hero sections with polished depth and restrained motion.',
   colorDeep = FALLBACK_DEEP,
   colorMid = FALLBACK_MID,
   colorHighlight = FALLBACK_HIGHLIGHT,
@@ -205,7 +205,7 @@ export function WebGLLiquid({
     }
 
     try {
-      const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
+      const gl = canvas.getContext('webgl', { antialias: true, alpha: true });
       if (!gl) {
         // One-shot fallback when WebGL is unavailable; the effect early-returns
         // on the next render via the `hasWebGLError` guard above.
@@ -256,7 +256,7 @@ export function WebGLLiquid({
 
       gl.useProgram(program);
 
-      const positionLocation = gl.getAttribLocation(program, "position");
+      const positionLocation = gl.getAttribLocation(program, 'position');
       const quadBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
       gl.bufferData(
@@ -267,17 +267,20 @@ export function WebGLLiquid({
       gl.enableVertexAttribArray(positionLocation);
       gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-      const uRes = gl.getUniformLocation(program, "u_res");
-      const uTime = gl.getUniformLocation(program, "u_time");
-      const uColorDeep = gl.getUniformLocation(program, "u_colorDeep");
-      const uColorMid = gl.getUniformLocation(program, "u_colorMid");
-      const uColorHighlight = gl.getUniformLocation(program, "u_colorHighlight");
-      const uSpeed = gl.getUniformLocation(program, "u_speed");
-      const uFlowStrength = gl.getUniformLocation(program, "u_flowStrength");
-      const uGrain = gl.getUniformLocation(program, "u_grain");
-      const uContrast = gl.getUniformLocation(program, "u_contrast");
-      const uOpacity = gl.getUniformLocation(program, "u_opacity");
-      const uReveal = gl.getUniformLocation(program, "u_reveal");
+      const uRes = gl.getUniformLocation(program, 'u_res');
+      const uTime = gl.getUniformLocation(program, 'u_time');
+      const uColorDeep = gl.getUniformLocation(program, 'u_colorDeep');
+      const uColorMid = gl.getUniformLocation(program, 'u_colorMid');
+      const uColorHighlight = gl.getUniformLocation(
+        program,
+        'u_colorHighlight',
+      );
+      const uSpeed = gl.getUniformLocation(program, 'u_speed');
+      const uFlowStrength = gl.getUniformLocation(program, 'u_flowStrength');
+      const uGrain = gl.getUniformLocation(program, 'u_grain');
+      const uContrast = gl.getUniformLocation(program, 'u_contrast');
+      const uOpacity = gl.getUniformLocation(program, 'u_opacity');
+      const uReveal = gl.getUniformLocation(program, 'u_reveal');
 
       if (
         !uRes ||
@@ -363,10 +366,10 @@ export function WebGLLiquid({
   const fallbackContent = (
     <div
       className={cn(
-        "relative flex min-h-screen w-full items-center overflow-hidden bg-[#02040b] text-white",
+        'relative flex min-h-screen w-full items-center overflow-hidden bg-[#02040b] text-white',
         className,
       )}
-      style={{ containerType: "size", ...style }}
+      style={{ containerType: 'size', ...style }}
       {...props}
     >
       <WebGLFallback className="absolute inset-0 h-full w-full" />
@@ -375,7 +378,7 @@ export function WebGLLiquid({
           <div className="max-w-[760px]">
             {title && <h1 className={LIQUID_HEADLINE_CLASS}>{title}</h1>}
             {subtitle && (
-              <h2 className="mt-2 text-[11cqi] md:text-[7cqi] lg:text-[5.5cqi] leading-[0.9] tracking-[-0.03em] font-bold text-white/95">
+              <h2 className="mt-2 text-[11cqi] leading-[0.9] font-bold tracking-[-0.03em] text-white/95 md:text-[7cqi] lg:text-[5.5cqi]">
                 {subtitle}
               </h2>
             )}
@@ -400,17 +403,17 @@ export function WebGLLiquid({
       <div
         ref={hostRef}
         className={cn(
-          "relative flex min-h-screen w-full items-center overflow-hidden bg-[#02040b] text-white",
+          'relative flex min-h-screen w-full items-center overflow-hidden bg-[#02040b] text-white',
           className,
         )}
-        style={{ containerType: "size", ...style }}
+        style={{ containerType: 'size', ...style }}
         {...props}
       >
         <canvas
           ref={canvasRef}
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full"
-          style={{ width: "100%", height: "100%", display: "block" }}
+          style={{ width: '100%', height: '100%', display: 'block' }}
         />
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/35 via-black/15 to-transparent" />
@@ -421,7 +424,7 @@ export function WebGLLiquid({
             <div className="max-w-[760px]">
               {title && <h1 className={LIQUID_HEADLINE_CLASS}>{title}</h1>}
               {subtitle && (
-                <h2 className="mt-2 text-[11cqi] md:text-[7cqi] lg:text-[5.5cqi] leading-[0.9] tracking-[-0.03em] font-bold text-white/95">
+                <h2 className="mt-2 text-[11cqi] leading-[0.9] font-bold tracking-[-0.03em] text-white/95 md:text-[7cqi] lg:text-[5.5cqi]">
                   {subtitle}
                 </h2>
               )}

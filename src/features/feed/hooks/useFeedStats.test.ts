@@ -22,7 +22,10 @@ describe('useFeedStats', () => {
   });
 
   it('returns the counters from GET /feed/stats', async () => {
-    vi.mocked(feedApi.stats).mockResolvedValue({ todayCount: 7, weekCount: 42 });
+    vi.mocked(feedApi.stats).mockResolvedValue({
+      todayCount: 7,
+      weekCount: 42,
+    });
 
     const { result } = renderHook(() => useFeedStats(), { wrapper });
 

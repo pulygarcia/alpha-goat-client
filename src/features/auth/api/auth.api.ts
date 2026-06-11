@@ -1,5 +1,10 @@
 import { apiClient } from '@/shared/lib/api-client';
-import type { AuthResponse, LoginInput, RegisterInput, User } from '../types/auth.types';
+import type {
+  AuthResponse,
+  LoginInput,
+  RegisterInput,
+  User,
+} from '../types/auth.types';
 
 export const authApi = {
   login: async (input: LoginInput): Promise<AuthResponse> => {
@@ -7,7 +12,10 @@ export const authApi = {
     return data;
   },
   register: async (input: RegisterInput): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/auth/register', input);
+    const { data } = await apiClient.post<AuthResponse>(
+      '/auth/register',
+      input,
+    );
     return data;
   },
   me: async (): Promise<User> => {

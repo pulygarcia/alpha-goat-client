@@ -24,7 +24,13 @@ function makeItem(id: string, nombre: string): FeedItem {
     quote: null,
     photoUrl: null,
     overall: 8,
-    axes: { dulzor: 8, cantidadDDL: 7, calidadBano: 9, ratioTapaRelleno: 6, textura: 8 },
+    axes: {
+      dulzor: 8,
+      cantidadDDL: 7,
+      calidadBano: 9,
+      ratioTapaRelleno: 6,
+      textura: 8,
+    },
     likes: 10,
     commentsCount: 2,
     createdAt: '2026-05-27T00:00:00.000Z',
@@ -60,7 +66,9 @@ describe('FeedReviews', () => {
 
   it('shows an empty message when there are no items', () => {
     mocked.mockReturnValue(
-      baseReturn({ data: { pages: [{ items: [], total: 0, page: 1, limit: 20 }] } as never }),
+      baseReturn({
+        data: { pages: [{ items: [], total: 0, page: 1, limit: 20 }] } as never,
+      }),
     );
     render(<FeedReviews />);
     expect(screen.getByText(/todavía no hay reseñas/i)).toBeInTheDocument();
@@ -72,7 +80,12 @@ describe('FeedReviews', () => {
         data: {
           pages: [
             { items: [makeItem('1', 'Jorgito')], total: 2, page: 1, limit: 20 },
-            { items: [makeItem('2', 'Guaymallén')], total: 2, page: 2, limit: 20 },
+            {
+              items: [makeItem('2', 'Guaymallén')],
+              total: 2,
+              page: 2,
+              limit: 20,
+            },
           ],
         } as never,
       }),
@@ -96,7 +109,9 @@ describe('FeedReviews', () => {
     const fetchNextPage = vi.fn();
     mocked.mockReturnValue(
       baseReturn({
-        data: { pages: [{ items: [], total: 50, page: 1, limit: 20 }] } as never,
+        data: {
+          pages: [{ items: [], total: 50, page: 1, limit: 20 }],
+        } as never,
         hasNextPage: true,
         fetchNextPage,
       }),

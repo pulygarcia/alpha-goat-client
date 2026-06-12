@@ -1,6 +1,7 @@
 'use client';
 
 import { FeaturedMarcas } from '@/features/marcas/components/FeaturedMarcas';
+import { WeeklyRanking } from '@/features/ranking/components/WeeklyRanking';
 
 const RAIL_HEADING = {
   fontFamily: 'var(--font-mono)',
@@ -25,10 +26,7 @@ function PendingSection({ title, note }: { title: string; note: string }) {
 export function FeedRail() {
   return (
     <aside className="bg-paper-raised px-7 py-9">
-      <PendingSection
-        title="Ranking semanal"
-        note="El top de la semana llega cuando el back exponga GET /ranking/weekly."
-      />
+      <WeeklyRanking />
       <FeaturedMarcas />
       <PendingSection
         title="Recomendado para vos"

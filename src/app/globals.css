@@ -21,6 +21,8 @@
   --color-ink: #2c1209;
   --color-deep: #4f1f08;
   --color-curry-deep: #d68715;
+  --color-reward: #5a9a4a;
+  --color-error: #c4452a;
 
   --font-archivo: var(--font-archivo);
   --font-inter: var(--font-inter);

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Nav } from './Nav';
 import { AlfajorReviews } from './AlfajorReviews';
+import { AlfajorFloat } from './AlfajorFloat';
 import { WebGLLiquid } from '@/shared/components/ui/webgl-liquid';
 
 export function Hero() {
@@ -42,6 +43,8 @@ export function Hero() {
             'radial-gradient(ellipse at bottom, rgba(0,0,0,0.30), transparent 70%)',
         }}
       />
+
+      <AlfajorFloat />
 
       <div className="relative z-10 flex min-h-screen flex-col">
         <Nav />

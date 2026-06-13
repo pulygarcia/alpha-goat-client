@@ -30,7 +30,7 @@ export function FeedRail() {
       <FeaturedMarcas />
       <PendingSection
         title="Recomendado para vos"
-        note="Recomendaciones según tu huella — pendiente de GET /recommendations."
+        note="Muy pronto: recomendaciones según tu huella alfajorera."
       />
     </aside>
   );

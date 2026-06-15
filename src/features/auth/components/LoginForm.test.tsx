@@ -53,7 +53,6 @@ describe('LoginForm', () => {
 
   it('submits valid credentials and redirects to the feed', async () => {
     vi.mocked(authApi.login).mockResolvedValue({
-      accessToken: 't',
       user: {
         id: '1',
         email: 'a@b.com',

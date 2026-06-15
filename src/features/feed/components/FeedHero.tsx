@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useFeedHero } from '../hooks/useFeedHero';
+import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
 import type { FeedHeroRatings } from '../types/feed.types';
 
 const AXIS_LABELS: Record<keyof FeedHeroRatings, string> = {
@@ -28,6 +29,7 @@ function toRadarData(r: FeedHeroRatings) {
 
 export function FeedHero() {
   const { data, isLoading, isError } = useFeedHero();
+  const { ref, revealed, animate } = useRevealOnScroll<HTMLDivElement>();
 
   if (isLoading) {
     return (
@@ -107,7 +109,7 @@ export function FeedHero() {
           </dl>
         </div>
 
-        <div className="h-[280px] w-full">
+        <div ref={ref} className="h-[280px] w-full">
           <ResponsiveContainer
             width="100%"
             height="100%"
@@ -126,13 +128,16 @@ export function FeedHero() {
                 }}
               />
               <PolarRadiusAxis domain={[0, 10]} tick={false} axisLine={false} />
-              <Radar
-                dataKey="value"
-                stroke="var(--color-curry-deep)"
-                fill="var(--color-curry-deep)"
-                fillOpacity={0.28}
-                isAnimationActive
-              />
+              {revealed && (
+                <Radar
+                  dataKey="value"
+                  stroke="var(--color-curry-deep)"
+                  fill="var(--color-curry-deep)"
+                  fillOpacity={0.28}
+                  isAnimationActive={animate}
+                  animationDuration={700}
+                />
+              )}
             </RadarChart>
           </ResponsiveContainer>
         </div>

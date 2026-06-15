@@ -1,21 +1,17 @@
 'use client';
 
-import { useState } from 'react';
 import { useFeedStats } from '../hooks/useFeedStats';
+import { useFeedFilters } from '../store/feedFilters.store';
+import type { FeedScope } from '../types/feed.types';
 
 const PERIOD_CHIPS = [
-  { id: 'hoy', label: 'Hoy' },
-  { id: 'semana', label: 'Esta semana' },
-] as const;
+  { id: 'today', label: 'Hoy' },
+  { id: 'week', label: 'Esta semana' },
+] as const satisfies ReadonlyArray<{ id: FeedScope; label: string }>;
 
 const SCOPE_CHIPS = [
-  { id: 'siguiendo', label: 'Siguiendo' },
-  { id: 'provincia', label: 'Por provincia' },
-] as const;
-
-type ChipId =
-  | (typeof PERIOD_CHIPS)[number]['id']
-  | (typeof SCOPE_CHIPS)[number]['id'];
+  { id: 'following', label: 'Siguiendo' },
+] as const satisfies ReadonlyArray<{ id: FeedScope; label: string }>;
 
 function formatIssueDate(date: Date): string {
   // ej: "Jue 21.05.2026"
@@ -26,7 +22,8 @@ function formatIssueDate(date: Date): string {
 }
 
 export function FeedSubnav() {
-  const [active, setActive] = useState<ChipId>('hoy');
+  const scope = useFeedFilters((s) => s.scope);
+  const toggleScope = useFeedFilters((s) => s.toggleScope);
   const issue = formatIssueDate(new Date());
   const { data: stats } = useFeedStats();
 
@@ -50,21 +47,15 @@ export function FeedSubnav() {
           <Chip
             key={chip.id}
             label={chip.label}
-            isActive={active === chip.id}
-            onClick={() => setActive(chip.id)}
+            isActive={scope === chip.id}
+            onClick={() => toggleScope(chip.id)}
           />
         ))}
         <span className="mx-[6px] h-[18px] w-px bg-[rgba(74,30,8,0.14)]" />
         <Chip
           label={SCOPE_CHIPS[0].label}
-          isActive={active === SCOPE_CHIPS[0].id}
-          onClick={() => setActive(SCOPE_CHIPS[0].id)}
-        />
-        <span className="mx-[6px] h-[18px] w-px bg-[rgba(74,30,8,0.14)]" />
-        <Chip
-          label={SCOPE_CHIPS[1].label}
-          isActive={active === SCOPE_CHIPS[1].id}
-          onClick={() => setActive(SCOPE_CHIPS[1].id)}
+          isActive={scope === SCOPE_CHIPS[0].id}
+          onClick={() => toggleScope(SCOPE_CHIPS[0].id)}
         />
       </div>
 

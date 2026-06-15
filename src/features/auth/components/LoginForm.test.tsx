@@ -96,4 +96,73 @@ describe('LoginForm', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(/incorrectos/i);
     expect(pushMock).not.toHaveBeenCalled();
   });
+
+  it('toggles password visibility when clicking the eye button', async () => {
+    renderForm();
+    const password = screen.getByLabelText(/contraseña/i);
+    expect(password).toHaveAttribute('type', 'password');
+
+    await userEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    expect(password).toHaveAttribute('type', 'text');
+
+    await userEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    expect(password).toHaveAttribute('type', 'password');
+  });
+
+  function axiosErr(
+    status: number | undefined,
+    data: unknown,
+    code = 'ERR_BAD_RESPONSE',
+  ) {
+    return new AxiosError(
+      'err',
+      code,
+      { headers: new AxiosHeaders() } as never,
+      null,
+      status === undefined
+        ? undefined
+        : ({
+            status,
+            statusText: '',
+            data,
+            headers: {},
+            config: { headers: new AxiosHeaders() },
+          } as never),
+    );
+  }
+
+  async function submitWith(rejection: unknown) {
+    vi.mocked(authApi.login).mockRejectedValue(rejection);
+    renderForm();
+    await userEvent.type(screen.getByLabelText(/mail/i), 'a@b.com');
+    await userEvent.type(screen.getByLabelText(/contraseña/i), 'secret');
+    await userEvent.click(screen.getByRole('button', { name: /entrar/i }));
+    return screen.findByRole('alert');
+  }
+
+  it('surfaces the first message when the error body is an array', async () => {
+    const alert = await submitWith(
+      axiosErr(400, { message: ['Campo inválido', 'otro'] }),
+    );
+    expect(alert).toHaveTextContent('Campo inválido');
+  });
+
+  it('surfaces a plain string message from the error body', async () => {
+    const alert = await submitWith(
+      axiosErr(400, { message: 'Servidor caído' }),
+    );
+    expect(alert).toHaveTextContent('Servidor caído');
+  });
+
+  it('shows a network message when the request never reaches the server', async () => {
+    const alert = await submitWith(
+      axiosErr(undefined, undefined, 'ERR_NETWORK'),
+    );
+    expect(alert).toHaveTextContent(/no pudimos contactar/i);
+  });
+
+  it('falls back to a generic message for non-axios errors', async () => {
+    const alert = await submitWith(new Error('boom'));
+    expect(alert).toHaveTextContent(/algo salió mal/i);
+  });
 });

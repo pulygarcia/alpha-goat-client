@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useFeedReviews } from '../hooks/useFeedReviews';
+import { useFeedFilters } from '../store/feedFilters.store';
 import type { FeedSort } from '../types/feed.types';
 import { ReviewRow } from './ReviewRow';
 
@@ -13,6 +14,7 @@ const SORTS: Array<{ value: FeedSort; label: string }> = [
 
 export function FeedReviews() {
   const [sort, setSort] = useState<FeedSort>('recent');
+  const scope = useFeedFilters((s) => s.scope);
   const {
     data,
     isLoading,
@@ -20,7 +22,7 @@ export function FeedReviews() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useFeedReviews({ sort });
+  } = useFeedReviews({ sort, scope: scope ?? undefined });
 
   const items = data?.pages.flatMap((p) => p.items) ?? [];
 

@@ -51,7 +51,6 @@ export default defineConfig({
         'src/features/auth/components/InputGroup.tsx',
         'src/features/feed/components/FeedHero.tsx',
         'src/features/feed/components/FeedRail.tsx',
-        'src/features/feed/components/FeedSubnav.tsx',
         'src/features/feed/components/FeedTopbar.tsx',
         'src/features/feed/components/ReviewRow.tsx',
       ],

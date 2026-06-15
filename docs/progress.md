@@ -77,6 +77,12 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - `FeaturedMarcas.tsx`: sección del rail con cards por marca (logo o inicial sobre `paper-sunken`, nombre, meta "N productos · X.X prom. · provincia"). Estados: skeleton pulse (3 filas) / error / empty inline.
 - Tests: `useFeaturedMarcas` (mock `api/`, 2) + `FeaturedMarcas` (mock hook: cards con singular/plural y provincia opcional, logo vs inicial, error, empty — 4). 6 verdes.
 
+### Coverage al 85% (gate verde)
+- Dos partes, como estaba diagnosticado en la deuda técnica:
+  - **Parte 1 — alinear config con la política**: excludes de coverage en `vitest.config.ts` para lo que el CLAUDE.md dice no testear. Se sumaron: componentes presentacionales (auth `Hero`/`HeroWords`/`ParticleWords`/`SocialButton`/`InputGroup`, feed `FeedHero`/`FeedRail`/`FeedSubnav`/`FeedTopbar`/`ReviewRow`), wrappers `api/` (se mockean siempre), providers, `*.server.ts`, y boundary/bootstrap (`middleware.ts`, `config/**`, espejando los excludes de Jest del back).
+  - **Parte 2 — tests genuinos que faltaban**: `api-client` (interceptor 401: dispatch para no-auth, skip en `/auth/*`, no-401, no-axios), `useCurrentUser` (seed desde initialUser sin fetch, fetch sin initialUser, no setea user en error), `useLogout` (limpia store+cache+redirect, e igual en onSettled ante fallo), `auth.store`, `useFeedHero`, y `cn`. Además se cerraron las ramas de `extractError` y el toggle de password en `LoginForm`/`SignUpForm`.
+- Resultado: **81 tests verdes**; coverage statements 96.8 / branches 89.2 / functions 97.1 / lines 98.9. CI (`.github/workflows/ci.yml`) ya corre `pnpm test:coverage` (se quitó el TODO que corría `pnpm test` sin gate).
+
 ## Pendiente
 
 ### Próximas features

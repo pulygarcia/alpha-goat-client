@@ -8,6 +8,7 @@ import {
   RadarChart,
 } from 'recharts';
 import { FollowButton } from '@/features/follows/components/FollowButton';
+import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
 import type { FeedAxes, FeedItem } from '../types/feed.types';
 
 const AXIS_LABELS: Record<keyof FeedAxes, string> = {
@@ -53,6 +54,8 @@ export function ReviewRow({ item }: { item: FeedItem }) {
     likes,
     commentsCount,
   } = item;
+
+  const { ref, revealed, animate } = useRevealOnScroll<HTMLDivElement>();
 
   return (
     <article className="grid grid-cols-[96px_1fr_110px_64px] items-start gap-6 border-b border-[rgba(74,30,8,0.14)] py-[22px] last:border-b-0">
@@ -141,7 +144,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
       </div>
 
       {/* Radar mini */}
-      <div className="h-[100px] w-[100px]">
+      <div ref={ref} className="h-[100px] w-[100px]">
         <RadarChart
           width={100}
           height={100}
@@ -151,13 +154,16 @@ export function ReviewRow({ item }: { item: FeedItem }) {
           <PolarGrid stroke="rgba(74,30,8,0.18)" />
           <PolarAngleAxis dataKey="axis" tick={false} />
           <PolarRadiusAxis domain={[0, 10]} tick={false} axisLine={false} />
-          <Radar
-            dataKey="value"
-            stroke="var(--color-curry-deep)"
-            fill="var(--color-curry-deep)"
-            fillOpacity={0.28}
-            isAnimationActive={false}
-          />
+          {revealed && (
+            <Radar
+              dataKey="value"
+              stroke="var(--color-curry-deep)"
+              fill="var(--color-curry-deep)"
+              fillOpacity={0.28}
+              isAnimationActive={animate}
+              animationDuration={700}
+            />
+          )}
         </RadarChart>
       </div>
 

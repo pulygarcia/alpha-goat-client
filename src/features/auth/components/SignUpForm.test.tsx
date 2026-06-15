@@ -106,4 +106,80 @@ describe('SignUpForm', () => {
     );
     expect(pushMock).not.toHaveBeenCalled();
   });
+
+  it('toggles password visibility when clicking the eye button', async () => {
+    renderForm();
+    const password = screen.getByLabelText(/contraseña/i);
+    expect(password).toHaveAttribute('type', 'password');
+
+    await userEvent.click(screen.getByRole('button', { name: /toggle/i }));
+    expect(password).toHaveAttribute('type', 'text');
+  });
+
+  function axiosErr(
+    status: number | undefined,
+    data: unknown,
+    code = 'ERR_BAD_RESPONSE',
+  ) {
+    return new AxiosError(
+      'err',
+      code,
+      { headers: new AxiosHeaders() } as never,
+      null,
+      status === undefined
+        ? undefined
+        : ({
+            status,
+            statusText: '',
+            data,
+            headers: {},
+            config: { headers: new AxiosHeaders() },
+          } as never),
+    );
+  }
+
+  async function submitWith(rejection: unknown) {
+    vi.mocked(authApi.register).mockRejectedValue(rejection);
+    renderForm();
+    await userEvent.type(screen.getByLabelText(/usuario/i), 'belgrano');
+    await userEvent.type(screen.getByLabelText(/mail/i), 'a@b.com');
+    await userEvent.type(screen.getByLabelText(/contraseña/i), 'longenough');
+    await userEvent.click(
+      screen.getByRole('button', { name: /crear cuenta/i }),
+    );
+    return screen.findByRole('alert');
+  }
+
+  it('maps a 409 about the username to a taken-username message', async () => {
+    const alert = await submitWith(
+      axiosErr(409, { message: 'username already in use' }),
+    );
+    expect(alert).toHaveTextContent(/usuario ya está tomado/i);
+  });
+
+  it('passes through an unrecognized 409 message', async () => {
+    const alert = await submitWith(
+      axiosErr(409, { message: 'cuenta duplicada' }),
+    );
+    expect(alert).toHaveTextContent('cuenta duplicada');
+  });
+
+  it('surfaces a plain string message for non-409 errors', async () => {
+    const alert = await submitWith(
+      axiosErr(400, { message: 'Datos inválidos' }),
+    );
+    expect(alert).toHaveTextContent('Datos inválidos');
+  });
+
+  it('shows a network message when the request never reaches the server', async () => {
+    const alert = await submitWith(
+      axiosErr(undefined, undefined, 'ERR_NETWORK'),
+    );
+    expect(alert).toHaveTextContent(/no pudimos contactar/i);
+  });
+
+  it('falls back to a generic message for non-axios errors', async () => {
+    const alert = await submitWith(new Error('boom'));
+    expect(alert).toHaveTextContent(/algo salió mal/i);
+  });
 });

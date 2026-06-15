@@ -31,9 +31,8 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
-      # TODO: switch to test:coverage once coverage reaches the 85% threshold
       - name: Tests
-        run: pnpm test
+        run: pnpm test:coverage
 
       - name: Build
         run: pnpm build

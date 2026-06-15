@@ -9,7 +9,9 @@ interface FeedFiltersStore {
 }
 
 export const useFeedFilters = create<FeedFiltersStore>()((set) => ({
-  scope: 'today',
+  // Default "todas" (sin filtro): el feed arranca mostrando todo. Filtrar por
+  // 'today' de entrada deja la lista vacía si no hubo reseñas hoy.
+  scope: null,
   toggleScope: (scope) =>
     set((state) => ({ scope: state.scope === scope ? null : scope })),
 }));

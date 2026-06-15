@@ -99,10 +99,16 @@ describe('FeedReviews', () => {
     mocked.mockReturnValue(baseReturn({ data: { pages: [] } as never }));
     render(<FeedReviews />);
 
-    expect(mocked).toHaveBeenLastCalledWith({ sort: 'recent', scope: 'today' });
+    expect(mocked).toHaveBeenLastCalledWith({
+      sort: 'recent',
+      scope: undefined,
+    });
 
     fireEvent.click(screen.getByText('Más likes'));
-    expect(mocked).toHaveBeenLastCalledWith({ sort: 'likes', scope: 'today' });
+    expect(mocked).toHaveBeenLastCalledWith({
+      sort: 'likes',
+      scope: undefined,
+    });
   });
 
   it('calls fetchNextPage when "Cargar más" is clicked', () => {

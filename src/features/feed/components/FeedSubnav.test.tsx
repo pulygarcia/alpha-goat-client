@@ -12,7 +12,7 @@ const mockedStats = vi.mocked(useFeedStats);
 
 describe('FeedSubnav', () => {
   beforeEach(() => {
-    useFeedFilters.setState({ scope: 'today' });
+    useFeedFilters.setState({ scope: null });
     mockedStats.mockReturnValue({
       data: { todayCount: 3, weekCount: 12 },
     } as unknown as ReturnType<typeof useFeedStats>);
@@ -44,7 +44,8 @@ describe('FeedSubnav', () => {
 
   it('clicking the active chip clears the scope to "todas"', () => {
     render(<FeedSubnav />);
-    fireEvent.click(screen.getByText('Hoy'));
+    fireEvent.click(screen.getByText('Hoy')); // null -> today
+    fireEvent.click(screen.getByText('Hoy')); // today -> null
     expect(useFeedFilters.getState().scope).toBeNull();
   });
 

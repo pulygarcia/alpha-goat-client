@@ -3,14 +3,14 @@ import { useFeedFilters } from './feedFilters.store';
 
 describe('feedFilters.store', () => {
   beforeEach(() => {
-    useFeedFilters.setState({ scope: 'today' });
+    useFeedFilters.setState({ scope: null });
   });
 
-  it('defaults to the "today" scope', () => {
-    expect(useFeedFilters.getState().scope).toBe('today');
+  it('defaults to no scope ("todas")', () => {
+    expect(useFeedFilters.getState().scope).toBeNull();
   });
 
-  it('toggleScope switches to a different scope', () => {
+  it('toggleScope selects a scope and switches between scopes', () => {
     useFeedFilters.getState().toggleScope('week');
     expect(useFeedFilters.getState().scope).toBe('week');
 
@@ -19,13 +19,8 @@ describe('feedFilters.store', () => {
   });
 
   it('toggleScope on the active scope clears it back to "todas" (null)', () => {
-    useFeedFilters.getState().toggleScope('today');
-    expect(useFeedFilters.getState().scope).toBeNull();
-  });
-
-  it('selecting again after clearing re-applies the scope', () => {
-    useFeedFilters.getState().toggleScope('today'); // -> null
     useFeedFilters.getState().toggleScope('today'); // -> 'today'
-    expect(useFeedFilters.getState().scope).toBe('today');
+    useFeedFilters.getState().toggleScope('today'); // -> null
+    expect(useFeedFilters.getState().scope).toBeNull();
   });
 });

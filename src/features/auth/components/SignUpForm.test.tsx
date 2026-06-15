@@ -62,7 +62,6 @@ describe('SignUpForm', () => {
 
   it('submits valid data and redirects to the feed', async () => {
     vi.mocked(authApi.register).mockResolvedValue({
-      accessToken: 't',
       user: fakeUser,
     });
 

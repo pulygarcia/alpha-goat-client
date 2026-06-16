@@ -43,6 +43,14 @@ function Probe() {
   );
 }
 
+// Reproduce el caso del FeedHero: el nodo observado aparece DESPUÉS del primer
+// render (mientras tanto se muestra otra cosa, p. ej. un estado de carga).
+function DeferredProbe({ show }: { show: boolean }) {
+  const { ref, revealed } = useRevealOnScroll<HTMLDivElement>();
+  if (!show) return <span>cargando</span>;
+  return <div ref={ref} data-testid="probe" data-revealed={revealed} />;
+}
+
 function read(container: HTMLElement) {
   const el = container.querySelector('[data-testid="probe"]')!;
   return {
@@ -103,6 +111,20 @@ describe('useRevealOnScroll', () => {
 
     expect(read(container).revealed).toBe(true);
     expect(read(container).animate).toBe(false);
+  });
+
+  it('observes the element even if it mounts after the first render', () => {
+    const { rerender, container } = render(<DeferredProbe show={false} />);
+    // Nodo aún no montado: nada que observar.
+    expect(observe).not.toHaveBeenCalled();
+
+    rerender(<DeferredProbe show={true} />);
+    expect(observe).toHaveBeenCalledOnce();
+
+    act(() => {
+      lastCallback?.([{ isIntersecting: true }]);
+    });
+    expect(read(container).revealed).toBe(true);
   });
 
   it('reveals immediately when IntersectionObserver is unavailable', () => {

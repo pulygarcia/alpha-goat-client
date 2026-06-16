@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, Plus, Search } from 'lucide-react';
+import { LogOut, Menu, Plus, Search } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -12,6 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/shared/components/ui/sheet';
 import { useAuth } from '@/shared/providers/AuthProvider';
 
 const NAV_ITEMS = [
@@ -35,7 +43,7 @@ export function FeedTopbar() {
   const initials = user ? initialsFromUsername(user.username) : '?';
 
   return (
-    <div className="bg-paper-raised relative flex items-center gap-[18px] border-b border-[rgba(74,30,8,0.22)] px-6 py-4">
+    <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
       <div className="flex items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-[18px]">
         <div
           className="bg-ink text-curry flex h-[26px] w-[26px] items-center justify-center rounded-full"
@@ -59,7 +67,44 @@ export function FeedTopbar() {
         </div>
       </div>
 
-      <nav className="flex items-center gap-1">
+      {/* Hamburguesa: nav colapsada en tablet/mobile (<lg) como drawer. */}
+      <Sheet>
+        <SheetTrigger
+          aria-label="Abrir menú de navegación"
+          className="text-sienna hover:bg-paper-sunken hover:text-ink flex h-9 w-9 items-center justify-center rounded-lg transition-colors lg:hidden"
+        >
+          <Menu className="h-5 w-5" strokeWidth={2} />
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[280px]">
+          <SheetHeader>
+            <SheetTitle>Navegación</SheetTitle>
+          </SheetHeader>
+          <nav className="mt-2 flex flex-col gap-1">
+            {NAV_ITEMS.map((item) => {
+              const isActive =
+                item.href === '/feed'
+                  ? pathname === '/feed'
+                  : pathname?.startsWith(item.href);
+              return (
+                <SheetClose asChild key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`rounded-[8px] px-3 py-[10px] text-[15px] font-medium transition-colors ${
+                      isActive
+                        ? 'bg-paper-sunken text-ink'
+                        : 'text-sienna hover:bg-paper-sunken hover:text-ink'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </SheetClose>
+              );
+            })}
+          </nav>
+        </SheetContent>
+      </Sheet>
+
+      <nav className="hidden items-center gap-1 lg:flex">
         {NAV_ITEMS.map((item) => {
           const isActive =
             item.href === '/feed'
@@ -83,7 +128,7 @@ export function FeedTopbar() {
 
       <div className="flex-1" />
 
-      <label className="bg-paper-sunken hover:border-cinnamon flex h-10 w-[220px] items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] pr-[10px] pl-3 shadow-[inset_0_1px_2px_rgba(74,30,8,0.06)] transition-colors">
+      <label className="bg-paper-sunken hover:border-cinnamon hidden h-10 w-[220px] items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] pr-[10px] pl-3 shadow-[inset_0_1px_2px_rgba(74,30,8,0.06)] transition-colors lg:flex">
         <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
         <input
           type="text"
@@ -94,7 +139,7 @@ export function FeedTopbar() {
 
       <Link
         href="/resenar"
-        className="text-paper inline-flex h-10 items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110"
+        className="text-paper hidden h-10 items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110 sm:inline-flex"
       >
         <Plus className="h-4 w-4" strokeWidth={2.4} />
         Reseñar

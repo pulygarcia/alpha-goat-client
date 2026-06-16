@@ -16,7 +16,7 @@ export function FeedReviewsSkeleton() {
             <Skeleton className="mt-3 h-3 w-full" />
             <Skeleton className="mt-2 h-3 w-4/5" />
           </div>
-          <Skeleton className="h-[120px] w-[120px] shrink-0" />
+          <Skeleton className="hidden h-[120px] w-[120px] shrink-0 md:block" />
         </div>
       ))}
     </div>

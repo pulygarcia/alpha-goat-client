@@ -28,9 +28,9 @@ export function FeedSubnav() {
   const { data: stats } = useFeedStats();
 
   return (
-    <div className="bg-paper flex items-center gap-6 border-b border-[rgba(74,30,8,0.14)] px-7 py-4">
+    <div className="bg-paper flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-[rgba(74,30,8,0.14)] px-5 py-4 md:px-7">
       <div
-        className="text-sienna flex items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-5 font-bold whitespace-nowrap"
+        className="text-sienna hidden items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-5 font-bold whitespace-nowrap md:flex"
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.62rem',
@@ -60,7 +60,7 @@ export function FeedSubnav() {
       </div>
 
       <div
-        className="ml-auto flex items-center gap-[14px] text-[rgba(44,18,9,0.62)]"
+        className="ml-auto hidden items-center gap-[14px] text-[rgba(44,18,9,0.62)] md:flex"
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.62rem',

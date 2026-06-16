@@ -11,6 +11,7 @@ import {
 import { useFeedHero } from '../hooks/useFeedHero';
 import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
 import type { FeedHeroRatings } from '../types/feed.types';
+import { FeedHeroSkeleton } from './FeedHeroSkeleton';
 
 const AXIS_LABELS: Record<keyof FeedHeroRatings, string> = {
   general: 'General',
@@ -32,11 +33,7 @@ export function FeedHero() {
   const { ref, revealed, animate } = useRevealOnScroll<HTMLDivElement>();
 
   if (isLoading) {
-    return (
-      <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
-        Cargando el goat del momento...
-      </div>
-    );
+    return <FeedHeroSkeleton />;
   }
 
   if (isError) {

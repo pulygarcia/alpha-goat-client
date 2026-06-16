@@ -23,4 +23,12 @@ describe('feedFilters.store', () => {
     useFeedFilters.getState().toggleScope('today'); // -> null
     expect(useFeedFilters.getState().scope).toBeNull();
   });
+
+  it('clearScope resets the scope to "todas" (null)', () => {
+    useFeedFilters.getState().toggleScope('following');
+    expect(useFeedFilters.getState().scope).toBe('following');
+
+    useFeedFilters.getState().clearScope();
+    expect(useFeedFilters.getState().scope).toBeNull();
+  });
 });

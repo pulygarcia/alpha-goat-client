@@ -6,6 +6,8 @@ interface FeedFiltersStore {
   scope: FeedScope | null;
   /** Selecciona un scope; si ya estaba activo, lo deselecciona (vuelve a "todas"). */
   toggleScope: (scope: FeedScope) => void;
+  /** Limpia el scope a "todas" (null), sin importar el valor previo. */
+  clearScope: () => void;
 }
 
 export const useFeedFilters = create<FeedFiltersStore>()((set) => ({
@@ -14,4 +16,5 @@ export const useFeedFilters = create<FeedFiltersStore>()((set) => ({
   scope: null,
   toggleScope: (scope) =>
     set((state) => ({ scope: state.scope === scope ? null : scope })),
+  clearScope: () => set({ scope: null }),
 }));

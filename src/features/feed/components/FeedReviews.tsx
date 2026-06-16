@@ -30,7 +30,7 @@ export function FeedReviews() {
   const isEmpty = !isLoading && !isError && items.length === 0;
 
   return (
-    <section className="px-8 py-9">
+    <section className="px-5 py-8 md:px-8 md:py-9">
       <div className="mb-5 flex flex-col gap-[14px] border-b border-[rgba(74,30,8,0.14)] pb-4">
         <h4 className="text-ink text-[24px] font-semibold tracking-[-0.02em]">
           Reseñas destacadas

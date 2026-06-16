@@ -58,7 +58,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
   const { ref, revealed, animate } = useRevealOnScroll<HTMLDivElement>();
 
   return (
-    <article className="grid grid-cols-[96px_1fr_110px_64px] items-start gap-6 border-b border-[rgba(74,30,8,0.14)] py-[22px] last:border-b-0">
+    <article className="grid grid-cols-[64px_1fr] items-start gap-4 border-b border-[rgba(74,30,8,0.14)] py-[22px] last:border-b-0 md:grid-cols-[96px_1fr_110px_64px] md:gap-6">
       {/* Foto */}
       {photoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -113,10 +113,27 @@ export function ReviewRow({ item }: { item: FeedItem }) {
           <FollowButton userId={author.id} isFollowing={author.isFollowing} />
         </div>
 
-        <h5 className="text-ink mb-2 text-[18px] font-medium tracking-[-0.018em]">
-          {alfajor.nombre} ·{' '}
-          <em className="text-cinnamon not-italic">{marca.nombre}</em>
-        </h5>
+        <div className="mb-2 flex items-start justify-between gap-3">
+          <h5 className="text-ink text-[18px] font-medium tracking-[-0.018em]">
+            {alfajor.nombre} ·{' '}
+            <em className="text-cinnamon not-italic">{marca.nombre}</em>
+          </h5>
+          {/* Rating compacto solo en mobile (el radar y el rating grande se ocultan <md). */}
+          <span
+            className="text-curry-deep shrink-0 md:hidden"
+            style={{
+              fontFamily: 'var(--font-archivo)',
+              fontSize: 26,
+              letterSpacing: '-0.04em',
+              lineHeight: 1,
+            }}
+          >
+            {overall.toFixed(1)}
+            <span className="text-cinnamon ml-[2px] text-[0.6rem] font-bold">
+              /10
+            </span>
+          </span>
+        </div>
 
         {quote && (
           <p className="text-sienna mb-[10px] text-[14px] leading-[1.5]">
@@ -144,7 +161,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
       </div>
 
       {/* Radar mini */}
-      <div ref={ref} className="h-[100px] w-[100px]">
+      <div ref={ref} className="hidden h-[100px] w-[100px] md:block">
         <RadarChart
           width={100}
           height={100}
@@ -167,8 +184,8 @@ export function ReviewRow({ item }: { item: FeedItem }) {
         </RadarChart>
       </div>
 
-      {/* Rating */}
-      <div className="text-right">
+      {/* Rating (columna en ≥md; en mobile se muestra compacto junto al título) */}
+      <div className="hidden text-right md:block">
         <span
           className="text-curry-deep"
           style={{

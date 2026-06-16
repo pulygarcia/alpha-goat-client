@@ -61,7 +61,7 @@ export function FeedHero() {
       : `${deltaSign} ${Math.abs(stats.deltaPct).toFixed(0)}% vs sem. anterior`;
 
   return (
-    <section className="border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
+    <section className="border-b border-[rgba(74,30,8,0.14)] px-5 py-8 md:px-8 md:py-9">
       <p
         className="text-curry-deep"
         style={{
@@ -75,13 +75,12 @@ export function FeedHero() {
         Goat del momento
       </p>
 
-      <div className="mt-3 grid grid-cols-[1fr_360px] items-start gap-10">
+      <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
         <div>
           <h2
-            className="text-ink"
+            className="text-ink text-[40px] md:text-[48px] lg:text-[56px]"
             style={{
               fontFamily: 'var(--font-archivo)',
-              fontSize: 56,
               letterSpacing: '-0.045em',
               lineHeight: 0.96,
             }}
@@ -95,7 +94,7 @@ export function FeedHero() {
               : ''} · <span className="lowercase">{alfajor.tipo}</span>
           </p>
 
-          <dl className="mt-6 grid max-w-[520px] grid-cols-3 gap-6">
+          <dl className="mt-6 grid max-w-[520px] grid-cols-3 gap-4 md:gap-6">
             <Stat label="Rating gral." value={ratings.general.toFixed(1)} />
             <Stat
               label="Reseñas semana"

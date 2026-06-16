@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useFeedReviews } from '../hooks/useFeedReviews';
 import { useFeedFilters } from '../store/feedFilters.store';
 import type { FeedSort } from '../types/feed.types';
+import { FeedReviewsSkeleton } from './FeedReviewsSkeleton';
 import { ReviewRow } from './ReviewRow';
 
 const SORTS: Array<{ value: FeedSort; label: string }> = [
@@ -15,6 +16,7 @@ const SORTS: Array<{ value: FeedSort; label: string }> = [
 export function FeedReviews() {
   const [sort, setSort] = useState<FeedSort>('recent');
   const scope = useFeedFilters((s) => s.scope);
+  const clearScope = useFeedFilters((s) => s.clearScope);
   const {
     data,
     isLoading,
@@ -25,6 +27,7 @@ export function FeedReviews() {
   } = useFeedReviews({ sort, scope: scope ?? undefined });
 
   const items = data?.pages.flatMap((p) => p.items) ?? [];
+  const isEmpty = !isLoading && !isError && items.length === 0;
 
   return (
     <section className="px-8 py-9">
@@ -58,7 +61,7 @@ export function FeedReviews() {
         </div>
       </div>
 
-      {isLoading && <p className="text-sienna">Cargando reseñas...</p>}
+      {isLoading && <FeedReviewsSkeleton />}
 
       {isError && (
         <p className="text-sienna">
@@ -66,7 +69,33 @@ export function FeedReviews() {
         </p>
       )}
 
-      {!isLoading && !isError && items.length === 0 && (
+      {isEmpty && scope === 'following' && (
+        <div className="py-8">
+          <p className="text-ink text-[17px] font-semibold">
+            Tu feed de seguidos está vacío
+          </p>
+          <p className="text-sienna mt-2 max-w-[420px] text-[14px] leading-relaxed">
+            Todavía no seguís a nadie. Explorá el feed general y seguí a quienes
+            reseñan los alfajores que te interesan.
+          </p>
+          <button
+            type="button"
+            onClick={clearScope}
+            className="text-curry-deep mt-4"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.62rem',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+            }}
+          >
+            Explorá el feed general
+          </button>
+        </div>
+      )}
+
+      {isEmpty && scope !== 'following' && (
         <p className="text-sienna">Todavía no hay reseñas para mostrar.</p>
       )}
 

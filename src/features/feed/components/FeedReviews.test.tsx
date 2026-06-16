@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FeedReviews } from './FeedReviews';
 import { useFeedReviews } from '../hooks/useFeedReviews';
+import { useFeedFilters } from '../store/feedFilters.store';
 import type { FeedItem } from '../types/feed.types';
 
 vi.mock('../hooks/useFeedReviews', () => ({
@@ -50,12 +51,16 @@ function baseReturn(over: Partial<ReturnType<typeof useFeedReviews>> = {}) {
 }
 
 describe('FeedReviews', () => {
-  beforeEach(() => mocked.mockReset());
+  beforeEach(() => {
+    mocked.mockReset();
+    useFeedFilters.setState({ scope: null });
+  });
 
-  it('shows a loading message while fetching', () => {
+  it('shows a loading skeleton while fetching', () => {
     mocked.mockReturnValue(baseReturn({ isLoading: true }));
     render(<FeedReviews />);
-    expect(screen.getByText(/cargando reseñas/i)).toBeInTheDocument();
+    expect(screen.getByTestId('feed-reviews-skeleton')).toBeInTheDocument();
+    expect(screen.queryByText(/cargando reseñas/i)).not.toBeInTheDocument();
   });
 
   it('shows an error message on failure', () => {
@@ -64,7 +69,7 @@ describe('FeedReviews', () => {
     expect(screen.getByText(/no pudimos contactar/i)).toBeInTheDocument();
   });
 
-  it('shows an empty message when there are no items', () => {
+  it('shows the generic empty message when there are no items (no scope)', () => {
     mocked.mockReturnValue(
       baseReturn({
         data: { pages: [{ items: [], total: 0, page: 1, limit: 20 }] } as never,
@@ -72,6 +77,39 @@ describe('FeedReviews', () => {
     );
     render(<FeedReviews />);
     expect(screen.getByText(/todavía no hay reseñas/i)).toBeInTheDocument();
+  });
+
+  it('shows the "Siguiendo" empty state with a CTA when that scope is empty', () => {
+    useFeedFilters.setState({ scope: 'following' });
+    mocked.mockReturnValue(
+      baseReturn({
+        data: { pages: [{ items: [], total: 0, page: 1, limit: 20 }] } as never,
+      }),
+    );
+    render(<FeedReviews />);
+
+    expect(
+      screen.getByRole('button', { name: /explorá el feed general/i }),
+    ).toBeInTheDocument();
+    // No el vacío genérico: este caso tiene su propio mensaje.
+    expect(
+      screen.queryByText(/todavía no hay reseñas/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it('clears the scope when the "Siguiendo" empty CTA is clicked', () => {
+    useFeedFilters.setState({ scope: 'following' });
+    mocked.mockReturnValue(
+      baseReturn({
+        data: { pages: [{ items: [], total: 0, page: 1, limit: 20 }] } as never,
+      }),
+    );
+    render(<FeedReviews />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /explorá el feed general/i }),
+    );
+    expect(useFeedFilters.getState().scope).toBeNull();
   });
 
   it('renders one row per item across pages', () => {

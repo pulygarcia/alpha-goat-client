@@ -33,9 +33,7 @@ function makeItem(over: Partial<RecommendationItem> = {}): RecommendationItem {
   };
 }
 
-function baseReturn(
-  over: Partial<ReturnType<typeof useRecommendations>> = {},
-) {
+function baseReturn(over: Partial<ReturnType<typeof useRecommendations>> = {}) {
   return {
     data: undefined,
     isLoading: false,
@@ -74,7 +72,9 @@ describe('RecommendedForYou', () => {
   });
 
   it('omits the affinity figure on cold start (matchPct null)', () => {
-    mocked.mockReturnValue(baseReturn({ data: [makeItem({ matchPct: null })] }));
+    mocked.mockReturnValue(
+      baseReturn({ data: [makeItem({ matchPct: null })] }),
+    );
     render(<RecommendedForYou />);
 
     expect(screen.getByText('Havanna Mixto')).toBeInTheDocument();

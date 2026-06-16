@@ -56,9 +56,7 @@ export function AlfajorFloat() {
         {/* capa 2: parallax al mouse */}
         <motion.div
           style={
-            reducedMotion
-              ? undefined
-              : { x: translateX, y: translateY, rotate }
+            reducedMotion ? undefined : { x: translateX, y: translateY, rotate }
           }
         >
           {/* capa 3: flotación idle */}

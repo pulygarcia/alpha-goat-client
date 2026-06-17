@@ -1,10 +1,8 @@
-export type AlfajorTipo =
-  | 'CHOCOLATE'
-  | 'BLANCO'
-  | 'NEGRO'
-  | 'FRUTAL'
-  | 'MAICENA'
-  | 'OTRO';
+// Promovido a shared (lo usan feed + alfajores); se re-exporta para no romper
+// los consumidores que lo importan desde feed.types.
+import type { AlfajorTipo } from '@/shared/types/alfajor';
+
+export type { AlfajorTipo };
 
 export interface FeedHeroMarca {
   id: string;

@@ -78,6 +78,16 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - `FeaturedMarcas.tsx`: sección del rail con cards por marca (logo o inicial sobre `paper-sunken`, nombre, meta "N productos · X.X prom. · provincia"). Estados: skeleton pulse (3 filas) / error / empty inline.
 - Tests: `useFeaturedMarcas` (mock `api/`, 2) + `FeaturedMarcas` (mock hook: cards con singular/plural y provincia opcional, logo vs inicial, error, empty — 4). 6 verdes.
 
+### Feature `alfajores` (catálogo público: listado + detalle)
+- Slice nuevo en `src/features/alfajores/` (api, hooks, components, types) + rutas públicas (sin `RequireAuth`).
+- `AlfajorTipo` promovido a `shared/types/alfajor.ts` (lo usan feed + alfajores) y re-exportado desde `feed.types`. `useDebouncedValue` nuevo en `shared/hooks` (TDD, 3 tests).
+- Contrato (back ya anida `marca`): `alfajoresApi.list({ q, tipo, marcaId, page, limit })` → `GET /alfajores` (`PaginatedAlfajores`); `alfajoresApi.byId(id)` → `GET /alfajores/:id`. `Alfajor`: `{ id, nombre, marcaId, marca {id,nombre,provincia,logoUrl}|null, tipo, descripcion, imagenUrl, status, createdAt }`.
+- Hooks: `useAlfajores` (infinite query keyed `['alfajores','list',{q,tipo,marcaId}]`, load-more vía `getNextPageParam`, `limit 24`) + `useAlfajor(id)` (keyed `['alfajores','detail',id]`, `enabled: !!id`). Tests: 6 (en los de error `mockRejectedValueOnce` evita unhandled rejection con React 19).
+- Página listado `/alfajores`: `CatalogHeader` (logo + "Entrar", público) + `AlfajoresCatalog` (buscador por nombre con debounce 300ms → `q`; grid responsive 2→4 col de `AlfajorCard` con imagen o placeholder cream + nombre + tipo + marca, linkea al detalle; "Cargar más"; estados skeleton/error/empty). Se acotó a **solo buscador** (filtros tipo/marca diferidos). Tests `AlfajoresCatalog` (mock hook, 6).
+- Página detalle `/alfajores/[id]` (`params` awaited, Next 16): `AlfajorDetail` con imagen/placeholder + nombre + tipo + marca + descripción; estados loading (skeleton) / not-found (404) / error genérico; "volver al catálogo". El listado de reseñas se difiere a la feature `reviews`. Tests `AlfajorDetail` (4).
+- Navegación: "Alfajores" sumado a `NAV_ITEMS` del topbar (también en el drawer mobile) + nombre del alfajor en `ReviewRow` linkea a `/alfajores/:id`.
+- Sin OpenSpec (consumo de endpoints + UI). Card/skeletons/headers presentacionales (fuera de coverage). Suite total 133 verdes.
+
 ### Coverage al 85% (gate verde)
 - Dos partes, como estaba diagnosticado en la deuda técnica:
   - **Parte 1 — alinear config con la política**: excludes de coverage en `vitest.config.ts` para lo que el CLAUDE.md dice no testear. Se sumaron: componentes presentacionales (auth `Hero`/`HeroWords`/`ParticleWords`/`SocialButton`/`InputGroup`, feed `FeedHero`/`FeedRail`/`FeedSubnav`/`FeedTopbar`/`ReviewRow`), wrappers `api/` (se mockean siempre), providers, `*.server.ts`, y boundary/bootstrap (`middleware.ts`, `config/**`, espejando los excludes de Jest del back).
@@ -87,8 +97,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ## Pendiente
 
 ### Próximas features
-- `alfajores` (listado + detalle público).
-- `reviews` (form + listado en detalle de alfajor).
+- `reviews` (form + listado en detalle de alfajor). Habilita la ruta `/resenar` (hoy 404) y el listado de reseñas del detalle de alfajor.
 - Layout principal (Header, Footer, nav) — el feed ya tiene su propio shell.
 - `moderation` (admin), `ranking`, `comparador`, `perfil`.
 

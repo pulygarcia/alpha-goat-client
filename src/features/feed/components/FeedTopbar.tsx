@@ -24,6 +24,7 @@ import { useAuth } from '@/shared/providers/AuthProvider';
 
 const NAV_ITEMS = [
   { href: '/feed', label: 'Feed' },
+  { href: '/alfajores', label: 'Alfajores' },
   { href: '/ranking', label: 'Ranking' },
   { href: '/comparar', label: 'Comparar' },
   { href: '/marcas', label: 'Marcas' },

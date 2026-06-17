@@ -7,6 +7,7 @@ import {
   Radar,
   RadarChart,
 } from 'recharts';
+import Link from 'next/link';
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
 import type { FeedAxes, FeedItem } from '../types/feed.types';
@@ -115,8 +116,13 @@ export function ReviewRow({ item }: { item: FeedItem }) {
 
         <div className="mb-2 flex items-start justify-between gap-3">
           <h5 className="text-ink text-[18px] font-medium tracking-[-0.018em]">
-            {alfajor.nombre} ·{' '}
-            <em className="text-cinnamon not-italic">{marca.nombre}</em>
+            <Link
+              href={`/alfajores/${alfajor.id}`}
+              className="hover:text-curry-deep underline-offset-2 transition-colors hover:underline"
+            >
+              {alfajor.nombre}
+            </Link>{' '}
+            · <em className="text-cinnamon not-italic">{marca.nombre}</em>
           </h5>
           {/* Rating compacto solo en mobile (el radar y el rating grande se ocultan <md). */}
           <span

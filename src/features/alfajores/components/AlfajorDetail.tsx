@@ -92,9 +92,12 @@ export function AlfajorDetail({ id }: { id: string }) {
               </p>
             )}
 
-            <p className="text-cinnamon mt-8 text-[13px]">
-              Las reseñas de este alfajor llegan pronto.
-            </p>
+            <Link
+              href={`/alfajores/${data.id}/resenar`}
+              className="text-paper mt-7 inline-flex h-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-6 text-[14px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110"
+            >
+              Reseñar
+            </Link>
           </div>
         </article>
       )}

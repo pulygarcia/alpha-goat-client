@@ -1,6 +1,8 @@
 'use client';
 
-/** Slider 0-10 (paso 0.5) con etiqueta y valor visible. Control nativo estilizado. */
+import { Slider } from '@/shared/components/ui/slider';
+
+/** Slider 0-10 (paso 0.5) con etiqueta y valor visible, sobre el `Slider` de shadcn. */
 export function RatingSlider({
   label,
   value,
@@ -13,7 +15,7 @@ export function RatingSlider({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-baseline justify-between">
-        <label className="text-ink text-[14px] font-medium">{label}</label>
+        <span className="text-ink text-[14px] font-medium">{label}</span>
         <span
           className="text-curry-deep text-[15px] font-bold"
           style={{ fontFamily: 'var(--font-mono)' }}
@@ -21,15 +23,14 @@ export function RatingSlider({
           {value.toFixed(1)}
         </span>
       </div>
-      <input
-        type="range"
+      <Slider
+        aria-label={label}
+        value={[value]}
+        onValueChange={(v) => onChange(v[0])}
         min={0}
         max={10}
         step={0.5}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        aria-label={label}
-        className="accent-curry-deep h-1.5 w-full cursor-pointer appearance-none rounded-full bg-[rgba(74,30,8,0.16)]"
+        className="py-1"
       />
     </div>
   );

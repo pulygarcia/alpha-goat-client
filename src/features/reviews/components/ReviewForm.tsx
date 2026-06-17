@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { reviewSchema, type ReviewFormValues } from '../lib/reviewSchema';
 import { useMyAlfajorReview } from '../hooks/useMyAlfajorReview';
 import { useSubmitReview } from '../hooks/useSubmitReview';
+import { Textarea } from '@/shared/components/ui/textarea';
 import { RatingSlider } from './RatingSlider';
 import type { Review } from '../types/reviews.types';
 
@@ -124,13 +125,13 @@ function ReviewFormInner({
         >
           Comentario <span className="text-cinnamon">(opcional)</span>
         </label>
-        <textarea
+        <Textarea
           id="comentario"
           rows={4}
           maxLength={500}
           {...register('comentario')}
           placeholder="¿Qué te pareció?"
-          className="bg-paper-sunken text-ink focus:border-cinnamon resize-none rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] px-3 py-2 text-[14px] placeholder:text-[rgba(44,18,9,0.55)] focus:outline-none"
+          className="bg-paper-sunken min-h-[110px] resize-none border-[rgba(74,30,8,0.22)] text-[14px] placeholder:text-[rgba(44,18,9,0.55)]"
         />
         {formState.errors.comentario && (
           <span className="text-error text-[12px]">

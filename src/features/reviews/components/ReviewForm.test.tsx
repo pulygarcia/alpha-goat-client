@@ -57,7 +57,7 @@ describe('ReviewForm', () => {
     render(<ReviewForm alfajorId="a1" />);
 
     ['General', 'Dulzor', 'DDL', 'Baño', 'Tapa/Relleno', 'Textura'].forEach(
-      (label) => expect(screen.getByLabelText(label)).toBeInTheDocument(),
+      (label) => expect(screen.getByText(label)).toBeInTheDocument(),
     );
     expect(screen.getByLabelText(/comentario/i)).toBeInTheDocument();
   });

@@ -30,4 +30,14 @@ export const reviewsApi = {
   remove: async (id: string): Promise<void> => {
     await apiClient.delete(`/reviews/${id}`);
   },
+
+  /** PUT /reviews/:id/like (auth) — likea la reseña. Idempotente, 204. */
+  like: async (id: string): Promise<void> => {
+    await apiClient.put(`/reviews/${id}/like`);
+  },
+
+  /** DELETE /reviews/:id/like (auth) — quita el like. 204. */
+  unlike: async (id: string): Promise<void> => {
+    await apiClient.delete(`/reviews/${id}/like`);
+  },
 };

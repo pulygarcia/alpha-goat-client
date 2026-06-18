@@ -1,5 +1,6 @@
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import { Card, CardContent, CardHeader } from '@/shared/components/ui/card';
+import { LikeButton } from './LikeButton';
 import type { Review } from '../types/reviews.types';
 
 function initials(username: string) {
@@ -123,9 +124,11 @@ export function ReviewCard({ review }: { review: Review }) {
             fontWeight: 700,
           }}
         >
-          <span className="text-curry-deep inline-flex items-center gap-[5px]">
-            ★ {likesCount ?? 0} likes
-          </span>
+          <LikeButton
+            reviewId={review.id}
+            likes={likesCount ?? 0}
+            isLiked={review.isLiked ?? false}
+          />
           <span className="inline-flex items-center gap-[5px]">
             ↳ {commentsCount ?? 0} comentarios
           </span>

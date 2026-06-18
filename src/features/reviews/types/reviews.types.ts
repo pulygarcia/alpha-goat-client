@@ -30,6 +30,8 @@ export interface Review extends ReviewRatings {
   /** Contadores aún no expuestos por `GET /reviews` (pendiente back); default 0. */
   likesCount?: number;
   commentsCount?: number;
+  /** Si el usuario actual ya likeó la reseña (`GET /reviews`, false anónimo). */
+  isLiked?: boolean;
   createdAt: string;
   updatedAt: string;
 }

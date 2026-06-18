@@ -53,6 +53,7 @@ function makeItem(
       textura: 8,
     },
     likes: 10,
+    isLiked: false,
     commentsCount: 2,
     createdAt: '2026-05-27T00:00:00.000Z',
   };

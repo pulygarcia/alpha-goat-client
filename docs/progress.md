@@ -5,6 +5,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ## Hecho
 
 ### Setup base
+
 - Next.js 16 (App Router, src/, alias `@/`) + TS strict + Tailwind v4 + ESLint.
 - Dependencias: axios, @tanstack/react-query, zustand, react-hook-form + zod + @hookform/resolvers, recharts, clsx, tailwind-merge, class-variance-authority, lucide-react.
 - Vitest + RTL + jsdom configurados con threshold 85% (branches/functions/lines/statements). Setup en `src/test/setup.ts`. Excluye `app/**`, `shared/components/ui/**`, `types/**`, `schemas/**`.
@@ -20,9 +21,11 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Home (`app/page.tsx`) provisorio mostrando el lockup del hero.
 
 ### Skills instaladas (autoskills)
+
 - accessibility, seo, frontend-design, tailwind-css-patterns, nodejs-best-practices, composition-patterns, next-cache-components, next-upgrade, typescript-advanced-types, nodejs-backend-patterns, next-best-practices, vitest, zod, react-hook-form, react-best-practices.
 
 ### Feature `auth`
+
 - Endpoints: `authApi.login | register | me | logout` (axios `withCredentials`). JWT en cookie HTTP-only seteada por el backend.
 - Estado: Zustand sin `persist` + cache TanStack Query en `['auth','me']` como fuente de verdad de la UI. Hooks `useLogin`, `useRegister`, `useCurrentUser`, `useLogout`.
 - **SSR hydration (sin parpadeo)**: el `RootLayout` (Server Component, ahora `async`) llama a `getCurrentUser()` (`features/auth/api/getCurrentUser.server.ts`, `server-only`), que lee la cookie HTTP-only de la request con `cookies()` de `next/headers` y la reenvía a `GET /auth/me` vía `fetch` (`cache: 'no-store'`). El resultado (`User | null`) baja como `initialUser` al `AuthProvider` y se siembra en la query como `initialData` → el primer render (servidor + hidratación) ya conoce la sesión, sin el flash "invitado → autenticado" ni round-trip extra a `/me` en el cliente. Consecuencia: leer cookies en el root layout opta a todas las rutas a **render dinámico** (esperado para una app con sesión). `authApi.me` (axios `withCredentials`) sigue usándose en el cliente cuando `useCurrentUser()` se llama sin `initialUser` (ej. `FollowButton`).
@@ -35,6 +38,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Tests: hooks (`useLogin`, `useRegister`) + forms (`LoginForm`, `SignUpForm`) — 12 verdes.
 
 ### Feature `feed` (en curso — diseño "El Diario", cream paper)
+
 - Mockup de referencia en `docs/_design-refs/feed.html` (gitignored, sólo local).
 - Tokens cream agregados en `globals.css`: `--color-paper`, `--color-paper-raised`, `--color-paper-sunken`, `--color-paper-field`, `--color-paper-emph`, `--color-ink`, `--color-deep`, `--color-curry-deep`. Coexisten con la paleta dark curry de auth/landing.
 - Trozo 1 (hecho): `FeedTopbar` (brand + nav activa por pathname + search + CTA Reseñar con gradiente marrón-chocolate + avatar con iniciales) y `FeedSubnav` (fecha-edición con pulse, chips Hoy/Semana/Siguiendo/Provincia con state local — luego cableados al feed vía store, ver más abajo). `/feed/page.tsx` reemplazado por el shell cream con `RequireAuth`. Los slots de stats consumen `GET /feed/stats` vía `useFeedStats` (`feedApi.stats()`, queryKey `['feed','stats']`, `staleTime: 60s`); muestran "—" mientras carga/error y el número cuando hay data. Tests del hook (mock `api/`, 2).
@@ -61,6 +65,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
   - FAB de reseñar (mobile, `sm:hidden`): `ReviewFab` flotante con la imagen `/alfajor-hero.png` (framer-motion), arrastrable con snap al borde izq/der (`onDragEnd`) y clamp vertical; tap → `/resenar`. Lógica pura en `feed/lib/fabPosition.ts` (`snapSide` + `clampY`) con TDD (6 tests). En mobile el botón "Reseñar" del header se oculta (`hidden sm:inline-flex`). NOTA: la ruta `/resenar` aún no existe (feature `reviews`, backlog) — el header ya apuntaba ahí.
 
 ### Feature `follows`
+
 - Slice nuevo en `src/features/follows/` (api, hooks, components, types — sólo lo necesario).
 - Contrato backend ya en producción: `GET /feed` devuelve `author.isFollowing: boolean` por item (computado contra el usuario autenticado; `false` para reseñas propias y pedidos anónimos). Sin `followersCount` en esta iteración. El front trata un `isFollowing` ausente como `false`. Endpoints de acción ya existían: `PUT /follows/:userId` (seguir) y `DELETE /follows/:userId` (dejar de seguir), ambos `204`.
 - `follows.api.ts` → `followsApi.follow(userId)` / `followsApi.unfollow(userId)`.
@@ -72,6 +77,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Deuda: el gate global `test:coverage` (85%) sigue en rojo, pero por el shell visual del feed sin tests (pre-existente, no por este cambio — números idénticos pre/post). El código nuevo de follows sí está cubierto.
 
 ### Feature `marcas` (sólo "Marcas en foco" por ahora)
+
 - Slice nuevo en `src/features/marcas/` (api, hooks, components, types).
 - `marcas.api.ts` → `marcasApi.featured()` (`GET /marcas/featured`, público, devuelve `FeaturedMarca[]`).
 - `useFeaturedMarcas` (queryKey `['marcas','featured']`, `staleTime: 5 min` — ranking de ventana de 30 días, cambia lento).
@@ -79,6 +85,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Tests: `useFeaturedMarcas` (mock `api/`, 2) + `FeaturedMarcas` (mock hook: cards con singular/plural y provincia opcional, logo vs inicial, error, empty — 4). 6 verdes.
 
 ### Feature `alfajores` (catálogo público: listado + detalle)
+
 - Slice nuevo en `src/features/alfajores/` (api, hooks, components, types) + rutas públicas (sin `RequireAuth`).
 - `AlfajorTipo` promovido a `shared/types/alfajor.ts` (lo usan feed + alfajores) y re-exportado desde `feed.types`. `useDebouncedValue` nuevo en `shared/hooks` (TDD, 3 tests).
 - Contrato (back ya anida `marca`): `alfajoresApi.list({ q, tipo, marcaId, page, limit })` → `GET /alfajores` (`PaginatedAlfajores`); `alfajoresApi.byId(id)` → `GET /alfajores/:id`. `Alfajor`: `{ id, nombre, marcaId, marca {id,nombre,provincia,logoUrl}|null, tipo, descripcion, imagenUrl, status, createdAt }`.
@@ -88,7 +95,19 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Navegación: "Alfajores" sumado a `NAV_ITEMS` del topbar (también en el drawer mobile) + nombre del alfajor en `ReviewRow` linkea a `/alfajores/:id`.
 - Sin OpenSpec (consumo de endpoints + UI). Card/skeletons/headers presentacionales (fuera de coverage). Suite total 133 verdes.
 
+### Feature `reviews` (reseñar + listado en el detalle)
+
+- Slice `src/features/reviews/` (api, hooks, components, types, lib).
+- Tipos: `Review` (con `author` anidado, `ReviewRatings`, `likesCount?`/`commentsCount?`), `CreateReviewInput`, `UpdateReviewInput`, `ReviewsQuery`, `PaginatedReviews`. `reviewsApi.list/create/update/remove` sobre `/reviews`.
+- Hooks: `useAlfajorReviews(alfajorId)` (infinite query del listado), `useSubmitReview(alfajorId)` (mutation crear/editar discriminada por `mode`, invalida listado + detalle), `useMyAlfajorReview(alfajorId)` (detecta reseña propia para precargar el form en modo editar).
+- Listado en el detalle: `AlfajorReviews` (estados loading/error/empty + "cargar más") con `ReviewCard` sobre el `Card` de shadcn — autor + `FollowButton`, rating general, 5 ejes, comentario, contadores likes/comentarios, "hace X". El back expone `likesCount`/`commentsCount`/`author.isFollowing` (`GET /reviews` con auth opcional); la card los lee directo.
+- Reseñar = **wizard modal** `QuickReviewModal` (sobre el `Dialog` de shadcn): paso 1 elegir alfajor (`AlfajorPicker`, reusa `useAlfajores`), paso 2 comentario, paso 3 puntajes (6 `RatingSlider` sobre el `Slider` de shadcn) + foto **placeholder** + Publicar. Validación `reviewSchema` (Zod) + RHF. Crear-o-editar (`useMyAlfajorReview`). Lo abren el `ReviewFab` (mobile) y el botón "Reseñar" del header (paso elegir), y el "Reseñar" del detalle (preseleccionado, salta al wizard). **No hay página `/resenar`**: el modal es la única superficie de reseña.
+- shadcn nuevos: `Slider`, `Textarea`, `Dialog`, `Card` (canónicos) + tokens semánticos cream en `globals.css` + cursor pointer global en botones.
+- CTA "Solicitá agregarlo" (proponer alfajor) visual; flujo en backlog. `fotoUrl`/uploads diferido.
+- Tests (TDD): `reviewSchema` (4), `useMyAlfajorReview` (3), hooks (5), `AlfajorReviews` (5), `ReviewWizardForm` (3), `QuickReviewModal` (4).
+
 ### Coverage al 85% (gate verde)
+
 - Dos partes, como estaba diagnosticado en la deuda técnica:
   - **Parte 1 — alinear config con la política**: excludes de coverage en `vitest.config.ts` para lo que el CLAUDE.md dice no testear. Se sumaron: componentes presentacionales (auth `Hero`/`HeroWords`/`ParticleWords`/`SocialButton`/`InputGroup`, feed `FeedHero`/`FeedRail`/`FeedSubnav`/`FeedTopbar`/`ReviewRow`), wrappers `api/` (se mockean siempre), providers, `*.server.ts`, y boundary/bootstrap (`middleware.ts`, `config/**`, espejando los excludes de Jest del back).
   - **Parte 2 — tests genuinos que faltaban**: `api-client` (interceptor 401: dispatch para no-auth, skip en `/auth/*`, no-401, no-axios), `useCurrentUser` (seed desde initialUser sin fetch, fetch sin initialUser, no setea user en error), `useLogout` (limpia store+cache+redirect, e igual en onSettled ante fallo), `auth.store`, `useFeedHero`, y `cn`. Además se cerraron las ramas de `extractError` y el toggle de password en `LoginForm`/`SignUpForm`.
@@ -97,11 +116,15 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 ## Pendiente
 
 ### Próximas features
-- `reviews` (form + listado en detalle de alfajor). Habilita la ruta `/resenar` (hoy 404) y el listado de reseñas del detalle de alfajor.
+
+- Proponer alfajor (modelo híbrido PENDING/APPROVED) — lo dispara el CTA "Solicitá agregarlo" del modal de reseña (hoy solo visual).
+- `comments` (front) sobre reseñas; habilita abrir una reseña en modal con sus comentarios.
+- Unificar el card de reseña feed + detalle en uno solo (con prop de contexto).
 - Layout principal (Header, Footer, nav) — el feed ya tiene su propio shell.
 - `moderation` (admin), `ranking`, `comparador`, `perfil`.
 
 ### Endpoints backend faltantes (alfajorimetro-back)
+
 Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 
 - ~~`GET /feed`~~ — listo. Lista paginada de reseñas (auth) con orden `sort=likes|recent|rating` (default `recent`) y filtros `scope=today|week|following|province` (+ `province` requerido si `scope=province`). Paginación `page`/`limit` (no cursor): devuelve `{ items, total, page, limit }`. Cada item: `author {id, username, avatarUrl}`, `alfajor {id, nombre, tipo, imagenUrl}`, `marca {id, nombre, provincia}`, `quote`, `photoUrl`, `overall`, `axes (5)`, `likes`, `commentsCount`, `createdAt`. Sin `sharesCount`: no habrá feature de compartir. `scope=following` apoyado en el módulo `follows` (`PUT/DELETE /follows/:userId`). Likes de reviews vía `PUT/DELETE /reviews/:id/like`.
@@ -113,6 +136,7 @@ Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 - (Soporte) Módulo de imágenes/uploads aún no expone URLs públicas → el front usa placeholders cream (`ph`) hasta que esté.
 
 ### Deuda técnica conocida
+
 - El interceptor 401 emite `auth:unauthorized` y limpia la cache `['auth','me']`, pero no redirige automático a `/login` — definir UX (toast + redirect, o sólo en rutas gated).
 - `getCurrentUser()` (SSR) trata cualquier respuesta no-OK como invitado. Si el server de Next no pudiera alcanzar al backend estando el usuario logueado, el primer render caería a invitado; la sesión se recuperaría igual ante la próxima acción autenticada. Si molesta, hacer que el cliente revalide ante error de red (≠ 401).
 - Feedback post-register/login es sólo redirect; falta toast/onboarding si se decide sumarlo.

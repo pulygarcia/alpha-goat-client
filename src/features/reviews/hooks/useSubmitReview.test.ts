@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { useSubmitReview } from './useSubmitReview';
 import { reviewsApi } from '../api/reviews.api';
+import { notifySuccess, notifyError } from '@/shared/lib/toast';
 import type { CreateReviewInput, Review } from '../types/reviews.types';
 
 vi.mock('../api/reviews.api', () => ({
@@ -13,6 +14,11 @@ vi.mock('../api/reviews.api', () => ({
     update: vi.fn(),
     remove: vi.fn(),
   },
+}));
+
+vi.mock('@/shared/lib/toast', () => ({
+  notifySuccess: vi.fn(),
+  notifyError: vi.fn(),
 }));
 
 const INPUT: CreateReviewInput = {
@@ -43,6 +49,8 @@ describe('useSubmitReview', () => {
   beforeEach(() => {
     vi.mocked(reviewsApi.create).mockReset();
     vi.mocked(reviewsApi.update).mockReset();
+    vi.mocked(notifySuccess).mockReset();
+    vi.mocked(notifyError).mockReset();
   });
 
   it('creates a review and invalidates the list + alfajor detail', async () => {
@@ -76,5 +84,45 @@ describe('useSubmitReview', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(reviewsApi.update).toHaveBeenCalledWith('r1', { ratingGeneral: 9 });
     expect(reviewsApi.create).not.toHaveBeenCalled();
+  });
+
+  it('notifica éxito "Reseña publicada" al crear', async () => {
+    vi.mocked(reviewsApi.create).mockResolvedValue(REVIEW);
+    const { wrapper } = setup();
+
+    const { result } = renderHook(() => useSubmitReview('a1'), { wrapper });
+    result.current.mutate({ mode: 'create', input: INPUT });
+
+    await waitFor(() =>
+      expect(notifySuccess).toHaveBeenCalledWith('Reseña publicada'),
+    );
+  });
+
+  it('notifica éxito "Reseña actualizada" al editar', async () => {
+    vi.mocked(reviewsApi.update).mockResolvedValue(REVIEW);
+    const { wrapper } = setup();
+
+    const { result } = renderHook(() => useSubmitReview('a1'), { wrapper });
+    result.current.mutate({
+      mode: 'edit',
+      reviewId: 'r1',
+      input: { ratingGeneral: 9 },
+    });
+
+    await waitFor(() =>
+      expect(notifySuccess).toHaveBeenCalledWith('Reseña actualizada'),
+    );
+  });
+
+  it('notifica error cuando la mutation falla', async () => {
+    vi.mocked(reviewsApi.create).mockRejectedValue(new Error('boom'));
+    const { wrapper } = setup();
+
+    const { result } = renderHook(() => useSubmitReview('a1'), { wrapper });
+    result.current.mutate({ mode: 'create', input: INPUT });
+
+    await waitFor(() =>
+      expect(notifyError).toHaveBeenCalledWith('No pudimos publicar la reseña'),
+    );
   });
 });

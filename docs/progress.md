@@ -106,6 +106,19 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - CTA "Solicitá agregarlo" (proponer alfajor) visual; flujo en backlog. `fotoUrl`/uploads diferido.
 - Tests (TDD): `reviewSchema` (4), `useMyAlfajorReview` (3), hooks (5), `AlfajorReviews` (5), `ReviewWizardForm` (3), `QuickReviewModal` (4).
 
+### Feature `Feedback de acciones` (toasts)
+
+- Toaster compartido (`Sonner` de shadcn) montado una sola vez en `app/layout.tsx` (`shared/components/ui/sonner.tsx`, posición top-center, estilos atados a los tokens cream).
+- Helper `shared/lib/toast.ts` (`notifySuccess`/`notifyError`): las features lo usan en vez de importar `sonner` directo; los tests mockean ese único módulo.
+- Cableado desde los `onSuccess`/`onError` de las mutations (no desde los componentes):
+  - `useSubmitReview`: éxito "Reseña publicada"/"Reseña actualizada" (según `mode`) + error "No pudimos publicar la reseña".
+  - `useToggleFollow`: **solo error** "No pudimos actualizar el seguimiento" (tras el rollback del optimista); éxito silencioso (acción frecuente).
+  - `useLogin`: error "No pudimos iniciar sesión" (éxito silencioso, ya redirige).
+  - `useRegister`: éxito "Cuenta creada" + error "No pudimos crear la cuenta".
+  - `useLogout`: error "No pudimos cerrar sesión" (éxito silencioso).
+- Errores de formulario: **inline + toast** — la validación de campo sigue inline (RHF/Zod); el toast de error lo agrega el `onError` de la mutation.
+- Tests (TDD) mockeando `shared/lib/toast`: helper (2), reviews (3), follow (2), auth login/register/logout (4).
+
 ### Coverage al 85% (gate verde)
 
 - Dos partes, como estaba diagnosticado en la deuda técnica:

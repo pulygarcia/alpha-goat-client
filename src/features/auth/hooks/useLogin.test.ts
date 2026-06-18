@@ -5,6 +5,12 @@ import React from 'react';
 import { useLogin } from './useLogin';
 import { authApi } from '../api/auth.api';
 import { useAuthStore } from '../store/auth.store';
+import { notifyError } from '@/shared/lib/toast';
+
+vi.mock('@/shared/lib/toast', () => ({
+  notifySuccess: vi.fn(),
+  notifyError: vi.fn(),
+}));
 
 const pushMock = vi.fn();
 let nextParam: string | null = null;
@@ -33,6 +39,7 @@ describe('useLogin', () => {
     nextParam = null;
     useAuthStore.setState({ user: null });
     vi.mocked(authApi.login).mockReset();
+    vi.mocked(notifyError).mockReset();
   });
 
   it('on success stores the user and redirects home', async () => {
@@ -111,5 +118,18 @@ describe('useLogin', () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(useAuthStore.getState().user).toBeNull();
     expect(pushMock).not.toHaveBeenCalled();
+  });
+
+  it('notifica error cuando falla el login', async () => {
+    vi.mocked(authApi.login).mockRejectedValue(new Error('401'));
+
+    const { result } = renderHook(() => useLogin(), { wrapper });
+    await act(async () => {
+      result.current.mutate({ email: 'a@b.com', password: 'secret' });
+    });
+
+    await waitFor(() =>
+      expect(notifyError).toHaveBeenCalledWith('No pudimos iniciar sesión'),
+    );
   });
 });

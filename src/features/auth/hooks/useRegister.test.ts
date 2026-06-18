@@ -5,6 +5,12 @@ import React from 'react';
 import { useRegister } from './useRegister';
 import { authApi } from '../api/auth.api';
 import { useAuthStore } from '../store/auth.store';
+import { notifySuccess, notifyError } from '@/shared/lib/toast';
+
+vi.mock('@/shared/lib/toast', () => ({
+  notifySuccess: vi.fn(),
+  notifyError: vi.fn(),
+}));
 
 const pushMock = vi.fn();
 
@@ -28,6 +34,8 @@ describe('useRegister', () => {
     pushMock.mockReset();
     useAuthStore.setState({ user: null });
     vi.mocked(authApi.register).mockReset();
+    vi.mocked(notifySuccess).mockReset();
+    vi.mocked(notifyError).mockReset();
   });
 
   const fakeUser = {
@@ -73,5 +81,39 @@ describe('useRegister', () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(useAuthStore.getState().user).toBeNull();
     expect(pushMock).not.toHaveBeenCalled();
+  });
+
+  it('notifica "Cuenta creada" al registrarse', async () => {
+    vi.mocked(authApi.register).mockResolvedValue({ user: fakeUser });
+
+    const { result } = renderHook(() => useRegister(), { wrapper });
+    await act(async () => {
+      result.current.mutate({
+        email: 'a@b.com',
+        password: 'secret123',
+        username: 'a',
+      });
+    });
+
+    await waitFor(() =>
+      expect(notifySuccess).toHaveBeenCalledWith('Cuenta creada'),
+    );
+  });
+
+  it('notifica error cuando falla el registro', async () => {
+    vi.mocked(authApi.register).mockRejectedValue(new Error('409'));
+
+    const { result } = renderHook(() => useRegister(), { wrapper });
+    await act(async () => {
+      result.current.mutate({
+        email: 'a@b.com',
+        password: 'secret123',
+        username: 'a',
+      });
+    });
+
+    await waitFor(() =>
+      expect(notifyError).toHaveBeenCalledWith('No pudimos crear la cuenta'),
+    );
   });
 });

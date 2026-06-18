@@ -3,6 +3,7 @@ import { Archivo_Black, Inter, JetBrains_Mono } from 'next/font/google';
 import { QueryProvider } from '@/shared/providers/QueryProvider';
 import { AuthProvider } from '@/shared/providers/AuthProvider';
 import { getCurrentUser } from '@/features/auth/api/getCurrentUser.server';
+import { Toaster } from '@/shared/components/ui/sonner';
 import './globals.css';
 
 const archivo = Archivo_Black({
@@ -32,6 +33,7 @@ export default async function RootLayout({
       <body className="bg-bg text-curry flex min-h-full flex-col">
         <QueryProvider>
           <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>

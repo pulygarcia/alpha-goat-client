@@ -6,7 +6,13 @@ import { useLogout } from './useLogout';
 import { CURRENT_USER_KEY } from './useCurrentUser';
 import { authApi } from '../api/auth.api';
 import { useAuthStore } from '../store/auth.store';
+import { notifyError } from '@/shared/lib/toast';
 import type { User } from '../types/auth.types';
+
+vi.mock('@/shared/lib/toast', () => ({
+  notifySuccess: vi.fn(),
+  notifyError: vi.fn(),
+}));
 
 const pushMock = vi.fn();
 
@@ -46,6 +52,7 @@ describe('useLogout', () => {
     pushMock.mockReset();
     useAuthStore.setState({ user });
     vi.mocked(authApi.logout).mockReset();
+    vi.mocked(notifyError).mockReset();
   });
 
   it('clears auth state, nulls the session cache and redirects on success', async () => {
@@ -82,5 +89,22 @@ describe('useLogout', () => {
     expect(useAuthStore.getState().user).toBeNull();
     expect(client.getQueryData(CURRENT_USER_KEY)).toBeNull();
     expect(pushMock).toHaveBeenCalledWith('/login');
+  });
+
+  it('notifica error cuando falla el logout', async () => {
+    vi.mocked(authApi.logout).mockRejectedValue(new Error('boom'));
+    const client = seededClient();
+
+    const { result } = renderHook(() => useLogout(), {
+      wrapper: makeWrapper(client),
+    });
+
+    await act(async () => {
+      result.current.mutate();
+    });
+
+    await waitFor(() =>
+      expect(notifyError).toHaveBeenCalledWith('No pudimos cerrar sesión'),
+    );
   });
 });

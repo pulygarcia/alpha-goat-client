@@ -2,17 +2,29 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { FollowButton } from './FollowButton';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
+import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 import { useToggleFollow } from '../hooks/useToggleFollow';
 
 vi.mock('@/features/auth/hooks/useCurrentUser', () => ({
   useCurrentUser: vi.fn(),
+}));
+vi.mock('@/shared/hooks/useRequireAuth', () => ({
+  useRequireAuth: vi.fn(),
 }));
 vi.mock('../hooks/useToggleFollow', () => ({
   useToggleFollow: vi.fn(),
 }));
 
 const mockedUser = vi.mocked(useCurrentUser);
+const mockedRequireAuth = vi.mocked(useRequireAuth);
 const mockedToggle = vi.mocked(useToggleFollow);
+
+// Por defecto el gate corre la acción (usuario autenticado).
+function setRequireAuth(authed = true) {
+  mockedRequireAuth.mockReturnValue((action: () => void) => {
+    if (authed) action();
+  });
+}
 
 function setUser(id: string | null) {
   mockedUser.mockReturnValue({
@@ -34,6 +46,8 @@ describe('FollowButton', () => {
   beforeEach(() => {
     mockedUser.mockReset();
     mockedToggle.mockReset();
+    mockedRequireAuth.mockReset();
+    setRequireAuth();
   });
 
   it('renders "Seguir" when not following', () => {
@@ -61,6 +75,15 @@ describe('FollowButton', () => {
       userId: 'other',
       isFollowing: false,
     });
+  });
+
+  it('does not toggle when the gate blocks an anonymous user', () => {
+    setUser(null);
+    const mutate = setToggle();
+    setRequireAuth(false); // anónimo: el gate redirige y no corre la acción
+    render(<FollowButton userId="other" isFollowing={false} />);
+    fireEvent.click(screen.getByRole('button'));
+    expect(mutate).not.toHaveBeenCalled();
   });
 
   it('is disabled and does not toggle while pending', () => {

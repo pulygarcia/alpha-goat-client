@@ -1,6 +1,7 @@
 'use client';
 
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
+import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 import { useToggleFollow } from '../hooks/useToggleFollow';
 
 interface FollowButtonProps {
@@ -16,13 +17,15 @@ interface FollowButtonProps {
 export function FollowButton({ userId, isFollowing }: FollowButtonProps) {
   const { data: currentUser } = useCurrentUser();
   const toggle = useToggleFollow();
+  const requireAuth = useRequireAuth();
 
   // Oculto para reseñas propias.
   if (currentUser?.id === userId) return null;
 
   const handleClick = () => {
     if (toggle.isPending) return;
-    toggle.mutate({ userId, isFollowing });
+    // Anónimo → redirige a login; logueado → dispara el toggle.
+    requireAuth(() => toggle.mutate({ userId, isFollowing }));
   };
 
   return (

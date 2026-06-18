@@ -3,16 +3,30 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { FeedSubnav } from './FeedSubnav';
 import { useFeedStats } from '../hooks/useFeedStats';
 import { useFeedFilters } from '../store/feedFilters.store';
+import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 
 vi.mock('../hooks/useFeedStats', () => ({
   useFeedStats: vi.fn(),
 }));
+vi.mock('@/shared/hooks/useRequireAuth', () => ({
+  useRequireAuth: vi.fn(),
+}));
 
 const mockedStats = vi.mocked(useFeedStats);
+const mockedRequireAuth = vi.mocked(useRequireAuth);
+
+// Por defecto el gate corre la acción (usuario autenticado).
+function setRequireAuth(authed = true) {
+  mockedRequireAuth.mockReturnValue((action: () => void) => {
+    if (authed) action();
+  });
+}
 
 describe('FeedSubnav', () => {
   beforeEach(() => {
     useFeedFilters.setState({ scope: null });
+    mockedRequireAuth.mockReset();
+    setRequireAuth();
     mockedStats.mockReturnValue({
       data: { todayCount: 3, weekCount: 12 },
     } as unknown as ReturnType<typeof useFeedStats>);
@@ -36,10 +50,17 @@ describe('FeedSubnav', () => {
     expect(useFeedFilters.getState().scope).toBe('week');
   });
 
-  it('selecting "Siguiendo" sets the following scope', () => {
+  it('selecting "Siguiendo" sets the following scope when authenticated', () => {
     render(<FeedSubnav />);
     fireEvent.click(screen.getByText('Siguiendo'));
     expect(useFeedFilters.getState().scope).toBe('following');
+  });
+
+  it('does not set the following scope for an anonymous user (gated)', () => {
+    setRequireAuth(false);
+    render(<FeedSubnav />);
+    fireEvent.click(screen.getByText('Siguiendo'));
+    expect(useFeedFilters.getState().scope).toBeNull();
   });
 
   it('clicking the active chip clears the scope to "todas"', () => {

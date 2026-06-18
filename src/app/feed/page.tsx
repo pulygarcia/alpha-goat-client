@@ -1,6 +1,5 @@
 'use client';
 
-import { RequireAuth } from '@/shared/components/auth/RequireAuth';
 import { FeedHero } from '@/features/feed/components/FeedHero';
 import { FeedRail } from '@/features/feed/components/FeedRail';
 import { FeedReviews } from '@/features/feed/components/FeedReviews';
@@ -8,7 +7,9 @@ import { FeedSubnav } from '@/features/feed/components/FeedSubnav';
 import { FeedTopbar } from '@/features/feed/components/FeedTopbar';
 import { ReviewFab } from '@/features/feed/components/ReviewFab';
 
-function FeedContent() {
+// Feed público: un anónimo puede verlo (modelo "ver público / actuar autenticado").
+// El gate vive en las acciones (like, seguir, comentar) vía useRequireAuth, no en la página.
+export default function FeedPage() {
   return (
     <main className="bg-paper text-ink min-h-screen">
       <FeedTopbar />
@@ -25,13 +26,5 @@ function FeedContent() {
 
       <ReviewFab />
     </main>
-  );
-}
-
-export default function FeedPage() {
-  return (
-    <RequireAuth>
-      <FeedContent />
-    </RequireAuth>
   );
 }

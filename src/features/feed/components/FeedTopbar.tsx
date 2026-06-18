@@ -23,6 +23,7 @@ import {
 } from '@/shared/components/ui/sheet';
 import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
 import { useAuth } from '@/shared/providers/AuthProvider';
+import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 
 const NAV_ITEMS = [
   { href: '/feed', label: 'Feed' },
@@ -42,9 +43,10 @@ function initialsFromUsername(username: string): string {
 
 export function FeedTopbar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const initials = user ? initialsFromUsername(user.username) : '?';
   const [quickOpen, setQuickOpen] = useState(false);
+  const requireAuth = useRequireAuth();
 
   return (
     <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
@@ -143,7 +145,7 @@ export function FeedTopbar() {
 
       <button
         type="button"
-        onClick={() => setQuickOpen(true)}
+        onClick={() => requireAuth(() => setQuickOpen(true))}
         className="text-paper hidden h-10 items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110 sm:inline-flex"
       >
         <Plus className="h-4 w-4" strokeWidth={2.4} />
@@ -152,36 +154,45 @@ export function FeedTopbar() {
 
       <QuickReviewModal open={quickOpen} onOpenChange={setQuickOpen} />
 
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          aria-label="Menú de usuario"
-          className="border-sienna from-cinnamon to-curry text-sienna flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"
-        >
-          {initials}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          sideOffset={10}
-          className="bg-paper-raised text-ink min-w-[224px] rounded-[12px] border-[rgba(74,30,8,0.22)] p-1.5 shadow-[0_18px_40px_-18px_rgba(44,18,9,0.5)]"
-        >
-          <DropdownMenuLabel className="px-[10px] py-2">
-            <span className="block text-[14px] leading-tight font-semibold">
-              {user?.username}
-            </span>
-            <span className="mt-0.5 block text-[12.5px] font-normal text-[rgba(44,18,9,0.62)]">
-              {user?.email}
-            </span>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator className="bg-[rgba(74,30,8,0.14)]" />
-          <DropdownMenuItem
-            onSelect={logout}
-            className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+      {isAuthenticated ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            aria-label="Menú de usuario"
+            className="border-sienna from-cinnamon to-curry text-sienna flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"
           >
-            <LogOut className="h-4 w-4" strokeWidth={2} />
-            Cerrar sesión
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            {initials}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            sideOffset={10}
+            className="bg-paper-raised text-ink min-w-[224px] rounded-[12px] border-[rgba(74,30,8,0.22)] p-1.5 shadow-[0_18px_40px_-18px_rgba(44,18,9,0.5)]"
+          >
+            <DropdownMenuLabel className="px-[10px] py-2">
+              <span className="block text-[14px] leading-tight font-semibold">
+                {user?.username}
+              </span>
+              <span className="mt-0.5 block text-[12.5px] font-normal text-[rgba(44,18,9,0.62)]">
+                {user?.email}
+              </span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-[rgba(74,30,8,0.14)]" />
+            <DropdownMenuItem
+              onSelect={logout}
+              className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+            >
+              <LogOut className="h-4 w-4" strokeWidth={2} />
+              Cerrar sesión
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Link
+          href="/login?next=/feed"
+          className="text-paper inline-flex h-9 flex-shrink-0 items-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110"
+        >
+          Entrar
+        </Link>
+      )}
     </div>
   );
 }

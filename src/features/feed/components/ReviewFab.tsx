@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
+import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 import { clampY, snapSide } from '../lib/fabPosition';
 
 const SIZE = 64; // px — un poco más grande que los íconos de Next
@@ -26,6 +27,7 @@ export function ReviewFab() {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const wasDragged = useRef(false);
+  const requireAuth = useRequireAuth();
 
   function handleDragEnd(_: unknown, info: PanInfo) {
     wasDragged.current =
@@ -50,7 +52,8 @@ export function ReviewFab() {
       wasDragged.current = false;
       return;
     }
-    setOpen(true);
+    // Reseñar es una acción: anónimo → login.
+    requireAuth(() => setOpen(true));
   }
 
   return (

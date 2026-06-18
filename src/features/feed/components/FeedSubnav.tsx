@@ -1,5 +1,6 @@
 'use client';
 
+import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 import { useFeedStats } from '../hooks/useFeedStats';
 import { useFeedFilters } from '../store/feedFilters.store';
 import type { FeedScope } from '../types/feed.types';
@@ -26,6 +27,7 @@ export function FeedSubnav() {
   const toggleScope = useFeedFilters((s) => s.toggleScope);
   const issue = formatIssueDate(new Date());
   const { data: stats } = useFeedStats();
+  const requireAuth = useRequireAuth();
 
   return (
     <div className="bg-paper flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-[rgba(74,30,8,0.14)] px-5 py-4 md:px-7">
@@ -55,7 +57,8 @@ export function FeedSubnav() {
         <Chip
           label={SCOPE_CHIPS[0].label}
           isActive={scope === SCOPE_CHIPS[0].id}
-          onClick={() => toggleScope(SCOPE_CHIPS[0].id)}
+          // "Siguiendo" es un feed personal: anónimo → login.
+          onClick={() => requireAuth(() => toggleScope(SCOPE_CHIPS[0].id))}
         />
       </div>
 

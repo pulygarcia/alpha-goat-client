@@ -24,6 +24,29 @@
   --color-reward: #5a9a4a;
   --color-error: #c4452a;
 
+  /* Tokens semánticos de shadcn mapeados a la paleta cream, para que los
+     primitivos (slider, textarea, dialog, etc.) rendericen on-brand sin tocar
+     el componente. Hoy nada del repo usa estos nombres, así que es aditivo. */
+  --color-background: #f9efd9;
+  --color-foreground: #2c1209;
+  --color-primary: #d68715;
+  --color-primary-foreground: #f5ead0;
+  --color-secondary: #efe0b6;
+  --color-secondary-foreground: #2c1209;
+  --color-muted: #efe0b6;
+  --color-muted-foreground: #5a2208;
+  --color-accent: #efe0b6;
+  --color-accent-foreground: #2c1209;
+  --color-popover: #f9efd9;
+  --color-popover-foreground: #2c1209;
+  --color-card: #f9efd9;
+  --color-card-foreground: #2c1209;
+  --color-border: #d9b569;
+  --color-input: #d9b569;
+  --color-ring: #f4a02b;
+  --color-destructive: #c4452a;
+  --color-destructive-foreground: #f5ead0;
+
   --font-archivo: var(--font-archivo);
   --font-inter: var(--font-inter);
   --font-mono: var(--font-mono);
@@ -35,6 +58,13 @@
     background: var(--color-bg);
     color: var(--color-curry);
     font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  }
+
+  /* Tailwind v4 dejó el cursor de los botones en `default`; lo volvemos a
+     `pointer` (salvo deshabilitados) para todos los botones de la app. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
   }
 }
 

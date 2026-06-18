@@ -5,6 +5,13 @@ import { useAlfajor } from '../hooks/useAlfajor';
 import type { Alfajor } from '../types/alfajores.types';
 
 vi.mock('../hooks/useAlfajor', () => ({ useAlfajor: vi.fn() }));
+// Hijos con query hooks propios (tienen sus tests): se mockean para aislar el detalle.
+vi.mock('@/features/reviews/components/AlfajorReviews', () => ({
+  AlfajorReviews: () => null,
+}));
+vi.mock('@/features/reviews/components/QuickReviewModal', () => ({
+  QuickReviewModal: () => null,
+}));
 
 const mocked = vi.mocked(useAlfajor);
 

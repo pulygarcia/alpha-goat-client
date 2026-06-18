@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
 import { clampY, snapSide } from '../lib/fabPosition';
 
 const SIZE = 64; // px — un poco más grande que los íconos de Next
@@ -20,7 +20,7 @@ const SPRING = { type: 'spring', stiffness: 400, damping: 32 } as const;
  * (la altura queda donde se dejó). Sin persistencia entre recargas.
  */
 export function ReviewFab() {
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
   const layerRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const x = useMotionValue(0);
@@ -45,56 +45,60 @@ export function ReviewFab() {
   }
 
   function handleClick() {
-    // Si venía de un arrastre, no navegamos (evita abrir /resenar al soltar).
+    // Si venía de un arrastre, no abrimos el modal (evita gatillarlo al soltar).
     if (wasDragged.current) {
       wasDragged.current = false;
       return;
     }
-    router.push('/resenar');
+    setOpen(true);
   }
 
   return (
-    <div
-      ref={layerRef}
-      className="pointer-events-none fixed inset-0 z-40 sm:hidden"
-    >
-      <motion.button
-        ref={btnRef}
-        type="button"
-        aria-label="Reseñar un alfajor"
-        drag
-        dragConstraints={layerRef}
-        dragMomentum={false}
-        dragElastic={0.04}
-        onDragEnd={handleDragEnd}
-        onClick={handleClick}
-        whileTap={{ scale: 0.92 }}
-        style={{
-          x,
-          y,
-          width: SIZE,
-          height: SIZE,
-          right: EDGE_GAP,
-          bottom: '2rem',
-        }}
-        className="bg-paper-raised pointer-events-auto absolute flex touch-none items-center justify-center overflow-hidden rounded-full border border-[rgba(74,30,8,0.18)] p-[7px] shadow-[0_12px_30px_-8px_rgba(44,18,9,0.55)] active:cursor-grabbing"
+    <>
+      <div
+        ref={layerRef}
+        className="pointer-events-none fixed inset-0 z-40 sm:hidden"
       >
-        <span
-          aria-hidden
-          className="absolute inset-0 rounded-full"
+        <motion.button
+          ref={btnRef}
+          type="button"
+          aria-label="Reseñar un alfajor"
+          drag
+          dragConstraints={layerRef}
+          dragMomentum={false}
+          dragElastic={0.04}
+          onDragEnd={handleDragEnd}
+          onClick={handleClick}
+          whileTap={{ scale: 0.92 }}
           style={{
-            background:
-              'radial-gradient(circle at 50% 35%, rgba(244,160,43,0.30), transparent 70%)',
+            x,
+            y,
+            width: SIZE,
+            height: SIZE,
+            right: EDGE_GAP,
+            bottom: '2rem',
           }}
-        />
-        <Image
-          src="/alfajor-hero.png"
-          alt=""
-          width={SIZE}
-          height={SIZE}
-          className="h-full w-full object-contain"
-        />
-      </motion.button>
-    </div>
+          className="bg-paper-raised pointer-events-auto absolute flex touch-none items-center justify-center overflow-hidden rounded-full border border-[rgba(74,30,8,0.18)] p-[7px] shadow-[0_12px_30px_-8px_rgba(44,18,9,0.55)] active:cursor-grabbing"
+        >
+          <span
+            aria-hidden
+            className="absolute inset-0 rounded-full"
+            style={{
+              background:
+                'radial-gradient(circle at 50% 35%, rgba(244,160,43,0.30), transparent 70%)',
+            }}
+          />
+          <Image
+            src="/alfajor-hero.png"
+            alt=""
+            width={SIZE}
+            height={SIZE}
+            className="h-full w-full object-contain"
+          />
+        </motion.button>
+      </div>
+
+      <QuickReviewModal open={open} onOpenChange={setOpen} />
+    </>
   );
 }

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { AlfajorReviews } from '@/features/reviews/components/AlfajorReviews';
 import { useAlfajor } from '../hooks/useAlfajor';
 import { AlfajorDetailSkeleton } from './AlfajorDetailSkeleton';
 
@@ -43,63 +44,67 @@ export function AlfajorDetail({ id }: { id: string }) {
       )}
 
       {data && (
-        <article className="grid gap-8 md:grid-cols-[minmax(0,420px)_1fr]">
-          <div className="bg-paper-sunken relative aspect-square w-full overflow-hidden rounded-[16px] border border-[rgba(74,30,8,0.14)]">
-            {data.imagenUrl ? (
-              <Image
-                src={data.imagenUrl}
-                alt={data.nombre}
-                fill
-                sizes="(max-width: 768px) 100vw, 420px"
-                className="object-cover"
-              />
-            ) : (
-              <div
-                className="text-cinnamon flex h-full w-full items-center justify-center text-[0.7rem] tracking-[0.24em] uppercase"
-                style={{ fontFamily: 'var(--font-mono)' }}
+        <>
+          <article className="grid gap-8 md:grid-cols-[minmax(0,420px)_1fr]">
+            <div className="bg-paper-sunken relative aspect-square w-full overflow-hidden rounded-[16px] border border-[rgba(74,30,8,0.14)]">
+              {data.imagenUrl ? (
+                <Image
+                  src={data.imagenUrl}
+                  alt={data.nombre}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 420px"
+                  className="object-cover"
+                />
+              ) : (
+                <div
+                  className="text-cinnamon flex h-full w-full items-center justify-center text-[0.7rem] tracking-[0.24em] uppercase"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  {tipoLabel(data.tipo)}
+                </div>
+              )}
+            </div>
+
+            <div className="pt-1">
+              <span
+                className="text-curry-deep"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.62rem',
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                }}
               >
                 {tipoLabel(data.tipo)}
-              </div>
-            )}
-          </div>
+              </span>
 
-          <div className="pt-1">
-            <span
-              className="text-curry-deep"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.62rem',
-                letterSpacing: '0.24em',
-                textTransform: 'uppercase',
-                fontWeight: 700,
-              }}
-            >
-              {tipoLabel(data.tipo)}
-            </span>
+              <h1 className="text-ink mt-2 text-[40px] leading-[1.02] tracking-[-0.03em] md:text-[48px]">
+                {data.nombre}
+              </h1>
 
-            <h1 className="text-ink mt-2 text-[40px] leading-[1.02] tracking-[-0.03em] md:text-[48px]">
-              {data.nombre}
-            </h1>
-
-            <p className="text-sienna mt-3 text-[15px]">
-              {data.marca?.nombre ?? 'Marca desconocida'}
-              {data.marca?.provincia ? ` · ${data.marca.provincia}` : ''}
-            </p>
-
-            {data.descripcion && (
-              <p className="text-ink/80 mt-6 max-w-[560px] text-[15px] leading-relaxed">
-                {data.descripcion}
+              <p className="text-sienna mt-3 text-[15px]">
+                {data.marca?.nombre ?? 'Marca desconocida'}
+                {data.marca?.provincia ? ` · ${data.marca.provincia}` : ''}
               </p>
-            )}
 
-            <Link
-              href={`/alfajores/${data.id}/resenar`}
-              className="text-paper mt-7 inline-flex h-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-6 text-[14px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110"
-            >
-              Reseñar
-            </Link>
-          </div>
-        </article>
+              {data.descripcion && (
+                <p className="text-ink/80 mt-6 max-w-[560px] text-[15px] leading-relaxed">
+                  {data.descripcion}
+                </p>
+              )}
+
+              <Link
+                href={`/alfajores/${data.id}/resenar`}
+                className="text-paper mt-7 inline-flex h-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-6 text-[14px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110"
+              >
+                Reseñar
+              </Link>
+            </div>
+          </article>
+
+          <AlfajorReviews alfajorId={data.id} />
+        </>
       )}
     </main>
   );

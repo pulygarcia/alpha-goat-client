@@ -5,6 +5,8 @@ export interface ReviewAuthor {
   id: string;
   username: string;
   avatarUrl: string | null;
+  /** Aún no lo expone `GET /reviews` (pendiente back); se trata como `false`. */
+  isFollowing?: boolean;
 }
 
 /** Los 5 ejes + el rating general, todos 0..10 con 1 decimal. */
@@ -25,6 +27,9 @@ export interface Review extends ReviewRatings {
   alfajorId: string;
   comentario: string | null;
   fotoUrl: string | null;
+  /** Contadores aún no expuestos por `GET /reviews` (pendiente back); default 0. */
+  likesCount?: number;
+  commentsCount?: number;
   createdAt: string;
   updatedAt: string;
 }

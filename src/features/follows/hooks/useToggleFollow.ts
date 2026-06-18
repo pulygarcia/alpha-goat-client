@@ -6,6 +6,7 @@ import {
   type InfiniteData,
 } from '@tanstack/react-query';
 import { followsApi } from '../api/follows.api';
+import { notifyError } from '@/shared/lib/toast';
 import type { FeedList } from '@/features/feed/types/feed.types';
 
 /** Prefijo de las queries del feed paginado: ['feed','reviews',{sort,scope,province}]. */
@@ -74,6 +75,7 @@ export function useToggleFollow() {
       context?.snapshots.forEach(([key, data]) => {
         queryClient.setQueryData(key, data);
       });
+      notifyError('No pudimos actualizar el seguimiento');
     },
 
     onSettled: () => {

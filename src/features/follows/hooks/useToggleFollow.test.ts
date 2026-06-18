@@ -8,10 +8,16 @@ import {
 import React from 'react';
 import { useToggleFollow } from './useToggleFollow';
 import { followsApi } from '../api/follows.api';
+import { notifyError } from '@/shared/lib/toast';
 import type { FeedItem, FeedList } from '@/features/feed/types/feed.types';
 
 vi.mock('../api/follows.api', () => ({
   followsApi: { follow: vi.fn(), unfollow: vi.fn() },
+}));
+
+vi.mock('@/shared/lib/toast', () => ({
+  notifySuccess: vi.fn(),
+  notifyError: vi.fn(),
 }));
 
 // Misma forma que feedReviewsKey('recent'); inline para no arrastrar feed.api → env.
@@ -83,6 +89,7 @@ describe('useToggleFollow', () => {
   beforeEach(() => {
     vi.mocked(followsApi.follow).mockReset();
     vi.mocked(followsApi.unfollow).mockReset();
+    vi.mocked(notifyError).mockReset();
   });
 
   it('flips isFollowing optimistically and calls follow() when not following', async () => {
@@ -144,6 +151,35 @@ describe('useToggleFollow', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(readFollowing()).toBe(false);
+  });
+
+  it('notifica error cuando falla el toggle', async () => {
+    vi.mocked(followsApi.follow).mockRejectedValue(new Error('boom'));
+    const { result } = setup(seedFeed([makeItem('1', 'u1', false)]));
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() =>
+      expect(notifyError).toHaveBeenCalledWith(
+        'No pudimos actualizar el seguimiento',
+      ),
+    );
+  });
+
+  it('no notifica nada en éxito (acción silenciosa)', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, readFollowing } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(readFollowing()).toBe(true));
+    expect(notifyError).not.toHaveBeenCalled();
   });
 
   it('does not fire a second request while one is pending', async () => {

@@ -31,7 +31,12 @@ function feedItem(id: string, likes: number, isLiked: boolean): FeedItem {
   return {
     id,
     author: { id: 'u1', username: 'pepe', avatarUrl: null, isFollowing: false },
-    alfajor: { id: 'a1', nombre: 'Jorgito', tipo: 'CHOCOLATE', imagenUrl: null },
+    alfajor: {
+      id: 'a1',
+      nombre: 'Jorgito',
+      tipo: 'CHOCOLATE',
+      imagenUrl: null,
+    },
     marca: { id: 'm1', nombre: 'Havanna', provincia: 'CABA' },
     quote: null,
     photoUrl: null,

@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import Link from 'next/link';
 import { FollowButton } from '@/features/follows/components/FollowButton';
+import { LikeButton } from '@/features/reviews/components/LikeButton';
 import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
 import type { FeedAxes, FeedItem } from '../types/feed.types';
 
@@ -53,6 +54,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
     overall,
     axes,
     likes,
+    isLiked,
     commentsCount,
   } = item;
 
@@ -157,9 +159,7 @@ export function ReviewRow({ item }: { item: FeedItem }) {
             fontWeight: 700,
           }}
         >
-          <span className="text-curry-deep inline-flex items-center gap-[5px]">
-            ★ {likes} likes
-          </span>
+          <LikeButton reviewId={item.id} likes={likes} isLiked={isLiked} />
           <span className="inline-flex items-center gap-[5px]">
             ↳ {commentsCount} comentarios
           </span>

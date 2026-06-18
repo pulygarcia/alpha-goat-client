@@ -96,6 +96,8 @@ export interface FeedItem {
   overall: number;
   axes: FeedAxes;
   likes: number;
+  /** Si el usuario actual ya likeó la reseña (`GET /feed`, false anónimo). */
+  isLiked: boolean;
   commentsCount: number;
   createdAt: string;
 }

@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { reviewsApi } from '../api/reviews.api';
+import { notifySuccess, notifyError } from '@/shared/lib/toast';
 import { alfajorReviewsKey } from './useAlfajorReviews';
 import type {
   CreateReviewInput,
@@ -25,9 +26,15 @@ export function useSubmitReview(alfajorId: string) {
       payload.mode === 'create'
         ? reviewsApi.create(payload.input)
         : reviewsApi.update(payload.reviewId, payload.input),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: alfajorReviewsKey(alfajorId) });
       qc.invalidateQueries({ queryKey: ['alfajores', 'detail', alfajorId] });
+      notifySuccess(
+        variables.mode === 'create' ? 'Reseña publicada' : 'Reseña actualizada',
+      );
+    },
+    onError: () => {
+      notifyError('No pudimos publicar la reseña');
     },
   });
 }

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { LogOut, Menu, Plus, Search } from 'lucide-react';
 
 import {
@@ -20,6 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/shared/components/ui/sheet';
+import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
 import { useAuth } from '@/shared/providers/AuthProvider';
 
 const NAV_ITEMS = [
@@ -42,6 +44,7 @@ export function FeedTopbar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const initials = user ? initialsFromUsername(user.username) : '?';
+  const [quickOpen, setQuickOpen] = useState(false);
 
   return (
     <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
@@ -138,13 +141,16 @@ export function FeedTopbar() {
         />
       </label>
 
-      <Link
-        href="/resenar"
+      <button
+        type="button"
+        onClick={() => setQuickOpen(true)}
         className="text-paper hidden h-10 items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110 sm:inline-flex"
       >
         <Plus className="h-4 w-4" strokeWidth={2.4} />
         Reseñar
-      </Link>
+      </button>
+
+      <QuickReviewModal open={quickOpen} onOpenChange={setQuickOpen} />
 
       <DropdownMenu>
         <DropdownMenuTrigger

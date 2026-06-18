@@ -2,8 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { AlfajorReviews } from '@/features/reviews/components/AlfajorReviews';
+import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
 import { useAlfajor } from '../hooks/useAlfajor';
 import { AlfajorDetailSkeleton } from './AlfajorDetailSkeleton';
 
@@ -17,6 +19,7 @@ function statusOf(error: unknown): number | undefined {
 
 export function AlfajorDetail({ id }: { id: string }) {
   const { data, isLoading, isError, error } = useAlfajor(id);
+  const [reviewOpen, setReviewOpen] = useState(false);
 
   return (
     <main className="mx-auto max-w-[1080px] px-5 py-8 md:px-8 md:py-10">
@@ -94,16 +97,23 @@ export function AlfajorDetail({ id }: { id: string }) {
                 </p>
               )}
 
-              <Link
-                href={`/alfajores/${data.id}/resenar`}
+              <button
+                type="button"
+                onClick={() => setReviewOpen(true)}
                 className="text-paper mt-7 inline-flex h-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-6 text-[14px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110"
               >
                 Reseñar
-              </Link>
+              </button>
             </div>
           </article>
 
           <AlfajorReviews alfajorId={data.id} />
+
+          <QuickReviewModal
+            open={reviewOpen}
+            onOpenChange={setReviewOpen}
+            alfajor={data}
+          />
         </>
       )}
     </main>

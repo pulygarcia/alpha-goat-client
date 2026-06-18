@@ -2,7 +2,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 const COOKIE_NAME = 'accessToken';
 
-const PROTECTED_PREFIXES = ['/feed', '/perfil', '/admin'];
+// `/feed`, `/alfajores` y el detalle de reseñas son públicos (modelo "ver
+// público / actuar autenticado"): el gate vive en las acciones, no en la ruta.
+const PROTECTED_PREFIXES = ['/perfil', '/admin'];
 const GUEST_ONLY_PREFIXES = ['/login', '/register'];
 
 function matches(pathname: string, prefixes: string[]): boolean {
@@ -31,11 +33,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/feed/:path*',
-    '/perfil/:path*',
-    '/admin/:path*',
-    '/login',
-    '/register',
-  ],
+  matcher: ['/perfil/:path*', '/admin/:path*', '/login', '/register'],
 };

@@ -6,7 +6,7 @@ import type { Review } from '../types/reviews.types';
 
 vi.mock('../hooks/useAlfajorReviews', () => ({ useAlfajorReviews: vi.fn() }));
 vi.mock('./ReviewCard', () => ({
-  ReviewCard: ({ review }: { review: Review }) => <div>review-{review.id}</div>,
+  ReviewCard: ({ vm }: { vm: { id: string } }) => <div>review-{vm.id}</div>,
 }));
 
 const mocked = vi.mocked(useAlfajorReviews);

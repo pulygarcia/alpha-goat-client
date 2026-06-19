@@ -3,6 +3,7 @@
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import { useAlfajorReviews } from '../hooks/useAlfajorReviews';
 import { ReviewCard } from './ReviewCard';
+import { reviewToVM } from '../lib/reviewCardVM';
 
 export function AlfajorReviews({ alfajorId }: { alfajorId: string }) {
   const {
@@ -62,7 +63,11 @@ export function AlfajorReviews({ alfajorId }: { alfajorId: string }) {
       {items.length > 0 && (
         <div className="flex flex-col gap-4">
           {items.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard
+              key={review.id}
+              vm={reviewToVM(review)}
+              context="alfajor"
+            />
           ))}
         </div>
       )}

@@ -9,9 +9,11 @@ vi.mock('../hooks/useFeedReviews', () => ({
   useFeedReviews: vi.fn(),
 }));
 
-// Evita renderizar Recharts en jsdom: el detalle visual de la fila no se testea.
-vi.mock('./ReviewRow', () => ({
-  ReviewRow: ({ item }: { item: FeedItem }) => <div>{item.alfajor.nombre}</div>,
+// El card unificado se testea aparte; acá solo verificamos el wiring del feed.
+vi.mock('@/features/reviews/components/ReviewCard', () => ({
+  ReviewCard: ({ vm }: { vm: { alfajor: { nombre: string } | null } }) => (
+    <div>{vm.alfajor?.nombre}</div>
+  ),
 }));
 
 const mocked = vi.mocked(useFeedReviews);

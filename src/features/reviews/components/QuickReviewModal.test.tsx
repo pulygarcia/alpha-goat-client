@@ -91,6 +91,8 @@ describe('QuickReviewModal', () => {
     expect(
       screen.getByText('Alfajor').closest('[aria-current]'),
     ).toHaveAttribute('aria-current', 'step');
+    // descripción del paso activo (reemplaza al viejo subtítulo del modal)
+    expect(screen.getByText(/buscá el que probaste/i)).toBeInTheDocument();
   });
 
   it('shows a 2-step stepper (no Alfajor) when an alfajor is preselected', () => {

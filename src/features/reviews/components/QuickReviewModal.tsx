@@ -48,18 +48,35 @@ export function QuickReviewModal({
 
   // Pasos del wizard: si el alfajor viene preseleccionado (desde el detalle) se
   // saltea el de elegir → 2 pasos; si no, 3. El stepper es solo indicador.
+  const RESENA = { label: 'Reseña', description: 'Contanos qué te pareció.' };
+  const PUNTAJES = { label: 'Puntajes', description: 'Puntuá los 6 ejes.' };
   const steps = alfajor
-    ? ['Reseña', 'Puntajes']
-    : ['Alfajor', 'Reseña', 'Puntajes'];
+    ? [RESENA, PUNTAJES]
+    : [
+        { label: 'Alfajor', description: 'Buscá el que probaste.' },
+        RESENA,
+        PUNTAJES,
+      ];
   const wizardIndex = wizardStep === 'comentario' ? 0 : 1;
   const current = selected ? wizardIndex + (alfajor ? 0 : 1) : 0;
+  const activeDescription = steps[current]?.description;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="bg-paper-raised text-ink max-w-md border-[rgba(74,30,8,0.22)]">
         <DialogHeader>
           <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
-          <Stepper steps={steps} current={current} />
+          {/* pr-8: deja aire para la X de cerrar, que no se monte sobre el último paso */}
+          <Stepper
+            steps={steps.map((s) => s.label)}
+            current={current}
+            className="pr-8"
+          />
+          {activeDescription && (
+            <p className="text-sienna text-center text-[13px]">
+              {activeDescription}
+            </p>
+          )}
         </DialogHeader>
 
         {selected ? (

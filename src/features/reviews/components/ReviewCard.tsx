@@ -1,4 +1,5 @@
 import { FollowButton } from '@/features/follows/components/FollowButton';
+import { CommentsButton } from '@/features/comments/components/CommentsButton';
 import { Card, CardContent, CardHeader } from '@/shared/components/ui/card';
 import { LikeButton } from './LikeButton';
 import type { Review } from '../types/reviews.types';
@@ -16,14 +17,6 @@ function timeAgo(iso: string) {
   if (h < 24) return `hace ${h} h`;
   return `hace ${Math.floor(h / 24)} d`;
 }
-
-const AXES: Array<[string, keyof Review]> = [
-  ['Dulzor', 'dulzor'],
-  ['DDL', 'cantidadDDL'],
-  ['Baño', 'calidadBano'],
-  ['Tapa/Relleno', 'ratioTapaRelleno'],
-  ['Textura', 'textura'],
-];
 
 export function ReviewCard({ review }: { review: Review }) {
   const { author, comentario, ratingGeneral, likesCount, commentsCount } =
@@ -64,26 +57,6 @@ export function ReviewCard({ review }: { review: Review }) {
             />
           )}
         </div>
-
-        <div className="text-right">
-          <span
-            className="text-curry-deep"
-            style={{
-              fontFamily: 'var(--font-archivo)',
-              fontSize: 26,
-              letterSpacing: '-0.04em',
-              lineHeight: 1,
-            }}
-          >
-            {ratingGeneral.toFixed(1)}
-          </span>
-          <span
-            className="text-cinnamon ml-[2px] text-[0.6rem] font-bold"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            /10
-          </span>
-        </div>
       </CardHeader>
 
       <CardContent>
@@ -93,45 +66,48 @@ export function ReviewCard({ review }: { review: Review }) {
           </p>
         )}
 
-        <dl className="flex flex-wrap gap-x-5 gap-y-1">
-          {AXES.map(([label, key]) => (
-            <div key={label} className="flex items-baseline gap-1.5">
-              <dt
-                className="text-cinnamon"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.58rem',
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {label}
-              </dt>
-              <dd className="text-ink text-[13px] font-semibold">
-                {(review[key] as number).toFixed(1)}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <div className="flex items-baseline gap-2">
+          <span
+            className="text-curry-deep"
+            style={{
+              fontFamily: 'var(--font-archivo)',
+              fontSize: 24,
+              letterSpacing: '-0.04em',
+              lineHeight: 1,
+            }}
+          >
+            {ratingGeneral.toFixed(1)}
+          </span>
+          <span
+            className="text-cinnamon"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.6rem',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+            }}
+          >
+            /10 · Puntaje general
+          </span>
+        </div>
 
-        <div
-          className="text-cinnamon mt-5 flex gap-4"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.6rem',
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            fontWeight: 700,
-          }}
-        >
+        <div className="text-cinnamon mt-5 flex flex-wrap items-center gap-3 text-[13px] font-semibold">
           <LikeButton
             reviewId={review.id}
             likes={likesCount ?? 0}
             isLiked={review.isLiked ?? false}
           />
-          <span className="inline-flex items-center gap-[5px]">
-            ↳ {commentsCount ?? 0} comentarios
-          </span>
+          <CommentsButton
+            reviewId={review.id}
+            count={commentsCount ?? 0}
+            summary={{
+              author: name,
+              avatarUrl: author?.avatarUrl ?? null,
+              comentario,
+              createdAt: review.createdAt,
+            }}
+          />
         </div>
       </CardContent>
     </Card>

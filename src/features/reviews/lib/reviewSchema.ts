@@ -13,7 +13,7 @@ export const reviewSchema = z.object({
   calidadBano: rating,
   ratioTapaRelleno: rating,
   textura: rating,
-  comentario: z.string().max(500, 'Máximo 500 caracteres'),
+  comentario: z.string().max(280, 'Máximo 280 caracteres'),
 });
 
 export type ReviewFormValues = z.infer<typeof reviewSchema>;

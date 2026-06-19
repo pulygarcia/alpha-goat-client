@@ -81,6 +81,50 @@ describe('QuickReviewModal', () => {
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
   });
 
+  it('shows a 3-step stepper with Alfajor active when there is no preselection', () => {
+    mocked.mockReturnValue(baseReturn({ data: pages([]) }));
+    render(<QuickReviewModal open onOpenChange={vi.fn()} />);
+
+    expect(screen.getByText('Alfajor')).toBeInTheDocument();
+    expect(screen.getByText('Reseña')).toBeInTheDocument();
+    expect(screen.getByText('Puntajes')).toBeInTheDocument();
+    expect(
+      screen.getByText('Alfajor').closest('[aria-current]'),
+    ).toHaveAttribute('aria-current', 'step');
+    // descripción del paso activo (reemplaza al viejo subtítulo del modal)
+    expect(screen.getByText(/buscá el que probaste/i)).toBeInTheDocument();
+  });
+
+  it('shows a 2-step stepper (no Alfajor) when an alfajor is preselected', () => {
+    mocked.mockReturnValue(baseReturn({ data: pages([]) }));
+    render(
+      <QuickReviewModal
+        open
+        onOpenChange={vi.fn()}
+        alfajor={makeAlfajor('a9', 'Guaymallén')}
+      />,
+    );
+
+    expect(screen.queryByText('Alfajor')).not.toBeInTheDocument();
+    expect(
+      screen.getByText('Reseña').closest('[aria-current]'),
+    ).toHaveAttribute('aria-current', 'step');
+    expect(screen.getByText('Puntajes')).toBeInTheDocument();
+  });
+
+  it('advances the stepper to Reseña after picking an alfajor', () => {
+    mocked.mockReturnValue(
+      baseReturn({ data: pages([makeAlfajor('a1', 'Jorgito')]) }),
+    );
+    render(<QuickReviewModal open onOpenChange={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /jorgito/i }));
+
+    expect(
+      screen.getByText('Reseña').closest('[aria-current]'),
+    ).toHaveAttribute('aria-current', 'step');
+  });
+
   it('skips the picker and shows the wizard when an alfajor is preselected', () => {
     mocked.mockReturnValue(baseReturn({ data: pages([]) }));
     render(

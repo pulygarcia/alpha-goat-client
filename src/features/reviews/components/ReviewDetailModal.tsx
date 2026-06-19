@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/components/ui/dialog';
+import { ThumbsUp, MessageCircle } from 'lucide-react';
 import { CommentList } from '@/features/comments/components/CommentList';
 import { CommentForm } from '@/features/comments/components/CommentForm';
 import { useAuth } from '@/shared/providers/AuthProvider';
@@ -59,7 +60,7 @@ export function ReviewDetailModal({
   onOpenChange,
 }: ReviewDetailModalProps) {
   const { user } = useAuth();
-  const { author, overall, axes, quote, photoUrl } = vm;
+  const { author, overall, axes, quote, photoUrl, likes, commentsCount } = vm;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -142,9 +143,9 @@ export function ReviewDetailModal({
               </dl>
 
               {quote && (
-                <p className="text-sienna mt-4 text-[14px] leading-[1.5]">
+                <blockquote className="border-curry-deep/50 bg-paper-sunken/60 text-ink mt-4 rounded-r-[8px] border-l-[3px] py-2.5 pr-3 pl-3.5 text-[15px] leading-[1.6] font-medium">
                   “{quote}”
-                </p>
+                </blockquote>
               )}
 
               {photoUrl && (
@@ -155,6 +156,24 @@ export function ReviewDetailModal({
                   className="mt-4 max-h-72 w-full rounded-[10px] object-cover"
                 />
               )}
+
+              {/* Contadores de la reseña */}
+              <div className="text-cinnamon mt-4 flex items-center gap-4 text-[13px] font-semibold">
+                <span
+                  className="inline-flex items-center gap-1.5"
+                  aria-label={`${likes} me gusta`}
+                >
+                  <ThumbsUp size={15} strokeWidth={2} />
+                  {likes}
+                </span>
+                <span
+                  className="inline-flex items-center gap-1.5"
+                  aria-label={`${commentsCount} comentarios`}
+                >
+                  <MessageCircle size={15} strokeWidth={2} />
+                  {commentsCount}
+                </span>
+              </div>
             </div>
 
             <div className="border-t border-[rgba(74,30,8,0.14)] pt-4">

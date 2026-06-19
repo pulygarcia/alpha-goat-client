@@ -101,4 +101,10 @@ describe('ReviewDetailModal', () => {
       screen.queryByRole('img', { name: /foto de la reseña/i }),
     ).toBeNull();
   });
+
+  it('shows the likes and comments counts', () => {
+    setup({ likes: 5, commentsCount: 3 });
+    expect(screen.getByLabelText('5 me gusta')).toBeInTheDocument();
+    expect(screen.getByLabelText('3 comentarios')).toBeInTheDocument();
+  });
 });

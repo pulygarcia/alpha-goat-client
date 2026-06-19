@@ -1,6 +1,7 @@
 'use client';
 
 import { useReviewComments } from '../hooks/useReviewComments';
+import { timeAgo } from '../lib/timeAgo';
 
 function initials(username: string) {
   return username.slice(0, 2).toUpperCase();
@@ -52,7 +53,7 @@ export function CommentList({ reviewId }: { reviewId: string }) {
       {items.map((c) => {
         const username = c.author?.username ?? 'Usuario';
         return (
-          <li key={c.id} className="flex items-start gap-[10px]">
+          <li key={c.id} className="flex items-center gap-[10px]">
             {c.author?.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -74,6 +75,9 @@ export function CommentList({ reviewId }: { reviewId: string }) {
             <div>
               <span className="text-ink text-[13px] font-semibold">
                 {username}
+              </span>
+              <span className="text-cinnamon ml-1.5 text-[0.72rem]">
+                · {timeAgo(c.createdAt)}
               </span>
               <p className="text-sienna text-[14px] leading-[1.5]">
                 {c.contenido}

@@ -1,5 +1,6 @@
 'use client';
 
+import { ThumbsUp } from 'lucide-react';
 import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 import { useToggleLike } from '../hooks/useToggleLike';
 
@@ -32,11 +33,16 @@ export function LikeButton({ reviewId, likes, isLiked }: LikeButtonProps) {
       aria-pressed={isLiked}
       aria-label={isLiked ? 'Quitar like' : 'Dar like'}
       className={
-        'inline-flex items-center gap-[5px] transition-colors disabled:opacity-60 ' +
+        'inline-flex cursor-pointer items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors disabled:cursor-not-allowed disabled:opacity-60 ' +
         (isLiked ? 'text-curry-deep' : 'hover:text-curry-deep')
       }
     >
-      {isLiked ? '★' : '☆'} {likes} likes
+      <ThumbsUp
+        size={16}
+        strokeWidth={2}
+        fill={isLiked ? 'currentColor' : 'none'}
+      />
+      {likes}
     </button>
   );
 }

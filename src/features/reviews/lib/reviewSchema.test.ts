@@ -28,9 +28,9 @@ describe('reviewSchema', () => {
     );
   });
 
-  it('rejects a comment longer than 500 chars', () => {
+  it('rejects a comment longer than 280 chars', () => {
     expect(
-      reviewSchema.safeParse({ ...valid, comentario: 'x'.repeat(501) }).success,
+      reviewSchema.safeParse({ ...valid, comentario: 'x'.repeat(281) }).success,
     ).toBe(false);
   });
 });

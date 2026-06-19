@@ -72,7 +72,7 @@ function WizardInner({
   const { mutate, isPending, isError } = useSubmitReview(alfajor.id);
   const isEdit = !!existing;
 
-  const { control, register, handleSubmit } = useForm<ReviewFormValues>({
+  const { control, register, handleSubmit, watch } = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
     defaultValues: existing
       ? {
@@ -139,12 +139,15 @@ function WizardInner({
             <Textarea
               id="comentario"
               rows={5}
-              maxLength={500}
+              maxLength={280}
               autoFocus
               {...register('comentario')}
               placeholder="¿Qué te pareció?"
               className="bg-paper-sunken min-h-[120px] resize-none border-[rgba(74,30,8,0.22)] text-[14px]"
             />
+            <span className="text-cinnamon self-end text-[0.72rem] tabular-nums">
+              {(watch('comentario') ?? '').length}/280
+            </span>
           </div>
 
           <div className="flex items-center justify-between">

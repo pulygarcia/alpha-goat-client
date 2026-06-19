@@ -12,8 +12,13 @@ describe('commentSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('rejects a comment longer than 500 characters', () => {
-    const result = commentSchema.safeParse({ contenido: 'a'.repeat(501) });
+  it('accepts a comment exactly at the 280 limit', () => {
+    const result = commentSchema.safeParse({ contenido: 'a'.repeat(280) });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects a comment longer than 280 characters', () => {
+    const result = commentSchema.safeParse({ contenido: 'a'.repeat(281) });
     expect(result.success).toBe(false);
   });
 });

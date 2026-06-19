@@ -5,13 +5,13 @@ import { Search } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/shared/components/ui/dialog';
+import { Stepper } from '@/shared/components/ui/stepper';
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 import { useAlfajores } from '@/features/alfajores/hooks/useAlfajores';
-import { ReviewWizardForm } from './ReviewWizardForm';
+import { ReviewWizardForm, type WizardStep } from './ReviewWizardForm';
 import type { Alfajor } from '@/features/alfajores/types/alfajores.types';
 
 /**
@@ -29,33 +29,46 @@ export function QuickReviewModal({
   alfajor?: Alfajor;
 }) {
   const [selected, setSelected] = useState<Alfajor | null>(alfajor ?? null);
+  const [wizardStep, setWizardStep] = useState<WizardStep>('comentario');
 
   // Al cerrar, vuelve al estado inicial (preselección o picker) para que el
   // próximo open arranque limpio — sin un effect que sincronice `open`.
   function handleOpenChange(next: boolean) {
-    if (!next) setSelected(alfajor ?? null);
+    if (!next) {
+      setSelected(alfajor ?? null);
+      setWizardStep('comentario');
+    }
     onOpenChange(next);
   }
+
+  function backToPicker() {
+    setSelected(null);
+    setWizardStep('comentario');
+  }
+
+  // Pasos del wizard: si el alfajor viene preseleccionado (desde el detalle) se
+  // saltea el de elegir → 2 pasos; si no, 3. El stepper es solo indicador.
+  const steps = alfajor
+    ? ['Reseña', 'Puntajes']
+    : ['Alfajor', 'Reseña', 'Puntajes'];
+  const wizardIndex = wizardStep === 'comentario' ? 0 : 1;
+  const current = selected ? wizardIndex + (alfajor ? 0 : 1) : 0;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="bg-paper-raised text-ink max-w-md border-[rgba(74,30,8,0.22)]">
         <DialogHeader>
-          <DialogTitle className="text-ink text-[20px] font-semibold tracking-[-0.02em]">
-            {selected ? selected.nombre : 'Reseñá un alfajor'}
-          </DialogTitle>
-          <DialogDescription className="text-sienna">
-            {selected
-              ? 'Contanos qué te pareció.'
-              : 'Buscá el que probaste y dejá tu reseña.'}
-          </DialogDescription>
+          <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
+          <Stepper steps={steps} current={current} />
         </DialogHeader>
 
         {selected ? (
           <ReviewWizardForm
             alfajor={selected}
-            onBack={alfajor ? undefined : () => setSelected(null)}
+            onBack={alfajor ? undefined : backToPicker}
             onDone={() => handleOpenChange(false)}
+            step={wizardStep}
+            onStepChange={setWizardStep}
           />
         ) : (
           <AlfajorPicker onPick={setSelected} />

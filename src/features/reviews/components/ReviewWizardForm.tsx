@@ -32,14 +32,21 @@ function ratingsOf(v: ReviewFormValues) {
   };
 }
 
+export type WizardStep = 'comentario' | 'puntajes';
+
 export function ReviewWizardForm({
   alfajor,
   onBack,
   onDone,
+  step,
+  onStepChange,
 }: {
   alfajor: Alfajor;
   onBack?: () => void;
   onDone: () => void;
+  /** Paso controlado (opcional). Si se omite, el wizard lo maneja internamente. */
+  step?: WizardStep;
+  onStepChange?: (step: WizardStep) => void;
 }) {
   const { data: existing, isLoading } = useMyAlfajorReview(alfajor.id);
 
@@ -53,6 +60,8 @@ export function ReviewWizardForm({
       existing={existing ?? null}
       onBack={onBack}
       onDone={onDone}
+      step={step}
+      onStepChange={onStepChange}
     />
   );
 }
@@ -62,13 +71,22 @@ function WizardInner({
   existing,
   onBack,
   onDone,
+  step: stepProp,
+  onStepChange,
 }: {
   alfajor: Alfajor;
   existing: Review | null;
   onBack?: () => void;
   onDone: () => void;
+  step?: WizardStep;
+  onStepChange?: (step: WizardStep) => void;
 }) {
-  const [step, setStep] = useState<'comentario' | 'puntajes'>('comentario');
+  const [stepState, setStepState] = useState<WizardStep>('comentario');
+  const step = stepProp ?? stepState;
+  const setStep = (next: WizardStep) => {
+    setStepState(next);
+    onStepChange?.(next);
+  };
   const { mutate, isPending, isError } = useSubmitReview(alfajor.id);
   const isEdit = !!existing;
 

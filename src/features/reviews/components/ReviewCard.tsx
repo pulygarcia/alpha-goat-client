@@ -1,8 +1,11 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
 import { FollowButton } from '@/features/follows/components/FollowButton';
-import { CommentsButton } from '@/features/comments/components/CommentsButton';
-import { Card, CardContent, CardHeader } from '@/shared/components/ui/card';
 import { LikeButton } from './LikeButton';
-import type { Review } from '../types/reviews.types';
+import { ReviewDetailModal } from './ReviewDetailModal';
+import type { ReviewCardVM } from '../lib/reviewCardVM';
 
 function initials(username: string) {
   return username.slice(0, 2).toUpperCase();
@@ -18,98 +21,192 @@ function timeAgo(iso: string) {
   return `hace ${Math.floor(h / 24)} d`;
 }
 
-export function ReviewCard({ review }: { review: Review }) {
-  const { author, comentario, ratingGeneral, likesCount, commentsCount } =
-    review;
-  const name = author?.username ?? 'Anónimo';
+/** Frena la propagación: los controles propios (seguir, like, link al alfajor)
+ * no deben disparar la apertura del modal de la card. */
+function StopClick({ children }: { children: React.ReactNode }) {
+  return (
+    <span onClick={(e) => e.stopPropagation()} className="contents">
+      {children}
+    </span>
+  );
+}
+
+/**
+ * Card de reseña unificado (feed + detalle). El diseño es el del feed; con
+ * `context='alfajor'` oculta el alfajor/marca (redundante: ya estamos en su
+ * página). Clickear la card abre el modal con la reseña completa + comentarios.
+ */
+export function ReviewCard({
+  vm,
+  context,
+}: {
+  vm: ReviewCardVM;
+  context: 'feed' | 'alfajor';
+}) {
+  const [open, setOpen] = useState(false);
+  const { author, alfajor, marca, quote, photoUrl, overall, commentsCount } =
+    vm;
+  const showAlfajor = context === 'feed' && alfajor && marca;
 
   return (
-    <Card className="border-[rgba(74,30,8,0.14)] shadow-[0_10px_28px_-22px_rgba(44,18,9,0.5)]">
-      <CardHeader className="flex-row items-start justify-between gap-4 space-y-0 pb-4">
-        <div className="flex items-center gap-[10px]">
+    <>
+      <article
+        role="button"
+        tabIndex={0}
+        aria-label={`Ver reseña de ${author.username}`}
+        onClick={() => setOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setOpen(true);
+          }
+        }}
+        className="grid cursor-pointer grid-cols-[64px_1fr] items-start gap-4 border-b border-[rgba(74,30,8,0.14)] py-[22px] outline-none last:border-b-0 focus-visible:rounded-[10px] focus-visible:ring-2 focus-visible:ring-[rgba(74,30,8,0.35)] md:grid-cols-[96px_1fr_64px] md:gap-6"
+      >
+        {/* Foto: solo en el feed (en el detalle es el mismo alfajor de la página) */}
+        {context === 'feed' ? (
+          photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={photoUrl}
+              alt={alfajor?.nombre ?? ''}
+              className="aspect-square w-full rounded-[10px] object-cover"
+            />
+          ) : (
+            <div className="bg-paper-sunken text-cinnamon flex aspect-square w-full items-center justify-center rounded-[10px] text-[0.55rem] tracking-[0.18em] uppercase">
+              {alfajor?.tipo}
+            </div>
+          )
+        ) : (
           <div
-            className="text-paper flex h-9 w-9 items-center justify-center rounded-full text-[12px] font-bold"
+            className="text-paper flex aspect-square w-full items-center justify-center rounded-[10px] text-[15px] font-bold"
             style={{
               background:
                 'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
             }}
           >
-            {initials(name)}
+            {initials(author.username)}
           </div>
-          <div>
-            <p className="text-ink text-[14px] font-semibold">{name}</p>
-            <p
+        )}
+
+        {/* Cuerpo */}
+        <div className="min-w-0">
+          <div className="mb-2 flex items-center gap-[10px]">
+            {author.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={author.avatarUrl}
+                alt={author.username}
+                className="h-[26px] w-[26px] rounded-full object-cover"
+              />
+            ) : (
+              <div
+                className="text-paper flex h-[26px] w-[26px] items-center justify-center rounded-full text-[10px] font-bold"
+                style={{
+                  background:
+                    'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
+                }}
+              >
+                {initials(author.username)}
+              </div>
+            )}
+            <span className="text-ink text-[13px] font-semibold">
+              {author.username}
+            </span>
+            <span
               className="text-cinnamon"
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.6rem',
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
+                fontWeight: 500,
               }}
             >
-              {timeAgo(review.createdAt)}
-            </p>
+              {timeAgo(vm.createdAt)}
+            </span>
+            <StopClick>
+              <FollowButton
+                userId={author.id}
+                isFollowing={author.isFollowing}
+              />
+            </StopClick>
           </div>
-          {author && (
-            <FollowButton
-              userId={author.id}
-              isFollowing={author.isFollowing ?? false}
-            />
+
+          {showAlfajor && (
+            <div className="mb-2 flex items-start justify-between gap-3">
+              <h5 className="text-ink text-[18px] font-medium tracking-[-0.018em]">
+                <StopClick>
+                  <Link
+                    href={`/alfajores/${alfajor.id}`}
+                    className="hover:text-curry-deep underline-offset-2 transition-colors hover:underline"
+                  >
+                    {alfajor.nombre}
+                  </Link>
+                </StopClick>{' '}
+                · <em className="text-cinnamon not-italic">{marca.nombre}</em>
+              </h5>
+            </div>
           )}
-        </div>
-      </CardHeader>
 
-      <CardContent>
-        {comentario && (
-          <p className="text-sienna mb-4 text-[14px] leading-relaxed">
-            “{comentario}”
-          </p>
-        )}
+          {quote && (
+            <p className="text-sienna mb-[10px] text-[14px] leading-[1.5]">
+              “{quote}”
+            </p>
+          )}
 
-        <div className="flex items-baseline gap-2">
-          <span
-            className="text-curry-deep"
-            style={{
-              fontFamily: 'var(--font-archivo)',
-              fontSize: 24,
-              letterSpacing: '-0.04em',
-              lineHeight: 1,
-            }}
-          >
-            {ratingGeneral.toFixed(1)}
-          </span>
-          <span
-            className="text-cinnamon"
+          <div
+            className="text-cinnamon flex items-center gap-4"
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '0.6rem',
-              letterSpacing: '0.16em',
+              letterSpacing: '0.18em',
               textTransform: 'uppercase',
               fontWeight: 700,
             }}
           >
-            /10 · Puntaje general
-          </span>
+            <StopClick>
+              <LikeButton
+                reviewId={vm.id}
+                likes={vm.likes}
+                isLiked={vm.isLiked}
+              />
+            </StopClick>
+            <span className="inline-flex items-center gap-[5px]">
+              ↳ {commentsCount} comentarios
+            </span>
+          </div>
         </div>
 
-        <div className="text-cinnamon mt-5 flex flex-wrap items-center gap-3 text-[13px] font-semibold">
-          <LikeButton
-            reviewId={review.id}
-            likes={likesCount ?? 0}
-            isLiked={review.isLiked ?? false}
-          />
-          <CommentsButton
-            reviewId={review.id}
-            count={commentsCount ?? 0}
-            summary={{
-              author: name,
-              avatarUrl: author?.avatarUrl ?? null,
-              comentario,
-              createdAt: review.createdAt,
+        {/* Rating general */}
+        <div className="col-start-2 text-left md:col-start-3 md:text-right">
+          <span
+            className="text-curry-deep"
+            style={{
+              fontFamily: 'var(--font-archivo)',
+              fontSize: 40,
+              letterSpacing: '-0.04em',
+              lineHeight: 1,
             }}
-          />
+          >
+            {overall.toFixed(1)}
+          </span>
+          <span
+            className="text-cinnamon block"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.6rem',
+              letterSpacing: '0.22em',
+              fontWeight: 700,
+              marginTop: 2,
+            }}
+          >
+            /10
+          </span>
         </div>
-      </CardContent>
-    </Card>
+      </article>
+
+      <ReviewDetailModal vm={vm} open={open} onOpenChange={setOpen} />
+    </>
   );
 }

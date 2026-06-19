@@ -5,7 +5,8 @@ import { useFeedReviews } from '../hooks/useFeedReviews';
 import { useFeedFilters } from '../store/feedFilters.store';
 import type { FeedSort } from '../types/feed.types';
 import { FeedReviewsSkeleton } from './FeedReviewsSkeleton';
-import { ReviewRow } from './ReviewRow';
+import { ReviewCard } from '@/features/reviews/components/ReviewCard';
+import { feedItemToVM } from '@/features/reviews/lib/reviewCardVM';
 
 const SORTS: Array<{ value: FeedSort; label: string }> = [
   { value: 'likes', label: 'Más likes' },
@@ -100,7 +101,7 @@ export function FeedReviews() {
       )}
 
       {items.map((item) => (
-        <ReviewRow key={item.id} item={item} />
+        <ReviewCard key={item.id} vm={feedItemToVM(item)} context="feed" />
       ))}
 
       {hasNextPage && (

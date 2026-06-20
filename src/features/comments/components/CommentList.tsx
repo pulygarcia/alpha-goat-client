@@ -2,6 +2,7 @@
 
 import { useReviewComments } from '../hooks/useReviewComments';
 import { timeAgo } from '../lib/timeAgo';
+import { CommentLikeButton } from './CommentLikeButton';
 
 function initials(username: string) {
   return username.slice(0, 2).toUpperCase();
@@ -72,7 +73,7 @@ export function CommentList({ reviewId }: { reviewId: string }) {
                 {initials(username)}
               </div>
             )}
-            <div>
+            <div className="min-w-0 flex-1">
               <span className="text-ink text-[13px] font-semibold">
                 {username}
               </span>
@@ -83,6 +84,11 @@ export function CommentList({ reviewId }: { reviewId: string }) {
                 {c.contenido}
               </p>
             </div>
+            <CommentLikeButton
+              commentId={c.id}
+              likesCount={c.likesCount}
+              isLiked={c.isLiked}
+            />
           </li>
         );
       })}

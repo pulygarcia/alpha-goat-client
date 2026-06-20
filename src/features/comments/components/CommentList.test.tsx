@@ -7,6 +7,11 @@ import type { Comment } from '../types/comments.types';
 vi.mock('../hooks/useReviewComments', () => ({
   useReviewComments: vi.fn(),
 }));
+vi.mock('./CommentLikeButton', () => ({
+  CommentLikeButton: ({ likesCount }: { likesCount: number }) => (
+    <button type="button">like {likesCount}</button>
+  ),
+}));
 
 const mocked = vi.mocked(useReviewComments);
 
@@ -21,6 +26,8 @@ function makeComment(
     userId: 'u1',
     author: { id: 'u1', username, avatarUrl: null },
     contenido,
+    likesCount: 0,
+    isLiked: false,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
   };
@@ -89,6 +96,25 @@ describe('CommentList', () => {
     expect(screen.getByText('ana')).toBeInTheDocument();
     expect(screen.getByText('malísimo')).toBeInTheDocument();
     expect(screen.getByText('beto')).toBeInTheDocument();
+  });
+
+  it('renders a like button per comment', () => {
+    mocked.mockReturnValue(
+      baseReturn({
+        data: {
+          pages: [
+            {
+              items: [{ ...makeComment('c1', 'rico'), likesCount: 7 }],
+              total: 1,
+              page: 1,
+              limit: 10,
+            },
+          ],
+        } as never,
+      }),
+    );
+    render(<CommentList reviewId="r1" />);
+    expect(screen.getByText('like 7')).toBeInTheDocument();
   });
 
   it('falls back to "Usuario" when the author is missing', () => {

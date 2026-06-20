@@ -30,4 +30,14 @@ export const commentsApi = {
     );
     return res.data;
   },
+
+  /** PUT /comments/:id/like (auth) — likea un comentario (idempotente). */
+  like: async (commentId: string): Promise<void> => {
+    await apiClient.put(`/comments/${commentId}/like`);
+  },
+
+  /** DELETE /comments/:id/like (auth) — quita el like. */
+  unlike: async (commentId: string): Promise<void> => {
+    await apiClient.delete(`/comments/${commentId}/like`);
+  },
 };

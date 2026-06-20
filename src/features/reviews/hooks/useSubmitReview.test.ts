@@ -70,6 +70,17 @@ describe('useSubmitReview', () => {
     });
   });
 
+  it('invalidates the feed so the new review shows in "recientes"', async () => {
+    vi.mocked(reviewsApi.create).mockResolvedValue(REVIEW);
+    const { wrapper, invalidate } = setup();
+
+    const { result } = renderHook(() => useSubmitReview('a1'), { wrapper });
+    result.current.mutate({ mode: 'create', input: INPUT });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(invalidate).toHaveBeenCalledWith({ queryKey: ['feed'] });
+  });
+
   it('updates an existing review by id', async () => {
     vi.mocked(reviewsApi.update).mockResolvedValue(REVIEW);
     const { wrapper } = setup();

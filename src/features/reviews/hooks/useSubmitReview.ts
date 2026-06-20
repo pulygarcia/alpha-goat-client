@@ -16,7 +16,8 @@ export type SubmitReviewPayload =
 
 /**
  * Mutation que crea o edita una reseña y, al terminar, invalida el listado de
- * reseñas del alfajor y su detalle (para reflejar el cambio en ambos).
+ * reseñas del alfajor, su detalle y el feed (para que la reseña nueva aparezca
+ * en "recientes" sin tener que refrescar a mano).
  */
 export function useSubmitReview(alfajorId: string) {
   const qc = useQueryClient();
@@ -29,6 +30,7 @@ export function useSubmitReview(alfajorId: string) {
     onSuccess: (_data, variables) => {
       qc.invalidateQueries({ queryKey: alfajorReviewsKey(alfajorId) });
       qc.invalidateQueries({ queryKey: ['alfajores', 'detail', alfajorId] });
+      qc.invalidateQueries({ queryKey: ['feed'] });
       notifySuccess(
         variables.mode === 'create' ? 'Reseña publicada' : 'Reseña actualizada',
       );

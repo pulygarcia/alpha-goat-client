@@ -18,6 +18,8 @@ const PAGE: PaginatedComments = {
       userId: 'u1',
       author: { id: 'u1', username: 'pepe', avatarUrl: null },
       contenido: 'rico',
+      likesCount: 0,
+      isLiked: false,
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: '2026-01-01T00:00:00.000Z',
     },

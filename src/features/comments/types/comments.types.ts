@@ -14,6 +14,9 @@ export interface Comment {
   userId: string;
   author: CommentAuthor | null;
   contenido: string;
+  likesCount: number;
+  /** Si el usuario actual ya likeó este comentario (false anónimo). */
+  isLiked: boolean;
   createdAt: string;
   updatedAt: string;
 }

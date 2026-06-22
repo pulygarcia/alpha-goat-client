@@ -41,7 +41,7 @@ function initialsFromUsername(username: string): string {
   return (clean[0] + clean[clean.length - 1]).toUpperCase();
 }
 
-export function FeedTopbar() {
+export function AppHeader() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
   const initials = user ? initialsFromUsername(user.username) : '?';

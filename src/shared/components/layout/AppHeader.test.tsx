@@ -1,0 +1,99 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { AppHeader } from './AppHeader';
+import { useAuth } from '@/shared/providers/AuthProvider';
+import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
+import { usePathname } from 'next/navigation';
+
+vi.mock('@/shared/providers/AuthProvider', () => ({
+  useAuth: vi.fn(),
+}));
+vi.mock('@/shared/hooks/useRequireAuth', () => ({
+  useRequireAuth: vi.fn(),
+}));
+vi.mock('next/navigation', () => ({
+  usePathname: vi.fn(),
+}));
+// El modal trae dependencias pesadas (forms/query) ajenas a este test.
+vi.mock('@/features/reviews/components/QuickReviewModal', () => ({
+  QuickReviewModal: ({ open }: { open: boolean }) =>
+    open ? <div data-testid="quick-review-modal" /> : null,
+}));
+
+const mockedAuth = vi.mocked(useAuth);
+const mockedRequireAuth = vi.mocked(useRequireAuth);
+const mockedPathname = vi.mocked(usePathname);
+
+function setAuth(isAuthenticated: boolean) {
+  mockedAuth.mockReturnValue({
+    user: isAuthenticated ? { username: 'puly', email: 'puly@test.com' } : null,
+    isAuthenticated,
+    logout: vi.fn(),
+  } as unknown as ReturnType<typeof useAuth>);
+}
+
+// Por defecto el gate corre la acción (usuario autenticado).
+function setRequireAuth(authed = true) {
+  mockedRequireAuth.mockReturnValue((action: () => void) => {
+    if (authed) action();
+  });
+}
+
+describe('AppHeader', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedPathname.mockReturnValue('/feed');
+    setAuth(false);
+    setRequireAuth(true);
+  });
+
+  it('renders the logo and every nav item', () => {
+    render(<AppHeader />);
+    for (const label of [
+      'Feed',
+      'Alfajores',
+      'Ranking',
+      'Comparar',
+      'Marcas',
+      'Mi huella',
+    ]) {
+      expect(screen.getAllByText(label).length).toBeGreaterThan(0);
+    }
+  });
+
+  it('shows the "Entrar" CTA and no avatar for an anonymous user', () => {
+    render(<AppHeader />);
+    expect(screen.getByText('Entrar')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Menú de usuario')).not.toBeInTheDocument();
+  });
+
+  it('shows the user avatar and no "Entrar" CTA when authenticated', () => {
+    setAuth(true);
+    render(<AppHeader />);
+    expect(screen.getByLabelText('Menú de usuario')).toBeInTheDocument();
+    expect(screen.queryByText('Entrar')).not.toBeInTheDocument();
+  });
+
+  it('does not open the review modal for an anonymous user (gated)', () => {
+    setRequireAuth(false);
+    render(<AppHeader />);
+    fireEvent.click(screen.getByRole('button', { name: /Reseñar/i }));
+    expect(screen.queryByTestId('quick-review-modal')).not.toBeInTheDocument();
+  });
+
+  it('opens the review modal when the gate passes', () => {
+    render(<AppHeader />);
+    fireEvent.click(screen.getByRole('button', { name: /Reseñar/i }));
+    expect(screen.getByTestId('quick-review-modal')).toBeInTheDocument();
+  });
+
+  it('marks the matching nav item as active from the pathname', () => {
+    mockedPathname.mockReturnValue('/alfajores');
+    render(<AppHeader />);
+    // El item activo lleva el texto "ink"; basta con que exista en la nav de desktop.
+    const alfajoresLinks = screen.getAllByRole('link', { name: 'Alfajores' });
+    expect(alfajoresLinks.some((el) => el.className.includes('text-ink'))).toBe(
+      true,
+    );
+  });
+});

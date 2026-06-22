@@ -26,9 +26,7 @@ const mockedPathname = vi.mocked(usePathname);
 
 function setAuth(isAuthenticated: boolean) {
   mockedAuth.mockReturnValue({
-    user: isAuthenticated
-      ? { username: 'puly', email: 'puly@test.com' }
-      : null,
+    user: isAuthenticated ? { username: 'puly', email: 'puly@test.com' } : null,
     isAuthenticated,
     logout: vi.fn(),
   } as unknown as ReturnType<typeof useAuth>);
@@ -66,9 +64,7 @@ describe('AppHeader', () => {
   it('shows the "Entrar" CTA and no avatar for an anonymous user', () => {
     render(<AppHeader />);
     expect(screen.getByText('Entrar')).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText('Menú de usuario'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Menú de usuario')).not.toBeInTheDocument();
   });
 
   it('shows the user avatar and no "Entrar" CTA when authenticated', () => {
@@ -82,9 +78,7 @@ describe('AppHeader', () => {
     setRequireAuth(false);
     render(<AppHeader />);
     fireEvent.click(screen.getByRole('button', { name: /Reseñar/i }));
-    expect(
-      screen.queryByTestId('quick-review-modal'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('quick-review-modal')).not.toBeInTheDocument();
   });
 
   it('opens the review modal when the gate passes', () => {

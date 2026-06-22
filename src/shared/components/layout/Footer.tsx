@@ -35,7 +35,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-[rgba(74,30,8,0.22)] bg-[#fffdf6] text-ink">
+    <footer className="text-ink border-t border-[rgba(74,30,8,0.22)] bg-[#fffdf6]">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-10 px-6 py-14 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-8">
         {/* Marca */}
         <div className="flex flex-col gap-4">
@@ -62,8 +62,8 @@ export function Footer() {
             </span>
           </div>
           <p className="max-w-[240px] text-[14px] leading-relaxed text-[rgba(44,18,9,0.66)]">
-            El índice nacional del alfajor. Reseñá cualquier alfajor argentino en
-            5 ejes.
+            El índice nacional del alfajor. Reseñá cualquier alfajor argentino
+            en 5 ejes.
           </p>
         </div>
 
@@ -92,9 +92,7 @@ export function Footer() {
       {/* Barra inferior */}
       <div className="border-t border-[rgba(74,30,8,0.14)]">
         <div className="mx-auto flex max-w-[1280px] flex-col items-center justify-between gap-3 px-6 py-6 text-[13px] sm:flex-row sm:px-8">
-          <span className="text-[rgba(44,18,9,0.6)]">
-            © {year} AlphaGoat
-          </span>
+          <span className="text-[rgba(44,18,9,0.6)]">© {year} AlphaGoat</span>
           <a
             href={PORTFOLIO_URL}
             target="_blank"

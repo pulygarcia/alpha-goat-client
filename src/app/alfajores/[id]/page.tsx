@@ -1,5 +1,6 @@
 import { AlfajorDetail } from '@/features/alfajores/components/AlfajorDetail';
-import { CatalogHeader } from '@/features/alfajores/components/CatalogHeader';
+import { AppHeader } from '@/shared/components/layout/AppHeader';
+import { Footer } from '@/shared/components/layout/Footer';
 
 // Detalle público de un alfajor. En Next 16 `params` es una Promise.
 export default async function AlfajorDetailPage({
@@ -10,9 +11,12 @@ export default async function AlfajorDetailPage({
   const { id } = await params;
 
   return (
-    <div className="bg-paper text-ink min-h-screen">
-      <CatalogHeader />
-      <AlfajorDetail id={id} />
+    <div className="bg-paper text-ink flex min-h-screen flex-col">
+      <AppHeader />
+      <div className="flex-1">
+        <AlfajorDetail id={id} />
+      </div>
+      <Footer />
     </div>
   );
 }

@@ -53,7 +53,6 @@ describe('AppHeader', () => {
       'Feed',
       'Alfajores',
       'Ranking',
-      'Comparar',
       'Marcas',
       'Mi huella',
     ]) {

@@ -20,16 +20,16 @@ El backend (NestJS) debe estar corriendo en `http://localhost:3001`.
 
 ## Scripts
 
-| Comando | Qué hace |
-|---|---|
-| `npm run dev` | Dev server con HMR |
-| `npm run build` | Build de producción |
-| `npm run start` | Sirve el build |
-| `npm run test` | Tests unitarios (Vitest) |
-| `npm run test:watch` | Tests en watch |
+| Comando                 | Qué hace                 |
+| ----------------------- | ------------------------ |
+| `npm run dev`           | Dev server con HMR       |
+| `npm run build`         | Build de producción      |
+| `npm run start`         | Sirve el build           |
+| `npm run test`          | Tests unitarios (Vitest) |
+| `npm run test:watch`    | Tests en watch           |
 | `npm run test:coverage` | Coverage (threshold 85%) |
-| `npm run lint` | ESLint |
-| `npm run format` | Prettier |
+| `npm run lint`          | ESLint                   |
+| `npm run format`        | Prettier                 |
 
 ## Estructura
 
@@ -55,5 +55,5 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 
 - `docs/architecture.md` — arquitectura detallada, ejemplos de feature.
 - `docs/design-guidelines.md` — paleta, tipografía, componentes visuales.
-- `docs/progress.md` — qué features están hechas y qué falta.
+- `docs/decisions.md` — decisiones de diseño no obvias y el porqué detrás de cada una.
 - `CLAUDE.md` — instrucciones para trabajar con Claude Code.

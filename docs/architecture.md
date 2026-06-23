@@ -7,6 +7,7 @@ Este documento describe la arquitectura del frontend en detalle. Léelo completo
 Agrupamos código **por funcionalidad de negocio**, no por tipo de archivo. Cada feature vive en su carpeta y contiene **todo lo que necesita**: componentes, hooks, llamadas API, tipos, schemas de validación, store local.
 
 **Ventajas:**
+
 - Cuando trabajás en una feature, todo está en un mismo lugar.
 - Si algún día sacás una feature, borrás la carpeta y listo.
 - Escala bien cuando hay muchas features (no se ensucia un `components/` gigante).
@@ -14,6 +15,7 @@ Agrupamos código **por funcionalidad de negocio**, no por tipo de archivo. Cada
 - Es lo que se usa en empresas medianas/grandes hoy.
 
 **Regla de oro:**
+
 - Si algo se usa en **2 o más features** → va a `src/shared/`.
 - Si lo usa solo una feature → vive dentro de esa feature.
 
@@ -121,15 +123,15 @@ src/
 
 Una feature **completa** suele tener:
 
-| Carpeta       | Qué va ahí                                                     |
-|---------------|----------------------------------------------------------------|
-| `components/` | Componentes específicos de la feature + sus tests.             |
-| `hooks/`      | Custom hooks (incluyen los de TanStack Query).                 |
-| `api/`        | Funciones que llaman al backend (axios calls).                 |
-| `store/`      | Zustand store si la feature tiene client state global.         |
-| `schemas/`    | Schemas de Zod para validación de forms.                       |
-| `types/`      | Tipos TypeScript propios de la feature.                        |
-| `utils/`      | Helpers internos (formatters, transformers).                   |
+| Carpeta       | Qué va ahí                                             |
+| ------------- | ------------------------------------------------------ |
+| `components/` | Componentes específicos de la feature + sus tests.     |
+| `hooks/`      | Custom hooks (incluyen los de TanStack Query).         |
+| `api/`        | Funciones que llaman al backend (axios calls).         |
+| `store/`      | Zustand store si la feature tiene client state global. |
+| `schemas/`    | Schemas de Zod para validación de forms.               |
+| `types/`      | Tipos TypeScript propios de la feature.                |
+| `utils/`      | Helpers internos (formatters, transformers).           |
 
 No todas las features necesitan todas las carpetas. Solo creá las que uses.
 
@@ -148,7 +150,10 @@ export const authApi = {
   },
 
   register: async (input: RegisterInput): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/auth/register', input);
+    const { data } = await apiClient.post<AuthResponse>(
+      '/auth/register',
+      input,
+    );
     return data;
   },
 
@@ -288,7 +293,12 @@ describe('LoginForm', () => {
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type User = { id: string; username: string; email: string; role: 'USER' | 'ADMIN' };
+type User = {
+  id: string;
+  username: string;
+  email: string;
+  role: 'USER' | 'ADMIN';
+};
 
 interface AuthStore {
   user: User | null;
@@ -328,12 +338,14 @@ Como ven, la página queda mínima: importa de `features/` y arma el layout.
 ## Server vs Client Components
 
 **Server Components (default):**
+
 - Listados que solo leen datos.
 - Páginas estáticas.
 - Layouts.
 - Detalle de alfajor cuando solo muestra info.
 
 **Client Components (`'use client'`):**
+
 - Cualquier componente con hooks (useState, useEffect, useQuery).
 - Formularios.
 - Componentes con eventos (onClick que cambia estado).
@@ -421,6 +433,7 @@ NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 ```
 
 Variables que usás solo en server components (sin `NEXT_PUBLIC_`):
+
 ```env
 # (de momento ninguna, todo se hace via cookies del backend)
 ```
@@ -469,6 +482,7 @@ test: {
 ## Roadmap (fases)
 
 ### Fase 1 - MVP
+
 1. Setup (Next.js + Tailwind + shadcn + TanStack Query + Zustand + Vitest).
 2. Feature `auth` (login, register, useCurrentUser).
 3. Feature `alfajores` (listado + detalle, sin proponer todavía).
@@ -476,28 +490,31 @@ test: {
 5. Layout principal (Header, Footer, navegación).
 
 ### Fase 2 - Modelo híbrido
+
 6. Form de proponer alfajor.
 7. Feature `moderation` (panel admin).
 8. Estados visuales para PENDING/APPROVED/REJECTED.
 
 ### Fase 3 - Lo que la hace especial
+
 9. Feature `ranking` (top alfajores con filtros).
 10. Feature `comparador` (radar charts superpuestos).
 11. Perfil de usuario con "paladar promedio".
 12. Sistema de recomendaciones.
 
 ### Fase 4 - Polish
+
 13. Animaciones, microinteracciones.
 14. Modo oscuro.
 15. PWA / responsive completo.
 
 ## Reglas que Claude Code debe seguir
 
-1. **Antes de crear una feature**, leer este archivo y `progress.md`.
+1. **Antes de crear una feature**, leer este archivo y repasar `decisions.md` por restricciones relevantes.
 2. **Cada feature en su carpeta** con la estructura definida arriba.
 3. **Server Components por default**, Client Components solo donde haga falta.
 4. **Componentes con lógica → tienen test**. Sin excepciones.
 5. **Nunca llamar a la API directamente desde un componente**: siempre via hook (`useX`) que usa la función de `api/`.
 6. **Imports con alias `@/`**, nunca rutas relativas largas.
-7. **Después de terminar una feature**, actualizar `progress.md`.
+7. **Cuando tomes una decisión de diseño no obvia** (un contrato, un trade-off, un "por qué no la opción evidente"), registrala en `decisions.md`. No es un log de avance — eso lo cubren los commits, los PRs y el board.
 8. Si dudás sobre qué es feature vs shared, **preguntá**.

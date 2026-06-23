@@ -35,6 +35,7 @@ npm run format
 ## Code rules
 
 ### Architecture
+
 - **Feature-based**: each feature lives under `src/features/<feature>/` with its own `components/ hooks/ api/ schemas/ types/ store/` (only create the folders you actually need).
 - Pages in `src/app/` are thin: they import from `features/` and `shared/` and compose the layout.
 - **Server Components by default**; add `'use client'` only on the component that needs it (forms, hooks, events), not on parents.
@@ -42,24 +43,28 @@ npm run format
 - **Never call the API from a component**: always via a hook (`useX`) that uses an `api/` function.
 
 ### Conventions
+
 - Components `PascalCase.tsx`, hooks/utils `camelCase.ts`, folders `kebab-case`.
 - Absolute imports with the `@/` alias from `src/`.
 - Fetch errors handled via `isError`/`error` from TanStack Query — never leave a blank screen.
 - JWT lives in an HTTP-only cookie — never touch localStorage for the token.
 
 ### Testing
+
 - Every component with logic and every custom hook has a sibling `.test.tsx` / `.test.ts`.
 - Mock the `api/` module — never hit the network.
 - Test behavior, not implementation.
 - Do not test `shared/components/ui/**` (shadcn) or purely presentational components.
 
 ### Git
+
 - Conventional commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`, `style:`).
 - Small, atomic commits. Main branch: `main`. Features on `feat/<short-name>`.
 
 ## Design system
 
 Monochromatic warm palette (deep brown + curry gold). Tokens in `src/app/globals.css`:
+
 - Colors: `bg`, `bg-deep`, `curry`, `curry-bright`, `curry-soft`, `cinnamon`, `sienna`.
 - Fonts: Archivo Black (display), Inter (body), JetBrains Mono (eyebrow / tags).
 - Utility classes: `.h-mega`, `.h-sub`, `.eyebrow`, `.coda`, `.btn-curry`, `.btn-curry-lg`, `.icon-btn`, `.drift`, `.pulse-dot`.
@@ -70,12 +75,12 @@ Full visual language: `docs/design-guidelines.md`.
 
 - **Detailed architecture**: `docs/architecture.md`
 - **Design / UI guidelines**: `docs/design-guidelines.md`
-- **Project progress**: `docs/progress.md`
+- **Design decisions log**: `docs/decisions.md` — non-obvious contracts and trade-offs and the _why_ behind them. NOT a progress log (git history + the vault board cover that).
 
 ## How to work with me (Claude Code)
 
-- Before creating a feature, read `docs/architecture.md` and `docs/progress.md`.
+- Before creating a feature, read `docs/architecture.md` and skim `docs/decisions.md` for relevant constraints.
 - **One feature at a time**.
 - **Tests in the same session** as the code they cover.
-- After finishing a feature, **update `docs/progress.md`**.
+- When you make a **non-obvious design decision** (a contract, a trade-off, a "why not the obvious thing"), record it in `docs/decisions.md`. Do **not** log routine "what I did" there — that's what commits, PRs and the board are for.
 - If you are unsure about the domain (axes, vocabulary), ask — don't invent.

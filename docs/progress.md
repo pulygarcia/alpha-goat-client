@@ -119,6 +119,14 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - Errores de formulario: **inline + toast** — la validación de campo sigue inline (RHF/Zod); el toast de error lo agrega el `onError` de la mutation.
 - Tests (TDD) mockeando `shared/lib/toast`: helper (2), reviews (3), follow (2), auth login/register/logout (4).
 
+### Feature `ranking` — página global (`/ranking`)
+
+- Página completa del ranking, "más allá del rail" semanal del feed. Rankea el **histórico global** (no la ventana de 7 días): es la cara del "índice nacional" y no debe verse vacía. El `WeeklyRanking` se queda solo en el rail del feed.
+- Contrato (back ya en producción, server PR #13): `rankingApi.global({ page, limit })` → `GET /ranking` (`PaginatedRanking`). `RankingItem`: `{ id, nombre, tipo, score, reviewsCount, marca {id,nombre,logoUrl} }`. La **posición no la manda el back**: la deriva el cliente del offset.
+- `useGlobalRanking` (infinite query keyed `['ranking','global']`, `limit 20`, `staleTime 60s`, load-more vía `getNextPageParam` por `page*limit < total`).
+- `RankingList`: lista con posición derivada (`(page-1)*limit + i + 1`, acá el índice plano porque arranca en page 1), nombre + marca, score mono curry, nº de reseñas, fila linkeable al detalle del alfajor; estados loading (skeleton) / error / empty. Página `/ranking/page.tsx` monta `AppHeader`/`Footer` como el resto de las páginas de app; la nav ya linkeaba acá (era 404).
+- Tests (TDD): `useGlobalRanking` (4) + `RankingList` (5). El `RankRow`/skeleton presentacional queda cubierto por los tests de la lista.
+
 ### Coverage al 85% (gate verde)
 
 - Dos partes, como estaba diagnosticado en la deuda técnica:
@@ -134,7 +142,7 @@ Estado de las features del frontend. Se actualiza al cerrar cada una.
 - `comments` (front) sobre reseñas; habilita abrir una reseña en modal con sus comentarios.
 - Unificar el card de reseña feed + detalle en uno solo (con prop de contexto).
 - Layout principal (Header, Footer, nav) — el feed ya tiene su propio shell.
-- `moderation` (admin), `ranking`, `comparador`, `perfil`.
+- `moderation` (admin), `comparador`, `perfil`.
 
 ### Endpoints backend faltantes (alfajorimetro-back)
 
@@ -142,6 +150,7 @@ Bloquean trozo 4 del feed (rail). El trozo 3 (lista) ya está desbloqueado.
 
 - ~~`GET /feed`~~ — listo. Lista paginada de reseñas (auth) con orden `sort=likes|recent|rating` (default `recent`) y filtros `scope=today|week|following|province` (+ `province` requerido si `scope=province`). Paginación `page`/`limit` (no cursor): devuelve `{ items, total, page, limit }`. Cada item: `author {id, username, avatarUrl}`, `alfajor {id, nombre, tipo, imagenUrl}`, `marca {id, nombre, provincia}`, `quote`, `photoUrl`, `overall`, `axes (5)`, `likes`, `commentsCount`, `createdAt`. Sin `sharesCount`: no habrá feature de compartir. `scope=following` apoyado en el módulo `follows` (`PUT/DELETE /follows/:userId`). Likes de reviews vía `PUT/DELETE /reviews/:id/like`.
 - ~~`GET /feed/hero`~~ — listo (alfajorimetro-back commit `42dda73`).
+- ~~`GET /ranking`~~ — **listo y conectado en FE** (feature `ranking`, página `/ranking`). Público, paginado. Ranking global all-time de alfajores `APPROVED` por promedio histórico de `ratingGeneral`, piso de 5 reseñas, orden total `score desc, reviewsCount desc, id asc` (desempate por id → offset estable). Response `{ items: { id, nombre, tipo, score, reviewsCount, marca {id,nombre,logoUrl} }[], total, page, limit }`. La posición la deriva el front del offset. Server PR #13.
 - ~~`GET /ranking/weekly`~~ — **listo y conectado en FE** (feature `ranking`, rail del feed). Público. Top 5 alfajores de los últimos 7 días con piso de 3 reseñas. Response: array ordenado por `score` desc de `{ id, nombre, score, trend, marca: { id, nombre, logoUrl } }` — `score` = promedio de `ratingGeneral` de la semana (2 decimales), `trend` = `'up' | 'down' | 'same' | 'new'` vs la semana anterior (`new` si no tenía reviews). OpenSpec change `add-ranking-weekly` (alfajorimetro-back).
 - ~~`GET /marcas/featured`~~ — listo y conectado en FE (feature `marcas`, rail del feed). Público. "Marcas en foco" del rail seleccionadas por **controversia** (las marcas sobre las que más dividida está la opinión reciente): el back rankea por dispersión del `ratingGeneral` en 30 días con piso de muestra, top 5. La controversia es interna; devuelve la shape pactada `{ id, nombre, provincia, logoUrl, productCount, avgScore }` (ambos históricos). OpenSpec change `add-marcas-featured` (alfajorimetro-back).
 - ~~`GET /recommendations`~~ — **listo y conectado en FE** (feature `recommendations`, rail "Recomendado para vos"). Requiere **auth**. Content-based por huella de gusto del usuario sobre los 5 ejes. Acepta `?limit` (1..20, default 6). Response: array ordenado por `score` desc de `{ id, nombre, tipo, matchPct, score, marca: { id, nombre, logoUrl } }` — `matchPct` = afinidad 0..100 (`null` en cold start de usuario sin reviews), `score` = `0.7·matchPct + 0.3·(ratingGeneral·10)`. Excluye los alfajores ya reseñados; piso de 3 reseñas por alfajor; cold start → top rankeados con `matchPct: null`. OpenSpec change `add-recommendations` (alfajorimetro-back).

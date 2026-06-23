@@ -34,7 +34,6 @@ src/
 │   │   ├── page.tsx                      # /alfajores
 │   │   └── [id]/page.tsx                 # /alfajores/:id
 │   ├── ranking/page.tsx
-│   ├── comparador/page.tsx
 │   ├── perfil/
 │   │   ├── page.tsx                      # mi perfil
 │   │   └── [username]/page.tsx           # perfil público
@@ -91,7 +90,6 @@ src/
 │   │   └── ...
 │   │
 │   ├── ranking/
-│   ├── comparador/
 │   └── moderation/                       # admin
 │
 ├── shared/
@@ -498,9 +496,8 @@ test: {
 ### Fase 3 - Lo que la hace especial
 
 9. Feature `ranking` (top alfajores con filtros).
-10. Feature `comparador` (radar charts superpuestos).
-11. Perfil de usuario con "paladar promedio".
-12. Sistema de recomendaciones.
+10. Perfil de usuario con "paladar promedio".
+11. Sistema de recomendaciones.
 
 ### Fase 4 - Polish
 

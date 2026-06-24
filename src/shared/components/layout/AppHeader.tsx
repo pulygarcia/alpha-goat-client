@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { LogOut, Menu, Plus, Search } from 'lucide-react';
 
 import {
@@ -46,6 +47,7 @@ export function AppHeader() {
   const initials = user ? initialsFromUsername(user.username) : '?';
   const [quickOpen, setQuickOpen] = useState(false);
   const requireAuth = useRequireAuth();
+  const reduceMotion = useReducedMotion();
 
   return (
     <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
@@ -121,11 +123,22 @@ export function AppHeader() {
               href={item.href}
               className={`relative rounded-lg px-[11px] py-2 text-[14.5px] font-medium whitespace-nowrap transition-colors ${
                 isActive
-                  ? 'bg-paper-sunken text-ink after:bg-curry-deep after:absolute after:right-[11px] after:bottom-[-17px] after:left-[11px] after:h-[3px] after:rounded-t-[2px] after:content-[""]'
+                  ? 'bg-paper-sunken text-ink'
                   : 'text-sienna hover:bg-paper-sunken hover:text-ink'
               }`}
             >
               {item.label}
+              {isActive && (
+                <motion.span
+                  layoutId="appheader-underline"
+                  className="bg-curry-deep absolute right-[11px] bottom-[-17px] left-[11px] h-[3px] rounded-t-[2px]"
+                  transition={
+                    reduceMotion
+                      ? { duration: 0 }
+                      : { type: 'spring', stiffness: 480, damping: 38 }
+                  }
+                />
+              )}
             </Link>
           );
         })}

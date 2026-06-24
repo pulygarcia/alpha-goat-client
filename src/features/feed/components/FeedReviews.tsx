@@ -7,6 +7,7 @@ import type { FeedSort } from '../types/feed.types';
 import { FeedReviewsSkeleton } from './FeedReviewsSkeleton';
 import { ReviewCard } from '@/features/reviews/components/ReviewCard';
 import { feedItemToVM } from '@/features/reviews/lib/reviewCardVM';
+import { StaggerItem } from '@/shared/components/motion/StaggerItem';
 
 const SORTS: Array<{ value: FeedSort; label: string }> = [
   { value: 'likes', label: 'Más likes' },
@@ -27,8 +28,9 @@ export function FeedReviews() {
     isFetchingNextPage,
   } = useFeedReviews({ sort, scope: scope ?? undefined });
 
-  const items = data?.pages.flatMap((p) => p.items) ?? [];
-  const isEmpty = !isLoading && !isError && items.length === 0;
+  const pages = data?.pages ?? [];
+  const isEmpty =
+    !isLoading && !isError && pages.every((p) => p.items.length === 0);
 
   return (
     <section className="px-5 py-8 md:px-8 md:py-9">
@@ -100,9 +102,13 @@ export function FeedReviews() {
         <p className="text-sienna">Todavía no hay reseñas para mostrar.</p>
       )}
 
-      {items.map((item) => (
-        <ReviewCard key={item.id} vm={feedItemToVM(item)} context="feed" />
-      ))}
+      {pages.map((page) =>
+        page.items.map((item, i) => (
+          <StaggerItem key={item.id} index={i}>
+            <ReviewCard vm={feedItemToVM(item)} context="feed" />
+          </StaggerItem>
+        )),
+      )}
 
       {hasNextPage && (
         <div className="pt-6 text-center">

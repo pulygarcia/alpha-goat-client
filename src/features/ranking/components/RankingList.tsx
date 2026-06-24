@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useGlobalRanking } from '../hooks/useGlobalRanking';
 import type { RankingItem } from '../types/ranking.types';
+import { StaggerItem } from '@/shared/components/motion/StaggerItem';
 
 function RankRow({ item, pos }: { item: RankingItem; pos: number }) {
   return (
@@ -84,8 +85,9 @@ export function RankingList() {
     isFetchingNextPage,
   } = useGlobalRanking();
 
-  const items = data?.pages.flatMap((p) => p.items) ?? [];
-  const isEmpty = !isLoading && !isError && items.length === 0;
+  const pages = data?.pages ?? [];
+  const hasItems = pages.some((p) => p.items.length > 0);
+  const isEmpty = !isLoading && !isError && !hasItems;
 
   return (
     <main className="mx-auto max-w-[760px] px-5 py-10 md:px-8">
@@ -126,11 +128,20 @@ export function RankingList() {
         </p>
       )}
 
-      {items.length > 0 && (
+      {hasItems && (
         <div>
-          {items.map((item, i) => (
-            <RankRow key={item.id} item={item} pos={i + 1} />
-          ))}
+          {pages.map((page, pageIdx) => {
+            // Offset acumulado de páginas previas: la posición del ranking es
+            // global, pero el escalonado usa el índice dentro de la página.
+            const offset = pages
+              .slice(0, pageIdx)
+              .reduce((n, p) => n + p.items.length, 0);
+            return page.items.map((item, i) => (
+              <StaggerItem key={item.id} index={i}>
+                <RankRow item={item} pos={offset + i + 1} />
+              </StaggerItem>
+            ));
+          })}
         </div>
       )}
 

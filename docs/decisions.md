@@ -96,3 +96,11 @@ Todos los listados paginados (alfajores, reviews, ranking) usan paginación por 
 Gate del 85% (branches/functions/lines/statements). **No** se testean: `shared/components/ui/**` (shadcn), componentes puramente presentacionales (shells visuales, skeletons, headers), wrappers `api/` (se mockean siempre), providers, `*.server.ts`, `middleware.ts`, `config/**`.
 
 **Por qué:** testear shells visuales y wrappers triviales infla el número sin aportar señal. Se testea **comportamiento** (hooks, lógica de datos, componentes con lógica), mockeando el módulo `api/` — nunca la red.
+
+## Micro-animaciones: un solo sistema (Framer Motion), escalonado por tanda
+
+Las animaciones de entrada de listas (feed, ranking) usan `framer-motion` (ya instalado) vía un wrapper compartido `shared/components/motion/StaggerItem`. Se evaluó `transitions.dev` y se descartó: sumar un segundo sistema de animación (CSS suelto) lleva a timings/easings inconsistentes y deuda de mantenimiento.
+
+El feed renderiza iterando **por página** del infinite scroll y pasa `index` = posición dentro de su página (no el índice global). Así cada página nueva escalona solo sus propios items y las cards ya montadas no vuelven a animarse.
+
+**Por qué no el índice global:** con delay por índice global, al traer la página 2 las cards viejas conservarían su animación pero las nuevas arrancarían con un delay enorme (item 20+), y un re-render que recalcule índices podría re-disparar el fade. El índice por tanda mantiene el escalonado corto y estable. `StaggerItem` respeta `prefers-reduced-motion` (devuelve los hijos sin envolver).

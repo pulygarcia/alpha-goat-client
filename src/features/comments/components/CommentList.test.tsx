@@ -98,6 +98,36 @@ describe('CommentList', () => {
     expect(screen.getByText('beto')).toBeInTheDocument();
   });
 
+  it('links the comment author to their profile', () => {
+    mocked.mockReturnValue(
+      baseReturn({
+        data: {
+          pages: [
+            { items: [makeComment('c1', 'rico', 'ana')], total: 1, page: 1, limit: 10 },
+          ],
+        } as never,
+      }),
+    );
+    render(<CommentList reviewId="r1" />);
+    expect(screen.getByRole('link', { name: 'ana' })).toHaveAttribute(
+      'href',
+      '/u/ana',
+    );
+  });
+
+  it('does not link the fallback author', () => {
+    const orphan = { ...makeComment('c1', 'anon'), author: null };
+    mocked.mockReturnValue(
+      baseReturn({
+        data: {
+          pages: [{ items: [orphan], total: 1, page: 1, limit: 10 }],
+        } as never,
+      }),
+    );
+    render(<CommentList reviewId="r1" />);
+    expect(screen.queryByRole('link', { name: 'Usuario' })).toBeNull();
+  });
+
   it('renders a like button per comment', () => {
     mocked.mockReturnValue(
       baseReturn({

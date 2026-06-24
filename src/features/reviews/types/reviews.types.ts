@@ -1,4 +1,5 @@
 import type { Paginated } from '@/shared/types/api.types';
+import type { AlfajorTipo } from '@/shared/types/alfajor';
 
 /** Autor anidado de la reseña (el back lo trae desde `feat/review-author-in-dto`). */
 export interface ReviewAuthor {
@@ -20,11 +21,27 @@ export interface ReviewRatings {
 }
 
 /** Reseña de un alfajor (`GET /reviews`, `GET /reviews/:id`). */
+/** Alfajor anidado en la reseña (lo trae `GET /reviews` cuando carga la relación). */
+export interface ReviewAlfajor {
+  id: string;
+  nombre: string;
+  tipo: AlfajorTipo;
+}
+
+/** Marca del alfajor reseñado (anidada junto al alfajor). */
+export interface ReviewMarca {
+  nombre: string;
+  provincia: string | null;
+}
+
 export interface Review extends ReviewRatings {
   id: string;
   userId: string;
   author: ReviewAuthor | null;
   alfajorId: string;
+  /** Alfajor/marca anidados cuando el back carga la relación (perfil/feed); `undefined` si no. */
+  alfajor?: ReviewAlfajor;
+  marca?: ReviewMarca;
   comentario: string | null;
   fotoUrl: string | null;
   /** Contadores aún no expuestos por `GET /reviews` (pendiente back); default 0. */

@@ -51,6 +51,12 @@ describe('ReviewCard', () => {
     expect(link).toHaveAttribute('href', '/alfajores/al1');
   });
 
+  it('links the author username to their profile', () => {
+    render(<ReviewCard vm={feedVM} context="feed" />);
+    const link = screen.getByRole('link', { name: 'pepe' });
+    expect(link).toHaveAttribute('href', '/u/pepe');
+  });
+
   it('hides the alfajor (redundant) in alfajor context', () => {
     render(<ReviewCard vm={alfajorVM} context="alfajor" />);
     expect(screen.queryByRole('link', { name: 'Águila' })).toBeNull();

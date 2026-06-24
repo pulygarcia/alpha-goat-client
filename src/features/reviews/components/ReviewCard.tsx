@@ -110,9 +110,14 @@ export function ReviewCard({
                 {initials(author.username)}
               </div>
             )}
-            <span className="text-ink text-[13px] font-semibold">
-              {author.username}
-            </span>
+            <StopClick>
+              <Link
+                href={`/u/${author.username}`}
+                className="text-ink hover:text-curry-deep text-[13px] font-semibold underline-offset-2 transition-colors hover:underline"
+              >
+                {author.username}
+              </Link>
+            </StopClick>
             <span
               className="text-cinnamon"
               style={{

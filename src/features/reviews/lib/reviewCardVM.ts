@@ -67,8 +67,18 @@ export function reviewToVM(review: Review): ReviewCardVM {
       avatarUrl: review.author?.avatarUrl ?? null,
       isFollowing: review.author?.isFollowing ?? false,
     },
-    alfajor: null,
-    marca: null,
+    // El back anida alfajor/marca solo cuando carga la relación (perfil/feed).
+    // En el detalle del alfajor no vienen → null (y la card los oculta igual).
+    alfajor: review.alfajor
+      ? {
+          id: review.alfajor.id,
+          nombre: review.alfajor.nombre,
+          tipo: review.alfajor.tipo,
+        }
+      : null,
+    marca: review.marca
+      ? { nombre: review.marca.nombre, provincia: review.marca.provincia }
+      : null,
     quote: review.comentario,
     photoUrl: review.fotoUrl,
     overall: review.ratingGeneral,

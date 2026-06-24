@@ -88,6 +88,20 @@ describe('ReviewDetailModal', () => {
     expect(screen.queryByText(/estaba muy rico/)).toBeNull();
   });
 
+  it('links the alfajor when present (profile context)', () => {
+    setup({
+      alfajor: { id: 'al9', nombre: 'Jorgito', tipo: 'CHOCOLATE' },
+      marca: { nombre: 'Jorgito', provincia: 'Córdoba' },
+    });
+    const link = screen.getByRole('link', { name: /jorgito/i });
+    expect(link).toHaveAttribute('href', '/alfajores/al9');
+  });
+
+  it('omits the alfajor line when not present (alfajor detail)', () => {
+    setup({ alfajor: null, marca: null });
+    expect(screen.queryByRole('link', { name: /alfajor/i })).toBeNull();
+  });
+
   it('renders the review photo when present', () => {
     setup({ photoUrl: 'foto.png' });
     expect(

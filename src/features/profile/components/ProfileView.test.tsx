@@ -37,6 +37,10 @@ const PROFILE: Profile = {
   followingCount: 2,
   reviewsCount: 5,
   isFollowing: false,
+  commentsCount: 0,
+  alfajoresAddedCount: 0,
+  likesReceivedCount: 0,
+  avgScore: null,
 };
 
 function mockProfile(over: Partial<ReturnType<typeof useProfile>>) {

@@ -3,35 +3,6 @@ import type { User } from '@/features/auth/types/auth.types';
 import type { Profile } from '../types/profile.types';
 import type { PasswordSchema } from '../schemas/editProfile.schema';
 
-/**
- * MOCK TEMPORAL — "Aportes a la comunidad".
- * El back todavía no expone estos 4 campos (ver To do "Back: aportes a la
- * comunidad en el perfil"). Hasta entonces los rellenamos en el front con
- * valores deterministas por username (estables entre recargas) y solo cuando
- * el campo no vino. Cuando el endpoint los mande, este relleno se saltea solo.
- * BORRAR este bloque al integrar el back real.
- */
-function seedFrom(username: string): number {
-  let h = 0;
-  for (const ch of username) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return h;
-}
-
-function withMockedContributions(profile: Profile): Profile {
-  const s = seedFrom(profile.username);
-  return {
-    ...profile,
-    commentsCount: profile.commentsCount ?? s % 80,
-    alfajoresAddedCount: profile.alfajoresAddedCount ?? s % 12,
-    likesReceivedCount: profile.likesReceivedCount ?? s % 220,
-    avgScore:
-      profile.avgScore ??
-      (profile.reviewsCount > 0
-        ? Math.round((6 + (s % 35) / 10) * 10) / 10
-        : null),
-  };
-}
-
 export const profileApi = {
   /**
    * GET /users/by-username/:username (público, auth opcional).
@@ -42,7 +13,7 @@ export const profileApi = {
     const res = await apiClient.get<Profile>(
       `/users/by-username/${encodeURIComponent(username)}`,
     );
-    return withMockedContributions(res.data);
+    return res.data;
   },
 
   /** PATCH /users/me (auth) — edita el perfil propio (username). */

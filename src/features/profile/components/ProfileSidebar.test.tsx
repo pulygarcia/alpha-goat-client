@@ -26,6 +26,10 @@ const PROFILE: Profile = {
   followingCount: 89,
   reviewsCount: 24,
   isFollowing: false,
+  commentsCount: 0,
+  alfajoresAddedCount: 0,
+  likesReceivedCount: 0,
+  avgScore: null,
 };
 
 function mockCurrentUser(id: string | null) {

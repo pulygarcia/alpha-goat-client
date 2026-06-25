@@ -13,6 +13,10 @@ const BASE: Profile = {
   followingCount: 2,
   reviewsCount: 5,
   isFollowing: null,
+  commentsCount: 0,
+  alfajoresAddedCount: 0,
+  likesReceivedCount: 0,
+  avgScore: null,
 };
 
 describe('ContributionStats', () => {
@@ -38,7 +42,7 @@ describe('ContributionStats', () => {
     });
   });
 
-  it('falls back to zero when contribution fields are missing', async () => {
+  it('renders zeros when the user has no contributions yet', async () => {
     render(<ContributionStats profile={BASE} />);
 
     await waitFor(() => {

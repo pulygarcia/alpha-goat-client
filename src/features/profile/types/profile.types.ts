@@ -18,15 +18,12 @@ export interface Profile {
   reviewsCount: number;
   isFollowing: boolean | null;
   email?: string;
-  /**
-   * Aportes a la comunidad. Aún no los expone el back (pendiente: ampliar
-   * `ProfileResponseDto`); el front los trata como 0/null hasta entonces.
-   */
-  commentsCount?: number;
+  /** Comentarios que dejó en reseñas de otros. */
+  commentsCount: number;
   /** Alfajores propuestos por el usuario y aprobados al catálogo. */
-  alfajoresAddedCount?: number;
+  alfajoresAddedCount: number;
   /** Likes recibidos en sus reseñas. */
-  likesReceivedCount?: number;
+  likesReceivedCount: number;
   /** Promedio de sus `ratingGeneral` (null si todavía no reseñó). */
-  avgScore?: number | null;
+  avgScore: number | null;
 }

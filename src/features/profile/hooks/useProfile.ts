@@ -3,8 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { profileApi } from '../api/profile.api';
 
-export const profileKey = (username: string) =>
-  ['profile', username] as const;
+export const profileKey = (username: string) => ['profile', username] as const;
 
 /**
  * Perfil público por username. Disabled si no hay username. `retry: false`

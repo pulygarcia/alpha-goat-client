@@ -103,7 +103,12 @@ describe('CommentList', () => {
       baseReturn({
         data: {
           pages: [
-            { items: [makeComment('c1', 'rico', 'ana')], total: 1, page: 1, limit: 10 },
+            {
+              items: [makeComment('c1', 'rico', 'ana')],
+              total: 1,
+              page: 1,
+              limit: 10,
+            },
           ],
         } as never,
       }),

@@ -27,7 +27,9 @@ function mockQuery(over: Partial<ReturnType<typeof useUserReviews>>) {
 }
 
 const page = (ids: string[]) => ({
-  pages: [{ items: ids.map((id) => ({ id })), total: ids.length, page: 1, limit: 10 }],
+  pages: [
+    { items: ids.map((id) => ({ id })), total: ids.length, page: 1, limit: 10 },
+  ],
 });
 
 describe('UserReviews', () => {
@@ -60,7 +62,11 @@ describe('UserReviews', () => {
 
   it('calls fetchNextPage from the load-more button', () => {
     const fetchNextPage = vi.fn();
-    mockQuery({ data: page(['r1']) as never, hasNextPage: true, fetchNextPage });
+    mockQuery({
+      data: page(['r1']) as never,
+      hasNextPage: true,
+      fetchNextPage,
+    });
     render(<UserReviews userId="u1" username="puly" />);
     screen.getByRole('button', { name: /cargar más/i }).click();
     expect(fetchNextPage).toHaveBeenCalledOnce();

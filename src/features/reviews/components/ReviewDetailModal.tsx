@@ -62,8 +62,17 @@ export function ReviewDetailModal({
   onOpenChange,
 }: ReviewDetailModalProps) {
   const { user } = useAuth();
-  const { author, alfajor, marca, overall, axes, quote, photoUrl, likes, commentsCount } =
-    vm;
+  const {
+    author,
+    alfajor,
+    marca,
+    overall,
+    axes,
+    quote,
+    photoUrl,
+    likes,
+    commentsCount,
+  } = vm;
   const reduce = useReducedMotion();
 
   return (

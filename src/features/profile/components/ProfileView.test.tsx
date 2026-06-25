@@ -63,13 +63,19 @@ describe('ProfileView', () => {
   });
 
   it('shows a not-found message on 404', () => {
-    mockProfile({ isError: true, error: { response: { status: 404 } } as never });
+    mockProfile({
+      isError: true,
+      error: { response: { status: 404 } } as never,
+    });
     render(<ProfileView username="ghost" />);
     expect(screen.getByText(/no encontramos/i)).toBeInTheDocument();
   });
 
   it('shows a generic error on other failures', () => {
-    mockProfile({ isError: true, error: { response: { status: 500 } } as never });
+    mockProfile({
+      isError: true,
+      error: { response: { status: 500 } } as never,
+    });
     render(<ProfileView username="puly" />);
     expect(screen.getByText(/no pudimos cargar/i)).toBeInTheDocument();
   });

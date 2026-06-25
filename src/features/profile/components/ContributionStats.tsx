@@ -17,7 +17,7 @@ type Metric = {
 
 function Num({ metric }: { metric: Metric }) {
   return (
-    <Card className="rounded-xl border-[rgba(74,30,8,0.12)] bg-paper-raised p-[18px] shadow-none">
+    <Card className="bg-paper-raised rounded-xl border-[rgba(74,30,8,0.12)] p-[18px] shadow-none">
       <span
         className="text-curry-deep block"
         style={{
@@ -45,7 +45,9 @@ function Num({ metric }: { metric: Metric }) {
           <Odometer value={metric.value} decimals={metric.decimals} />
         )}
       </span>
-      <span className="text-cinnamon mt-1 block text-[12px]">{metric.caption}</span>
+      <span className="text-cinnamon mt-1 block text-[12px]">
+        {metric.caption}
+      </span>
     </Card>
   );
 }

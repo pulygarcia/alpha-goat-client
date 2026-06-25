@@ -158,13 +158,27 @@ export function ProfileSidebar({
 
         <div className="my-5 flex flex-col gap-[9px]">
           <div className="flex gap-[10px] text-[12.5px] text-[rgba(255,253,246,0.85)]">
-            <span className="w-[70px] text-[rgba(255,253,246,0.5)] uppercase" style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '0.12em' }}>
+            <span
+              className="w-[70px] text-[rgba(255,253,246,0.5)] uppercase"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 9.5,
+                letterSpacing: '0.12em',
+              }}
+            >
               Desde
             </span>
             {memberSince(profile.createdAt)}
           </div>
           <div className="flex gap-[10px] text-[12.5px] text-[rgba(255,253,246,0.85)]">
-            <span className="w-[70px] text-[rgba(255,253,246,0.5)] uppercase" style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, letterSpacing: '0.12em' }}>
+            <span
+              className="w-[70px] text-[rgba(255,253,246,0.5)] uppercase"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 9.5,
+                letterSpacing: '0.12em',
+              }}
+            >
               Rol
             </span>
             {roleLabel}
@@ -172,9 +186,21 @@ export function ProfileSidebar({
         </div>
 
         <div className="flex flex-col gap-[13px] border-t border-[rgba(255,255,255,0.16)] pt-4">
-          <CoreRow testid="stat-reviews" value={profile.reviewsCount} label="Reseñas" />
-          <CoreRow testid="stat-followers" value={profile.followersCount} label="Seguidores" />
-          <CoreRow testid="stat-following" value={profile.followingCount} label="Siguiendo" />
+          <CoreRow
+            testid="stat-reviews"
+            value={profile.reviewsCount}
+            label="Reseñas"
+          />
+          <CoreRow
+            testid="stat-followers"
+            value={profile.followersCount}
+            label="Seguidores"
+          />
+          <CoreRow
+            testid="stat-following"
+            value={profile.followingCount}
+            label="Siguiendo"
+          />
         </div>
       </div>
     </aside>

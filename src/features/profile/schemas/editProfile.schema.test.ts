@@ -3,7 +3,9 @@ import { usernameSchema, passwordSchema } from './editProfile.schema';
 
 describe('usernameSchema', () => {
   it('accepts a valid username', () => {
-    expect(usernameSchema.safeParse({ username: 'puly_10' }).success).toBe(true);
+    expect(usernameSchema.safeParse({ username: 'puly_10' }).success).toBe(
+      true,
+    );
   });
 
   it('rejects usernames shorter than 3 chars', () => {
@@ -11,7 +13,9 @@ describe('usernameSchema', () => {
   });
 
   it('rejects forbidden characters', () => {
-    expect(usernameSchema.safeParse({ username: 'pu ly!' }).success).toBe(false);
+    expect(usernameSchema.safeParse({ username: 'pu ly!' }).success).toBe(
+      false,
+    );
   });
 });
 

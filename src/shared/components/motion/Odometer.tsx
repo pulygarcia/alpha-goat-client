@@ -68,28 +68,32 @@ export function Odometer({
 
   if (reduce) return <span>{text}</span>;
 
+  // Precalculamos el índice de cada dígito (ignorando la coma) para escalonar
+  // los delays sin mutar nada durante el render.
   const chars = text.split('');
-  let digitIndex = 0;
+  const digitOrder = chars.map((ch, i) =>
+    /\d/.test(ch) ? chars.slice(0, i).filter((c) => /\d/.test(c)).length : -1,
+  );
 
   return (
     <span style={{ display: 'inline-flex', alignItems: 'baseline' }}>
       <span className="sr-only">{text}</span>
-      <span aria-hidden style={{ display: 'inline-flex', alignItems: 'baseline' }}>
-        {chars.map((ch, i) => {
-          if (!/\d/.test(ch)) {
-            return <span key={i}>{ch}</span>;
-          }
-          const delayMs = digitIndex * 70;
-          digitIndex += 1;
-          return (
+      <span
+        aria-hidden
+        style={{ display: 'inline-flex', alignItems: 'baseline' }}
+      >
+        {chars.map((ch, i) =>
+          digitOrder[i] === -1 ? (
+            <span key={i}>{ch}</span>
+          ) : (
             <Reel
               key={i}
               digit={Number(ch)}
               durationMs={durationMs}
-              delayMs={delayMs}
+              delayMs={digitOrder[i] * 70}
             />
-          );
-        })}
+          ),
+        )}
       </span>
     </span>
   );

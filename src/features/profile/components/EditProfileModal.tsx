@@ -71,11 +71,21 @@ function ProfileSection({ username }: { username: string }) {
       <label htmlFor="edit-username" className={labelClass}>
         Nombre de usuario
       </label>
-      <input id="edit-username" className={inputClass} {...register('username')} />
-      {errors.username && <p className={errorClass}>{errors.username.message}</p>}
+      <input
+        id="edit-username"
+        className={inputClass}
+        {...register('username')}
+      />
+      {errors.username && (
+        <p className={errorClass}>{errors.username.message}</p>
+      )}
 
       <div>
-        <button type="submit" disabled={update.isPending} className={submitClass}>
+        <button
+          type="submit"
+          disabled={update.isPending}
+          className={submitClass}
+        >
           {update.isPending ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
@@ -128,7 +138,11 @@ function PasswordSection() {
       )}
 
       <div>
-        <button type="submit" disabled={change.isPending} className={submitClass}>
+        <button
+          type="submit"
+          disabled={change.isPending}
+          className={submitClass}
+        >
           {change.isPending ? 'Cambiando...' : 'Cambiar contraseña'}
         </button>
       </div>

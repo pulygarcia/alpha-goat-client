@@ -25,11 +25,7 @@ beforeEach(() => {
 
 function renderModal() {
   return render(
-    <EditProfileModal
-      open
-      onOpenChange={vi.fn()}
-      username="puly"
-    />,
+    <EditProfileModal open onOpenChange={vi.fn()} username="puly" />,
   );
 }
 
@@ -60,7 +56,9 @@ describe('EditProfileModal', () => {
     fireEvent.change(screen.getByLabelText(/nueva contraseña/i), {
       target: { value: 'newpass1' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /cambiar contraseña/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: /cambiar contraseña/i }),
+    );
 
     await waitFor(() => expect(passwordMutate).toHaveBeenCalled());
     expect(passwordMutate.mock.calls[0][0]).toEqual({

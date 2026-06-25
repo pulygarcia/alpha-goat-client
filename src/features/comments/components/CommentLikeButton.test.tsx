@@ -4,9 +4,10 @@ import { CommentLikeButton } from './CommentLikeButton';
 
 const mutate = vi.fn();
 const requireAuth = vi.fn((fn: () => void) => fn());
+let isPending = false;
 
 vi.mock('../hooks/useToggleCommentLike', () => ({
-  useToggleCommentLike: () => ({ mutate, isPending: false }),
+  useToggleCommentLike: () => ({ mutate, isPending }),
 }));
 vi.mock('@/shared/hooks/useRequireAuth', () => ({
   useRequireAuth: () => requireAuth,
@@ -16,6 +17,7 @@ describe('CommentLikeButton', () => {
   beforeEach(() => {
     mutate.mockReset();
     requireAuth.mockClear();
+    isPending = false;
   });
 
   it('shows the like count', () => {
@@ -33,5 +35,13 @@ describe('CommentLikeButton', () => {
   it('reflects the liked state via aria-pressed', () => {
     render(<CommentLikeButton commentId="c1" likesCount={5} isLiked />);
     expect(screen.getByRole('button')).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('does not disable the button while the like request is in flight', () => {
+    isPending = true;
+    render(<CommentLikeButton commentId="c1" likesCount={5} isLiked={false} />);
+    const button = screen.getByRole('button');
+    expect(button).not.toBeDisabled();
+    expect(button.className).not.toContain('cursor-not-allowed');
   });
 });

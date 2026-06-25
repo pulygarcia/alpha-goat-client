@@ -13,8 +13,9 @@ interface LikeButtonProps {
 /**
  * Botón de like de una reseña, compartido por la card del feed y la del detalle.
  * Toggle optimista vía `useToggleLike` (el contador/estado vienen por props desde
- * el cache, que el hook ya reescribe). Gateado: anónimo → login. Deshabilitado
- * mientras hay request en vuelo.
+ * el cache, que el hook ya reescribe). Gateado: anónimo → login. No se deshabilita
+ * mientras el request está en vuelo (toggle optimista; el guard `isPending` ya
+ * evita el doble disparo) para no mostrar el cursor not-allowed ni atenuarlo.
  */
 export function LikeButton({ reviewId, likes, isLiked }: LikeButtonProps) {
   const toggle = useToggleLike();
@@ -29,11 +30,10 @@ export function LikeButton({ reviewId, likes, isLiked }: LikeButtonProps) {
     <button
       type="button"
       onClick={handleClick}
-      disabled={toggle.isPending}
       aria-pressed={isLiked}
       aria-label={isLiked ? 'Quitar like' : 'Dar like'}
       className={
-        'inline-flex cursor-pointer items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors disabled:cursor-not-allowed disabled:opacity-60 ' +
+        'inline-flex cursor-pointer items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors ' +
         (isLiked ? 'text-curry-deep' : 'hover:text-curry-deep')
       }
     >

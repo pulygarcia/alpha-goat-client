@@ -16,6 +16,21 @@ vi.mock('@/features/comments/components/CommentForm', () => ({
     <div>comment-form-{reviewId}</div>
   ),
 }));
+vi.mock('./LikeButton', () => ({
+  LikeButton: ({
+    reviewId,
+    likes,
+    isLiked,
+  }: {
+    reviewId: string;
+    likes: number;
+    isLiked: boolean;
+  }) => (
+    <div>
+      like-button-{reviewId}-{likes}-{String(isLiked)}
+    </div>
+  ),
+}));
 
 const vm: ReviewCardVM = {
   id: 'r1',
@@ -116,9 +131,13 @@ describe('ReviewDetailModal', () => {
     ).toBeNull();
   });
 
-  it('shows the likes and comments counts', () => {
-    setup({ likes: 5, commentsCount: 3 });
-    expect(screen.getByLabelText('5 me gusta')).toBeInTheDocument();
+  it('renders an actionable like button wired to the review', () => {
+    setup({ likes: 5, isLiked: true });
+    expect(screen.getByText('like-button-r1-5-true')).toBeInTheDocument();
+  });
+
+  it('shows the comments count', () => {
+    setup({ commentsCount: 3 });
     expect(screen.getByLabelText('3 comentarios')).toBeInTheDocument();
   });
 });

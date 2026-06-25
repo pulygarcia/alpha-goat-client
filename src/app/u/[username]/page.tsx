@@ -1,4 +1,5 @@
 import { ProfileView } from '@/features/profile/components/ProfileView';
+import { ReviewFab } from '@/features/feed/components/ReviewFab';
 import { AppHeader } from '@/shared/components/layout/AppHeader';
 import { Footer } from '@/shared/components/layout/Footer';
 
@@ -16,6 +17,7 @@ export default async function ProfilePage({
       <div className="flex-1">
         <ProfileView username={username} />
       </div>
+      <ReviewFab />
       <Footer />
     </div>
   );

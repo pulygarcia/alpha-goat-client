@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useReviewComments } from '../hooks/useReviewComments';
 import { timeAgo } from '../lib/timeAgo';
 import { CommentLikeButton } from './CommentLikeButton';
@@ -74,9 +75,18 @@ export function CommentList({ reviewId }: { reviewId: string }) {
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <span className="text-ink text-[13px] font-semibold">
-                {username}
-              </span>
+              {c.author?.username ? (
+                <Link
+                  href={`/u/${c.author.username}`}
+                  className="text-ink hover:text-curry-deep text-[13px] font-semibold underline-offset-2 transition-colors hover:underline"
+                >
+                  {username}
+                </Link>
+              ) : (
+                <span className="text-ink text-[13px] font-semibold">
+                  {username}
+                </span>
+              )}
               <span className="text-cinnamon ml-1.5 text-[0.72rem]">
                 · {timeAgo(c.createdAt)}
               </span>

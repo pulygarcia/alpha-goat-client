@@ -7,6 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/components/ui/dialog';
+import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ThumbsUp, MessageCircle } from 'lucide-react';
 import { CommentList } from '@/features/comments/components/CommentList';
 import { CommentForm } from '@/features/comments/components/CommentForm';
@@ -60,7 +62,18 @@ export function ReviewDetailModal({
   onOpenChange,
 }: ReviewDetailModalProps) {
   const { user } = useAuth();
-  const { author, overall, axes, quote, photoUrl, likes, commentsCount } = vm;
+  const {
+    author,
+    alfajor,
+    marca,
+    overall,
+    axes,
+    quote,
+    photoUrl,
+    likes,
+    commentsCount,
+  } = vm;
+  const reduce = useReducedMotion();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -72,7 +85,12 @@ export function ReviewDetailModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex min-h-0 flex-1 gap-3 overflow-y-auto pr-1">
+        <motion.div
+          initial={reduce ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="flex min-h-0 flex-1 gap-3 overflow-y-auto pr-1"
+        >
           {/* Carril del hilo: avatar reseña ─ línea ─ avatar usuario */}
           <div className="flex flex-col items-center">
             <Avatar url={author.avatarUrl} name={author.username} />
@@ -94,6 +112,23 @@ export function ReviewDetailModal({
                   @{author.username} · {timeAgo(vm.createdAt)}
                 </span>
               </p>
+
+              {/* Alfajor reseñado: solo cuando viene anidado (perfil/feed); en el
+                  detalle del alfajor no se anida (sería redundante). */}
+              {alfajor && (
+                <p className="mt-1 text-[14px]">
+                  <span className="text-cinnamon">reseñó </span>
+                  <Link
+                    href={`/alfajores/${alfajor.id}`}
+                    className="text-ink hover:text-curry-deep font-semibold underline-offset-2 transition-colors hover:underline"
+                  >
+                    {alfajor.nombre}
+                  </Link>
+                  {marca && (
+                    <span className="text-cinnamon"> · {marca.nombre}</span>
+                  )}
+                </p>
+              )}
 
               {/* Puntaje general */}
               <div className="mt-3 flex items-baseline gap-2">
@@ -182,7 +217,7 @@ export function ReviewDetailModal({
 
             <CommentForm reviewId={vm.id} replyingTo={author.username} />
           </div>
-        </div>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );

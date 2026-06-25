@@ -67,7 +67,21 @@ describe('feedItemToVM', () => {
 });
 
 describe('reviewToVM', () => {
-  it('maps a detail review to the view-model with null alfajor/marca (redundant in detail)', () => {
+  it('maps the nested alfajor and marca when present (e.g. profile feed)', () => {
+    const vm = reviewToVM({
+      ...review,
+      alfajor: { id: 'al9', nombre: 'Jorgito', tipo: 'CHOCOLATE' },
+      marca: { nombre: 'Jorgito', provincia: 'Córdoba' },
+    });
+    expect(vm.alfajor).toEqual({
+      id: 'al9',
+      nombre: 'Jorgito',
+      tipo: 'CHOCOLATE',
+    });
+    expect(vm.marca).toEqual({ nombre: 'Jorgito', provincia: 'Córdoba' });
+  });
+
+  it('leaves alfajor/marca null when not loaded (redundant in alfajor detail)', () => {
     const vm = reviewToVM(review);
     expect(vm.alfajor).toBeNull();
     expect(vm.marca).toBeNull();

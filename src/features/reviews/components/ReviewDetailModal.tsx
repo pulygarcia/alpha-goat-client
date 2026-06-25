@@ -195,7 +195,11 @@ export function ReviewDetailModal({
 
               {/* Contadores de la reseña — el like es accionable (toggle) */}
               <div className="text-cinnamon mt-4 flex items-center gap-4 text-[13px] font-semibold">
-                <LikeButton reviewId={vm.id} likes={likes} isLiked={vm.isLiked} />
+                <LikeButton
+                  reviewId={vm.id}
+                  likes={likes}
+                  isLiked={vm.isLiked}
+                />
                 <span
                   className="inline-flex items-center gap-1.5"
                   aria-label={`${commentsCount} comentarios`}

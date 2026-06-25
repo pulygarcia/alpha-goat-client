@@ -60,11 +60,12 @@ describe('LikeButton', () => {
     expect(mutate).not.toHaveBeenCalled();
   });
 
-  it('is disabled and does not toggle while pending', () => {
+  it('does not disable the button but skips toggling while pending', () => {
     const mutate = setToggle({ isPending: true });
     render(<LikeButton reviewId="r1" likes={7} isLiked={false} />);
     const button = screen.getByRole('button');
-    expect(button).toBeDisabled();
+    expect(button).not.toBeDisabled();
+    expect(button.className).not.toContain('cursor-not-allowed');
     fireEvent.click(button);
     expect(mutate).not.toHaveBeenCalled();
   });

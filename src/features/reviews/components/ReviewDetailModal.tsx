@@ -9,7 +9,8 @@ import {
 } from '@/shared/components/ui/dialog';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ThumbsUp, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
+import { LikeButton } from './LikeButton';
 import { CommentList } from '@/features/comments/components/CommentList';
 import { CommentForm } from '@/features/comments/components/CommentForm';
 import { useAuth } from '@/shared/providers/AuthProvider';
@@ -192,15 +193,13 @@ export function ReviewDetailModal({
                 />
               )}
 
-              {/* Contadores de la reseña */}
+              {/* Contadores de la reseña — el like es accionable (toggle) */}
               <div className="text-cinnamon mt-4 flex items-center gap-4 text-[13px] font-semibold">
-                <span
-                  className="inline-flex items-center gap-1.5"
-                  aria-label={`${likes} me gusta`}
-                >
-                  <ThumbsUp size={15} strokeWidth={2} />
-                  {likes}
-                </span>
+                <LikeButton
+                  reviewId={vm.id}
+                  likes={likes}
+                  isLiked={vm.isLiked}
+                />
                 <span
                   className="inline-flex items-center gap-1.5"
                   aria-label={`${commentsCount} comentarios`}

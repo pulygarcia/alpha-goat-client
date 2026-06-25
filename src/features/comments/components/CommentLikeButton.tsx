@@ -13,7 +13,9 @@ interface CommentLikeButtonProps {
 /**
  * Botón de like de un comentario. Toggle optimista vía `useToggleCommentLike`
  * (contador/estado vienen por props desde el cache que el hook reescribe).
- * Gateado: anónimo → login. Deshabilitado mientras hay request en vuelo.
+ * Gateado: anónimo → login. No se deshabilita mientras el request está en vuelo
+ * (el toggle es optimista; el guard `isPending` ya evita el doble disparo) para
+ * no mostrar el cursor not-allowed ni atenuar el botón.
  */
 export function CommentLikeButton({
   commentId,
@@ -32,11 +34,10 @@ export function CommentLikeButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={toggle.isPending}
       aria-pressed={isLiked}
       aria-label={isLiked ? 'Quitar like' : 'Dar like'}
       className={
-        'inline-flex cursor-pointer items-center gap-1 rounded-md px-1 py-0.5 text-[0.72rem] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60 ' +
+        'inline-flex cursor-pointer items-center gap-1 rounded-md px-1 py-0.5 text-[0.72rem] font-semibold transition-colors ' +
         (isLiked ? 'text-curry-deep' : 'text-cinnamon hover:text-curry-deep')
       }
     >

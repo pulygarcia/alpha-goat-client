@@ -78,11 +78,6 @@ export function Footer() {
 
       {/* Hero: alfajor a la izquierda + wordmark semitransparente solapado */}
       <div className="relative mx-auto h-[190px] max-w-[1280px] px-6 sm:h-[300px] sm:px-12">
-        <span className="absolute top-6 left-6 flex items-center gap-2 font-mono text-[13px] font-semibold tracking-[0.14em] text-[rgba(244,221,208,0.62)] uppercase sm:left-12">
-          <span className="text-[16px]">»</span>
-          <span>El Alfajorímetro</span>
-        </span>
-
         {/* Alfajor (PNG del hero) con glow dorado detrás */}
         <div
           aria-hidden="true"
@@ -107,10 +102,10 @@ export function Footer() {
         {/* Wordmark superpuesto, un poco transparente → el alfajor asoma */}
         <span
           aria-hidden="true"
-          className="absolute top-1/2 left-[58px] -translate-y-1/2 font-[family-name:var(--font-archivo)] text-[clamp(2.25rem,12vw,210px)] leading-none font-bold tracking-[-0.04em] whitespace-nowrap opacity-85 sm:left-[150px]"
+          className="absolute top-1/2 left-[58px] -translate-y-1/2 font-[family-name:var(--font-archivo)] text-[clamp(2.25rem,12vw,210px)] leading-none font-bold tracking-[-0.04em] whitespace-nowrap opacity-100 sm:left-[150px]"
           style={{
             background:
-              'linear-gradient(95deg, #f6d2b5 0%, #d39a72 30%, #8a4f30 62%, #5e3320 100%)',
+              'linear-gradient(95deg, #f6d2b5 0%, #e0aa82 30%, #b06a44 62%, #8a4f30 100%)',
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
             WebkitTextFillColor: 'transparent',

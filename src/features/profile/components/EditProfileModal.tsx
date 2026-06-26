@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -12,7 +12,9 @@ import {
 } from '@/shared/components/ui/dialog';
 import { useUpdateProfile } from '../hooks/useUpdateProfile';
 import { useChangePassword } from '../hooks/useChangePassword';
+import { useUploadAvatar } from '../hooks/useUploadAvatar';
 import {
+  avatarFileSchema,
   passwordSchema,
   usernameSchema,
   type PasswordSchema,
@@ -54,7 +56,135 @@ function TabButton({
   );
 }
 
-function ProfileSection({ username }: { username: string }) {
+function initials(username: string) {
+  return username.slice(0, 2).toUpperCase();
+}
+
+/**
+ * Avatar con flujo preview + confirmar: elegir archivo muestra una vista previa
+ * local (objectURL); "Guardar foto" dispara la subida; "Cancelar" descarta.
+ * Valida tipo/tamaño client-side (espeja el pipe del back) antes de previsualizar.
+ */
+function AvatarSection({
+  username,
+  avatarUrl,
+}: {
+  username: string;
+  avatarUrl: string | null;
+}) {
+  const upload = useUploadAvatar();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Liberar el objectURL del preview al reemplazarlo o desmontar.
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const shownUrl = previewUrl ?? avatarUrl;
+
+  function clearPreview() {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setFile(null);
+    setPreviewUrl(null);
+    if (inputRef.current) inputRef.current.value = '';
+  }
+
+  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const picked = e.target.files?.[0];
+    if (!picked) return;
+    const parsed = avatarFileSchema.safeParse(picked);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0].message);
+      setFile(null);
+      setPreviewUrl(null);
+      return;
+    }
+    setError(null);
+    setFile(picked);
+    setPreviewUrl(URL.createObjectURL(picked));
+  }
+
+  function onSave() {
+    if (!file) return;
+    upload.mutate(file, { onSuccess: () => clearPreview() });
+  }
+
+  return (
+    <div className="mb-5 flex items-center gap-4">
+      {shownUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={shownUrl}
+          alt={username}
+          className="h-16 w-16 rounded-full border border-[rgba(74,30,8,0.18)] object-cover"
+        />
+      ) : (
+        <div
+          className="text-paper flex h-16 w-16 items-center justify-center rounded-full text-[20px] font-bold"
+          style={{
+            background:
+              'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
+          }}
+        >
+          {initials(username)}
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="avatar-file"
+          className="text-ink bg-paper inline-flex h-9 w-fit cursor-pointer items-center rounded-[10px] border border-[rgba(74,30,8,0.18)] px-3 text-[13px] font-semibold transition-colors hover:border-[#3a1808]"
+        >
+          Cambiar foto
+        </label>
+        <input
+          ref={inputRef}
+          id="avatar-file"
+          type="file"
+          aria-label="Foto de perfil"
+          accept="image/jpeg,image/png,image/webp"
+          className="sr-only"
+          onChange={onPick}
+        />
+        {error && <p className={errorClass}>{error}</p>}
+
+        {file && (
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={upload.isPending}
+              className={submitClass + ' mt-0'}
+            >
+              {upload.isPending ? 'Subiendo...' : 'Guardar foto'}
+            </button>
+            <button
+              type="button"
+              onClick={clearPreview}
+              disabled={upload.isPending}
+              className="text-cinnamon hover:text-ink h-10 px-2 text-[13px] font-semibold transition-colors"
+            >
+              Cancelar
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProfileSection({
+  username,
+  avatarUrl,
+}: {
+  username: string;
+  avatarUrl: string | null;
+}) {
   const update = useUpdateProfile();
   const {
     register,
@@ -68,6 +198,8 @@ function ProfileSection({ username }: { username: string }) {
 
   return (
     <form onSubmit={handleSubmit((data) => update.mutate(data))}>
+      <AvatarSection username={username} avatarUrl={avatarUrl} />
+
       <label htmlFor="edit-username" className={labelClass}>
         Nombre de usuario
       </label>
@@ -158,10 +290,12 @@ export function EditProfileModal({
   open,
   onOpenChange,
   username,
+  avatarUrl,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   username: string;
+  avatarUrl: string | null;
 }) {
   const [section, setSection] = useState<Section>('profile');
   const reduce = useReducedMotion();
@@ -204,7 +338,7 @@ export function EditProfileModal({
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
           >
             {section === 'profile' ? (
-              <ProfileSection username={username} />
+              <ProfileSection username={username} avatarUrl={avatarUrl} />
             ) : (
               <PasswordSection />
             )}

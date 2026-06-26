@@ -104,3 +104,11 @@ Las animaciones de entrada de listas (feed, ranking) usan `framer-motion` (ya in
 El feed renderiza iterando **por página** del infinite scroll y pasa `index` = posición dentro de su página (no el índice global). Así cada página nueva escalona solo sus propios items y las cards ya montadas no vuelven a animarse.
 
 **Por qué no el índice global:** con delay por índice global, al traer la página 2 las cards viejas conservarían su animación pero las nuevas arrancarían con un delay enorme (item 20+), y un re-render que recalcule índices podría re-disparar el fade. El índice por tanda mantiene el escalonado corto y estable. `StaggerItem` respeta `prefers-reduced-motion` (devuelve los hijos sin envolver).
+
+## Avatar: subida multipart con preview + confirmar, validada en el cliente
+
+La subida del avatar (`AvatarSection` en `EditProfileModal`) usa flujo **preview + confirmar**: elegir archivo muestra una vista previa local (`URL.createObjectURL`), y recién "Guardar foto" dispara la mutation (`POST /users/me/avatar`, multipart campo `file`). El back devuelve el `User` con `avatarUrl`; al éxito se invalidan `['auth','me']` y `['profile']` y se libera el objectURL.
+
+**Por qué preview + confirmar** (no subida inmediata al elegir): da una salida sin coste — el usuario ve la foto antes de comprometerla y puede cancelar sin haber tocado Cloudinary ni el asset.
+
+**Validación duplicada (cliente + back):** `avatarFileSchema` replica el `ImageFilePipe` del back (jpeg/png/webp, ≤5 MB). No es redundancia ociosa: corta el archivo inválido antes de gastar un round-trip y le da feedback inmediato al usuario. El back sigue siendo la autoridad (el cliente es manipulable); el schema solo mejora la UX.

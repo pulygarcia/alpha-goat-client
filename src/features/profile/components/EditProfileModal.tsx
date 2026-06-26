@@ -138,7 +138,7 @@ function AvatarSection({
       <div className="flex flex-col gap-2">
         <label
           htmlFor="avatar-file"
-          className="text-ink inline-flex h-9 w-fit cursor-pointer items-center rounded-[10px] border border-[rgba(74,30,8,0.18)] bg-paper px-3 text-[13px] font-semibold transition-colors hover:border-[#3a1808]"
+          className="text-ink bg-paper inline-flex h-9 w-fit cursor-pointer items-center rounded-[10px] border border-[rgba(74,30,8,0.18)] px-3 text-[13px] font-semibold transition-colors hover:border-[#3a1808]"
         >
           Cambiar foto
         </label>

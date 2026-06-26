@@ -27,8 +27,7 @@ export const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
 export const avatarFileSchema = z
   .instanceof(File)
   .refine(
-    (file) =>
-      (AVATAR_ACCEPTED_TYPES as readonly string[]).includes(file.type),
+    (file) => (AVATAR_ACCEPTED_TYPES as readonly string[]).includes(file.type),
     'Formato no válido (jpeg, png o webp)',
   )
   .refine((file) => file.size <= AVATAR_MAX_BYTES, 'La imagen supera los 5 MB');

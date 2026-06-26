@@ -9,7 +9,9 @@ vi.mock('@/shared/lib/api-client', () => ({
 describe('profileApi.uploadAvatar', () => {
   beforeEach(() => {
     vi.mocked(apiClient.post).mockReset();
-    vi.mocked(apiClient.post).mockResolvedValue({ data: { id: 'u1' } } as never);
+    vi.mocked(apiClient.post).mockResolvedValue({
+      data: { id: 'u1' },
+    } as never);
   });
 
   it('posts the file as multipart FormData (overriding the JSON default)', async () => {

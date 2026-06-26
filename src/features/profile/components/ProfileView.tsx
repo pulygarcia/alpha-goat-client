@@ -74,6 +74,7 @@ export function ProfileView({ username }: { username: string }) {
               open={editOpen}
               onOpenChange={setEditOpen}
               username={profile.username}
+              avatarUrl={profile.avatarUrl}
             />
           )}
         </div>

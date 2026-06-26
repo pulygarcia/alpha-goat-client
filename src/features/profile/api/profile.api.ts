@@ -26,4 +26,21 @@ export const profileApi = {
   changePassword: async (input: PasswordSchema): Promise<void> => {
     await apiClient.patch('/users/me/password', input);
   },
+
+  /**
+   * POST /users/me/avatar (auth, multipart) — sube el avatar en el campo `file`.
+   * El back reemplaza el asset (publicId determinístico) y devuelve el `User`
+   * actualizado con `avatarUrl`. Axios setea el boundary del multipart solo.
+   */
+  uploadAvatar: async (file: File): Promise<User> => {
+    const form = new FormData();
+    form.append('file', file);
+    // El default global del client es `application/json`; con eso axios serializa
+    // el FormData como JSON (`{file:{}}`) y el back lo rechaza. Override explícito
+    // a multipart → axios completa el boundary al detectar el FormData como body.
+    const res = await apiClient.post<User>('/users/me/avatar', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return res.data;
+  },
 };

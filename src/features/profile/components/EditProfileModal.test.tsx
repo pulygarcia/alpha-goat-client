@@ -3,16 +3,20 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { EditProfileModal } from './EditProfileModal';
 import { useUpdateProfile } from '../hooks/useUpdateProfile';
 import { useChangePassword } from '../hooks/useChangePassword';
+import { useUploadAvatar } from '../hooks/useUploadAvatar';
 
 vi.mock('../hooks/useUpdateProfile', () => ({ useUpdateProfile: vi.fn() }));
 vi.mock('../hooks/useChangePassword', () => ({ useChangePassword: vi.fn() }));
+vi.mock('../hooks/useUploadAvatar', () => ({ useUploadAvatar: vi.fn() }));
 
 const updateMutate = vi.fn();
 const passwordMutate = vi.fn();
+const avatarMutate = vi.fn();
 
 beforeEach(() => {
   updateMutate.mockReset();
   passwordMutate.mockReset();
+  avatarMutate.mockReset();
   vi.mocked(useUpdateProfile).mockReturnValue({
     mutate: updateMutate,
     isPending: false,
@@ -21,12 +25,29 @@ beforeEach(() => {
     mutate: passwordMutate,
     isPending: false,
   } as unknown as ReturnType<typeof useChangePassword>);
+  vi.mocked(useUploadAvatar).mockReturnValue({
+    mutate: avatarMutate,
+    isPending: false,
+  } as unknown as ReturnType<typeof useUploadAvatar>);
+  globalThis.URL.createObjectURL = vi.fn(() => 'blob:preview');
+  globalThis.URL.revokeObjectURL = vi.fn();
 });
 
-function renderModal() {
+function renderModal(avatarUrl: string | null = null) {
   return render(
-    <EditProfileModal open onOpenChange={vi.fn()} username="puly" />,
+    <EditProfileModal
+      open
+      onOpenChange={vi.fn()}
+      username="puly"
+      avatarUrl={avatarUrl}
+    />,
   );
+}
+
+function imageFile(type = 'image/png', size = 1024) {
+  const file = new File(['x'], 'avatar', { type });
+  Object.defineProperty(file, 'size', { value: size });
+  return file;
 }
 
 describe('EditProfileModal', () => {
@@ -65,5 +86,45 @@ describe('EditProfileModal', () => {
       currentPassword: 'oldpass1',
       newPassword: 'newpass1',
     });
+  });
+
+  it('previews a chosen image and uploads it on confirm', async () => {
+    renderModal();
+    fireEvent.change(screen.getByLabelText(/foto de perfil/i), {
+      target: { files: [imageFile()] },
+    });
+
+    const save = await screen.findByRole('button', { name: /guardar foto/i });
+    fireEvent.click(save);
+
+    await waitFor(() => expect(avatarMutate).toHaveBeenCalled());
+    expect(avatarMutate.mock.calls[0][0]).toBeInstanceOf(File);
+  });
+
+  it('rejects an invalid file and does not offer to save', () => {
+    renderModal();
+    fireEvent.change(screen.getByLabelText(/foto de perfil/i), {
+      target: { files: [imageFile('image/gif')] },
+    });
+
+    expect(screen.getByText(/formato no válido/i)).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /guardar foto/i }),
+    ).not.toBeInTheDocument();
+    expect(avatarMutate).not.toHaveBeenCalled();
+  });
+
+  it('cancels the preview without uploading', async () => {
+    renderModal();
+    fireEvent.change(screen.getByLabelText(/foto de perfil/i), {
+      target: { files: [imageFile()] },
+    });
+
+    fireEvent.click(await screen.findByRole('button', { name: /cancelar/i }));
+
+    expect(
+      screen.queryByRole('button', { name: /guardar foto/i }),
+    ).not.toBeInTheDocument();
+    expect(avatarMutate).not.toHaveBeenCalled();
   });
 });

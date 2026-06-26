@@ -1,5 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { usernameSchema, passwordSchema } from './editProfile.schema';
+import {
+  usernameSchema,
+  passwordSchema,
+  avatarFileSchema,
+} from './editProfile.schema';
+
+function fakeFile(type: string, size: number): File {
+  const file = new File(['x'], 'avatar', { type });
+  Object.defineProperty(file, 'size', { value: size });
+  return file;
+}
 
 describe('usernameSchema', () => {
   it('accepts a valid username', () => {
@@ -41,6 +51,28 @@ describe('passwordSchema', () => {
       currentPassword: '',
       newPassword: 'newpass1',
     });
+    expect(res.success).toBe(false);
+  });
+});
+
+describe('avatarFileSchema', () => {
+  it('accepts a jpeg/png/webp under 5 MB', () => {
+    for (const type of ['image/jpeg', 'image/png', 'image/webp']) {
+      expect(avatarFileSchema.safeParse(fakeFile(type, 1024)).success).toBe(
+        true,
+      );
+    }
+  });
+
+  it('rejects an unsupported type', () => {
+    const res = avatarFileSchema.safeParse(fakeFile('image/gif', 1024));
+    expect(res.success).toBe(false);
+  });
+
+  it('rejects a file larger than 5 MB', () => {
+    const res = avatarFileSchema.safeParse(
+      fakeFile('image/png', 5 * 1024 * 1024 + 1),
+    );
     expect(res.success).toBe(false);
   });
 });

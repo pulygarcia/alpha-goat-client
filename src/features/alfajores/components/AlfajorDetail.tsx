@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
@@ -8,6 +7,7 @@ import { AlfajorReviews } from '@/features/reviews/components/AlfajorReviews';
 import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
 import { useAlfajor } from '../hooks/useAlfajor';
 import { AlfajorDetailSkeleton } from './AlfajorDetailSkeleton';
+import { AlfajorImageUploader } from './AlfajorImageUploader';
 
 function tipoLabel(tipo: string) {
   return tipo.charAt(0) + tipo.slice(1).toLowerCase();
@@ -49,24 +49,12 @@ export function AlfajorDetail({ id }: { id: string }) {
       {data && (
         <>
           <article className="grid gap-8 md:grid-cols-[minmax(0,420px)_1fr]">
-            <div className="bg-paper-sunken relative aspect-square w-full overflow-hidden rounded-[16px] border border-[rgba(74,30,8,0.14)]">
-              {data.imagenUrl ? (
-                <Image
-                  src={data.imagenUrl}
-                  alt={data.nombre}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 420px"
-                  className="object-cover"
-                />
-              ) : (
-                <div
-                  className="text-cinnamon flex h-full w-full items-center justify-center text-[0.7rem] tracking-[0.24em] uppercase"
-                  style={{ fontFamily: 'var(--font-mono)' }}
-                >
-                  {tipoLabel(data.tipo)}
-                </div>
-              )}
-            </div>
+            <AlfajorImageUploader
+              alfajorId={data.id}
+              imagenUrl={data.imagenUrl}
+              nombre={data.nombre}
+              placeholder={tipoLabel(data.tipo)}
+            />
 
             <div className="pt-1">
               <span

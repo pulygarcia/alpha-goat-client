@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import {
+  imageFileSchema,
+  IMAGE_ACCEPTED_TYPES,
+  IMAGE_MAX_BYTES,
+} from '@/shared/schemas/imageFile.schema';
 
 /** Edición de username. Mismas reglas que el registro (y que el back). */
 export const usernameSchema = z.object({
@@ -15,22 +20,14 @@ export const passwordSchema = z.object({
   newPassword: z.string().min(8, 'Mínimo 8 caracteres'),
 });
 
-/** Tipos y tamaño máximo del avatar — espejan el `ImageFilePipe` del back. */
-export const AVATAR_ACCEPTED_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-] as const;
-export const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
-
-/** Valida el `File` del avatar antes de subirlo (mismas reglas que el back). */
-export const avatarFileSchema = z
-  .instanceof(File)
-  .refine(
-    (file) => (AVATAR_ACCEPTED_TYPES as readonly string[]).includes(file.type),
-    'Formato no válido (jpeg, png o webp)',
-  )
-  .refine((file) => file.size <= AVATAR_MAX_BYTES, 'La imagen supera los 5 MB');
+/**
+ * Validación del avatar: reusa el schema genérico de imágenes de shared (mismas
+ * reglas que el `ImageFilePipe` del back). Se re-exporta con el nombre del avatar
+ * para no tocar los consumidores existentes.
+ */
+export const AVATAR_ACCEPTED_TYPES = IMAGE_ACCEPTED_TYPES;
+export const AVATAR_MAX_BYTES = IMAGE_MAX_BYTES;
+export const avatarFileSchema = imageFileSchema;
 
 export type UsernameSchema = z.infer<typeof usernameSchema>;
 export type PasswordSchema = z.infer<typeof passwordSchema>;

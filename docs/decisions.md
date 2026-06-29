@@ -112,3 +112,11 @@ La subida del avatar (`AvatarSection` en `EditProfileModal`) usa flujo **preview
 **Por qué preview + confirmar** (no subida inmediata al elegir): da una salida sin coste — el usuario ve la foto antes de comprometerla y puede cancelar sin haber tocado Cloudinary ni el asset.
 
 **Validación duplicada (cliente + back):** `avatarFileSchema` replica el `ImageFilePipe` del back (jpeg/png/webp, ≤5 MB). No es redundancia ociosa: corta el archivo inválido antes de gastar un round-trip y le da feedback inmediato al usuario. El back sigue siendo la autoridad (el cliente es manipulable); el schema solo mejora la UX.
+
+## Foto de alfajor: mismo patrón que el avatar, validación movida a shared
+
+La subida de la foto del alfajor (`AlfajorImageUploader` en `AlfajorDetail`) reusa el flujo del avatar: preview + confirmar, multipart campo `file` a `POST /alfajores/:id/imagen`, override de `Content-Type` a `multipart/form-data` (el default global del client es JSON y serializaría el `FormData` mal). Al éxito invalida `['alfajores']` (cubre detalle y catálogo, que comparten `imagenUrl`).
+
+**Validación a `shared/schemas/imageFile.schema.ts`:** al aparecer el segundo consumidor de la misma validación (avatar + alfajor), `avatarFileSchema` se extrajo a `imageFileSchema` genérico en shared (regla "2+ features → shared"). `editProfile.schema` lo re-exporta con el nombre del avatar para no tocar a sus consumidores.
+
+**Control solo para admins (gate client-side):** el botón "Cambiar foto" solo se renderiza si `user.role === 'ADMIN'`. El back autoriza además al creador cuando el alfajor está `PENDING`, pero hoy ese camino no tiene pantalla (el catálogo público solo lista `APPROVED` y "Proponer alfajor" está en backlog) → gatearlo en el front sería código muerto. Se amplía cuando exista esa superficie. El gate es solo UX: el back es la autoridad real de autorización.

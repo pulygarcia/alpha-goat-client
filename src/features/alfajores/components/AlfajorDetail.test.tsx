@@ -12,6 +12,9 @@ vi.mock('@/features/reviews/components/AlfajorReviews', () => ({
 vi.mock('@/features/reviews/components/QuickReviewModal', () => ({
   QuickReviewModal: () => null,
 }));
+vi.mock('./AlfajorImageUploader', () => ({
+  AlfajorImageUploader: () => null,
+}));
 
 const mocked = vi.mocked(useAlfajor);
 

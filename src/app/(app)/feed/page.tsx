@@ -4,7 +4,6 @@ import { FeedHero } from '@/features/feed/components/FeedHero';
 import { FeedRail } from '@/features/feed/components/FeedRail';
 import { FeedReviews } from '@/features/feed/components/FeedReviews';
 import { FeedSubnav } from '@/features/feed/components/FeedSubnav';
-import { ReviewFab } from '@/features/feed/components/ReviewFab';
 import { AppHeader } from '@/shared/components/layout/AppHeader';
 import { Footer } from '@/shared/components/layout/Footer';
 
@@ -25,7 +24,6 @@ export default function FeedPage() {
         <FeedRail />
       </section>
 
-      <ReviewFab />
       <Footer />
     </main>
   );

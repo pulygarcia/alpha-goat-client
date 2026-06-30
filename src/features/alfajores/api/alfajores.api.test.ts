@@ -6,6 +6,28 @@ vi.mock('@/shared/lib/api-client', () => ({
   apiClient: { post: vi.fn() },
 }));
 
+describe('alfajoresApi.create', () => {
+  beforeEach(() => {
+    vi.mocked(apiClient.post).mockReset();
+    vi.mocked(apiClient.post).mockResolvedValue({
+      data: { id: 'a1', status: 'PENDING' },
+    } as never);
+  });
+
+  it('posts the proposal as JSON to /alfajores and returns the created alfajor', async () => {
+    const input = {
+      nombre: 'Guaymallén Negro',
+      marcaId: 'm1',
+      tipo: 'NEGRO' as const,
+    };
+
+    const result = await alfajoresApi.create(input);
+
+    expect(apiClient.post).toHaveBeenCalledWith('/alfajores', input);
+    expect(result).toEqual({ id: 'a1', status: 'PENDING' });
+  });
+});
+
 describe('alfajoresApi.uploadImage', () => {
   beforeEach(() => {
     vi.mocked(apiClient.post).mockReset();

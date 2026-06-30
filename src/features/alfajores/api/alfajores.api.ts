@@ -3,6 +3,7 @@ import type {
   Alfajor,
   AlfajoresQuery,
   PaginatedAlfajores,
+  ProposeAlfajorInput,
 } from '../types/alfajores.types';
 
 export const alfajoresApi = {
@@ -24,6 +25,16 @@ export const alfajoresApi = {
    */
   byId: async (id: string): Promise<Alfajor> => {
     const res = await apiClient.get<Alfajor>(`/alfajores/${id}`);
+    return res.data;
+  },
+
+  /**
+   * POST /alfajores (auth) — propone un alfajor nuevo. El back lo crea en estado
+   * PENDING (hasta aprobación admin) con el usuario como `createdById`. Tira 409
+   * si ya existe ese nombre para esa marca, 404 si la marca no existe.
+   */
+  create: async (input: ProposeAlfajorInput): Promise<Alfajor> => {
+    const res = await apiClient.post<Alfajor>('/alfajores', input);
     return res.data;
   },
 

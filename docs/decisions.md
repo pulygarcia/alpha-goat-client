@@ -128,3 +128,13 @@ La foto de la reseña se elige en el paso "puntajes" del `ReviewWizardForm` (pre
 **Por qué subir después de crear (no en el mismo `POST /reviews`):** el endpoint de foto necesita el id de la reseña, que no existe hasta crearla. El flujo encadena: al "Publicar", se crea/edita la reseña y, en su `onSuccess(review)`, si hay foto se dispara `useUploadReviewPhoto({ reviewId: review.id, file })` y recién ahí se cierra el modal (`onSettled`). Sin foto, cierra de una.
 
 **Un fallo de la foto no bloquea la reseña:** la reseña ya quedó publicada (toast "Reseña publicada"); si la foto falla, el hook avisa por su propio toast de error pero el modal cierra igual. El hook de foto **no** emite toast de éxito para no duplicar el de la reseña. Invalida las mismas caches que `useSubmitReview` (lista del alfajor, su detalle y el feed) para que la foto aparezca.
+
+## Proponer alfajor: modal propio, queda PENDING (confirmación in-modal)
+
+El CTA "Solicitá agregarlo" del `QuickReviewModal` abre un `ProposeAlfajorModal` (form nombre + marca + tipo) que crea vía `POST /alfajores` → el back lo deja en estado `PENDING` con el usuario como `createdById`. Solo se mandan los 3 campos requeridos (`descripcion`/`imagenUrl` del contrato quedan fuera del form público; YAGNI).
+
+**Por qué un modal propio en `features/alfajores` (no un paso del wizard de reseña):** proponer un alfajor es del dominio del catálogo, no de reviews. El `QuickReviewModal` solo dispara el `open` (`proposeOpen`) y se cierra al abrirlo para no apilar dos Dialogs. Así el mismo modal sirve a futuro desde otros entry points (catálogo vacío) sin acoplarse a reviews.
+
+**Por qué confirmación in-modal y no permitir reseñar al toque:** el alfajor nace `PENDING` y el catálogo público solo lista `APPROVED`, así que no es reseñable hasta que un admin lo apruebe. En vez de devolver al flujo de reseña (que confundiría: el que propuso no aparece), el modal muestra una pantalla "pendiente de aprobación". La mutación es fina: no invalida caches (no hay lista pública que refrescar) ni emite toast de éxito.
+
+**Selector de marca en `features/marcas`:** `MarcaCombobox` + `useMarcasSearch` (`GET /marcas?q=` debounced) viven en `marcas` (su dominio), no en `alfajores`. Un `409` del create (ya existe ese nombre+marca) se muestra inline bajo el nombre; otros errores van a toast.

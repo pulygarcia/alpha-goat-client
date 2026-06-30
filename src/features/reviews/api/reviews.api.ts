@@ -40,4 +40,18 @@ export const reviewsApi = {
   unlike: async (id: string): Promise<void> => {
     await apiClient.delete(`/reviews/${id}/like`);
   },
+
+  /**
+   * POST /reviews/:id/foto (auth, solo autor) — sube la foto de la reseña
+   * (multipart campo `file`). Override de `Content-Type` porque el default del
+   * client es `application/json`. Devuelve la reseña con la `fotoUrl` nueva.
+   */
+  uploadPhoto: async (id: string, file: File): Promise<Review> => {
+    const form = new FormData();
+    form.append('file', file);
+    const res = await apiClient.post<Review>(`/reviews/${id}/foto`, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return res.data;
+  },
 };

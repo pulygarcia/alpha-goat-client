@@ -120,3 +120,11 @@ La subida de la foto del alfajor (`AlfajorImageUploader` en `AlfajorDetail`) reu
 **Validación a `shared/schemas/imageFile.schema.ts`:** al aparecer el segundo consumidor de la misma validación (avatar + alfajor), `avatarFileSchema` se extrajo a `imageFileSchema` genérico en shared (regla "2+ features → shared"). `editProfile.schema` lo re-exporta con el nombre del avatar para no tocar a sus consumidores.
 
 **Control solo para admins (gate client-side):** el botón "Cambiar foto" solo se renderiza si `user.role === 'ADMIN'`. El back autoriza además al creador cuando el alfajor está `PENDING`, pero hoy ese camino no tiene pantalla (el catálogo público solo lista `APPROVED` y "Proponer alfajor" está en backlog) → gatearlo en el front sería código muerto. Se amplía cuando exista esa superficie. El gate es solo UX: el back es la autoridad real de autorización.
+
+## Foto de reseña: paso opcional del wizard (subir después de crear)
+
+La foto de la reseña se elige en el paso "puntajes" del `ReviewWizardForm` (preview local + confirmar al publicar) y se sube por separado a `POST /reviews/:id/foto` (multipart campo `file`, override de `Content-Type`), reusando `imageFileSchema` de shared. El back autoriza solo al autor.
+
+**Por qué subir después de crear (no en el mismo `POST /reviews`):** el endpoint de foto necesita el id de la reseña, que no existe hasta crearla. El flujo encadena: al "Publicar", se crea/edita la reseña y, en su `onSuccess(review)`, si hay foto se dispara `useUploadReviewPhoto({ reviewId: review.id, file })` y recién ahí se cierra el modal (`onSettled`). Sin foto, cierra de una.
+
+**Un fallo de la foto no bloquea la reseña:** la reseña ya quedó publicada (toast "Reseña publicada"); si la foto falla, el hook avisa por su propio toast de error pero el modal cierra igual. El hook de foto **no** emite toast de éxito para no duplicar el de la reseña. Invalida las mismas caches que `useSubmitReview` (lista del alfajor, su detalle y el feed) para que la foto aparezca.

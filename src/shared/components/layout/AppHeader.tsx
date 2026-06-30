@@ -170,9 +170,18 @@ export function AppHeader() {
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Menú de usuario"
-            className="border-sienna from-cinnamon to-curry text-sienna flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"
+            className="border-sienna from-cinnamon to-curry text-sienna flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"
           >
-            {initials}
+            {user?.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={user.avatarUrl}
+                alt={user.username}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              initials
+            )}
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"

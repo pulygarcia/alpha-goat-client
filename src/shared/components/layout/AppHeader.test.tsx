@@ -24,9 +24,11 @@ const mockedAuth = vi.mocked(useAuth);
 const mockedRequireAuth = vi.mocked(useRequireAuth);
 const mockedPathname = vi.mocked(usePathname);
 
-function setAuth(isAuthenticated: boolean) {
+function setAuth(isAuthenticated: boolean, avatarUrl: string | null = null) {
   mockedAuth.mockReturnValue({
-    user: isAuthenticated ? { username: 'puly', email: 'puly@test.com' } : null,
+    user: isAuthenticated
+      ? { username: 'puly', email: 'puly@test.com', avatarUrl }
+      : null,
     isAuthenticated,
     logout: vi.fn(),
   } as unknown as ReturnType<typeof useAuth>);
@@ -71,6 +73,26 @@ describe('AppHeader', () => {
     render(<AppHeader />);
     expect(screen.getByLabelText('Menú de usuario')).toBeInTheDocument();
     expect(screen.queryByText('Entrar')).not.toBeInTheDocument();
+  });
+
+  it('shows the profile picture in the user menu when the user has an avatar', () => {
+    setAuth(true, 'https://res.cloudinary.com/x/avatars/puly.jpg');
+    render(<AppHeader />);
+
+    const avatar = screen.getByAltText('puly');
+    expect(avatar).toHaveAttribute(
+      'src',
+      'https://res.cloudinary.com/x/avatars/puly.jpg',
+    );
+  });
+
+  it('falls back to initials when the user has no avatar', () => {
+    setAuth(true, null);
+    render(<AppHeader />);
+
+    expect(screen.queryByAltText('puly')).not.toBeInTheDocument();
+    // iniciales de "puly" → primera + última
+    expect(screen.getByLabelText('Menú de usuario')).toHaveTextContent('PY');
   });
 
   it('does not open the review modal for an anonymous user (gated)', () => {

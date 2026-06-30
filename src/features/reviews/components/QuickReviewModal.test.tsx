@@ -16,6 +16,11 @@ vi.mock('./ReviewWizardForm', () => ({
     <div>wizard-{alfajor.id}</div>
   ),
 }));
+// Modal de proponer mockeado: solo marca si está abierto.
+vi.mock('@/features/alfajores/components/ProposeAlfajorModal', () => ({
+  ProposeAlfajorModal: ({ open }: { open: boolean }) =>
+    open ? <div>propose-modal</div> : null,
+}));
 
 const mocked = vi.mocked(useAlfajores);
 
@@ -57,6 +62,17 @@ describe('QuickReviewModal', () => {
 
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByText(/solicitá agregarlo/i)).toBeInTheDocument();
+  });
+
+  it('opens the propose-alfajor modal from the add CTA', () => {
+    mocked.mockReturnValue(baseReturn({ data: pages([]) }));
+    render(<QuickReviewModal open onOpenChange={vi.fn()} />);
+
+    expect(screen.queryByText('propose-modal')).not.toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole('button', { name: /solicitá agregarlo/i }),
+    );
+    expect(screen.getByText('propose-modal')).toBeInTheDocument();
   });
 
   it('passes the search text to the alfajores query', () => {

@@ -11,6 +11,7 @@ import {
 import { Stepper } from '@/shared/components/ui/stepper';
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 import { useAlfajores } from '@/features/alfajores/hooks/useAlfajores';
+import { ProposeAlfajorModal } from '@/features/alfajores/components/ProposeAlfajorModal';
 import { ReviewWizardForm, type WizardStep } from './ReviewWizardForm';
 import type { Alfajor } from '@/features/alfajores/types/alfajores.types';
 
@@ -30,6 +31,7 @@ export function QuickReviewModal({
 }) {
   const [selected, setSelected] = useState<Alfajor | null>(alfajor ?? null);
   const [wizardStep, setWizardStep] = useState<WizardStep>('comentario');
+  const [proposeOpen, setProposeOpen] = useState(false);
 
   // Al cerrar, vuelve al estado inicial (preselección o picker) para que el
   // próximo open arranque limpio — sin un effect que sincronice `open`.
@@ -61,41 +63,57 @@ export function QuickReviewModal({
   const current = selected ? wizardIndex + (alfajor ? 0 : 1) : 0;
   const activeDescription = steps[current]?.description;
 
-  return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-paper-raised text-ink max-w-md border-[rgba(74,30,8,0.22)]">
-        <DialogHeader>
-          <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
-          {/* pr-8: deja aire para la X de cerrar, que no se monte sobre el último paso */}
-          <Stepper
-            steps={steps.map((s) => s.label)}
-            current={current}
-            className="pr-8"
-          />
-          {activeDescription && (
-            <p className="text-sienna text-center text-[13px]">
-              {activeDescription}
-            </p>
-          )}
-        </DialogHeader>
+  // Abrir "proponer" cierra el modal de reseña para no apilar Dialogs.
+  function openPropose() {
+    onOpenChange(false);
+    setProposeOpen(true);
+  }
 
-        {selected ? (
-          <ReviewWizardForm
-            alfajor={selected}
-            onBack={alfajor ? undefined : backToPicker}
-            onDone={() => handleOpenChange(false)}
-            step={wizardStep}
-            onStepChange={setWizardStep}
-          />
-        ) : (
-          <AlfajorPicker onPick={setSelected} />
-        )}
-      </DialogContent>
-    </Dialog>
+  return (
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="bg-paper-raised text-ink max-w-md border-[rgba(74,30,8,0.22)]">
+          <DialogHeader>
+            <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
+            {/* pr-8: deja aire para la X de cerrar, que no se monte sobre el último paso */}
+            <Stepper
+              steps={steps.map((s) => s.label)}
+              current={current}
+              className="pr-8"
+            />
+            {activeDescription && (
+              <p className="text-sienna text-center text-[13px]">
+                {activeDescription}
+              </p>
+            )}
+          </DialogHeader>
+
+          {selected ? (
+            <ReviewWizardForm
+              alfajor={selected}
+              onBack={alfajor ? undefined : backToPicker}
+              onDone={() => handleOpenChange(false)}
+              step={wizardStep}
+              onStepChange={setWizardStep}
+            />
+          ) : (
+            <AlfajorPicker onPick={setSelected} onPropose={openPropose} />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <ProposeAlfajorModal open={proposeOpen} onOpenChange={setProposeOpen} />
+    </>
   );
 }
 
-function AlfajorPicker({ onPick }: { onPick: (a: Alfajor) => void }) {
+function AlfajorPicker({
+  onPick,
+  onPropose,
+}: {
+  onPick: (a: Alfajor) => void;
+  onPropose: () => void;
+}) {
   const [search, setSearch] = useState('');
   const q = useDebouncedValue(search, 300).trim();
   const { data, isLoading } = useAlfajores(q ? { q } : {});
@@ -156,10 +174,13 @@ function AlfajorPicker({ onPick }: { onPick: (a: Alfajor) => void }) {
 
       <p className="text-sienna border-t border-[rgba(74,30,8,0.14)] pt-3 text-[13px]">
         ¿No lo encontrás?{' '}
-        <span className="text-curry-deep font-semibold">
+        <button
+          type="button"
+          onClick={onPropose}
+          className="text-curry-deep font-semibold underline-offset-2 hover:underline"
+        >
           Solicitá agregarlo
-        </span>{' '}
-        <span className="text-cinnamon">(pronto)</span>
+        </button>
       </p>
     </>
   );

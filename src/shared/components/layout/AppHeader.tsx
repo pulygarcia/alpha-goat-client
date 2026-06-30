@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -43,18 +44,20 @@ export function AppHeader() {
 
   return (
     <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
-      <div className="flex items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-[18px]">
-        <div
-          className="bg-ink text-curry flex h-[26px] w-[26px] items-center justify-center rounded-full"
-          style={{
-            fontFamily: 'var(--font-archivo)',
-            fontSize: 11,
-            letterSpacing: '-0.04em',
-          }}
-        >
-          α
-        </div>
-        <div
+      <Link
+        href="/feed"
+        aria-label="AlphaGoat"
+        className="flex items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-[18px] transition-opacity hover:opacity-80"
+      >
+        <Image
+          src="/alphagoat-logo.png"
+          alt=""
+          width={26}
+          height={26}
+          priority
+          className="h-[26px] w-[26px] rounded-full object-cover"
+        />
+        <span
           className="text-ink"
           style={{
             fontFamily: 'var(--font-archivo)',
@@ -63,8 +66,8 @@ export function AppHeader() {
           }}
         >
           AlphaGoat<span className="text-curry-deep">.</span>
-        </div>
-      </div>
+        </span>
+      </Link>
 
       {/* Hamburguesa: nav colapsada en tablet/mobile (<lg) como drawer. */}
       <Sheet>

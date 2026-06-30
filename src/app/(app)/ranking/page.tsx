@@ -1,5 +1,4 @@
 import { RankingList } from '@/features/ranking/components/RankingList';
-import { ReviewFab } from '@/features/feed/components/ReviewFab';
 import { AppHeader } from '@/shared/components/layout/AppHeader';
 import { Footer } from '@/shared/components/layout/Footer';
 
@@ -11,7 +10,6 @@ export default function RankingPage() {
       <div className="flex-1">
         <RankingList />
       </div>
-      <ReviewFab />
       <Footer />
     </div>
   );

@@ -57,6 +57,14 @@ describe('AppHeader', () => {
     }
   });
 
+  it('links the logo to the feed', () => {
+    render(<AppHeader />);
+    expect(screen.getByRole('link', { name: 'AlphaGoat' })).toHaveAttribute(
+      'href',
+      '/feed',
+    );
+  });
+
   it('no longer renders the removed "Mi huella" nav link or the search box', () => {
     render(<AppHeader />);
     expect(screen.queryByText('Mi huella')).not.toBeInTheDocument();

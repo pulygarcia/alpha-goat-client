@@ -98,6 +98,14 @@ describe('ReviewDetailModal', () => {
     );
   });
 
+  it('links the author name and avatar to their profile', () => {
+    setup();
+    const toProfile = screen
+      .getAllByRole('link')
+      .filter((el) => el.getAttribute('href') === '/u/pepe');
+    expect(toProfile.length).toBeGreaterThanOrEqual(2);
+  });
+
   it('omits the comentario block when there is no quote', () => {
     setup({ quote: null });
     expect(screen.queryByText(/estaba muy rico/)).toBeNull();

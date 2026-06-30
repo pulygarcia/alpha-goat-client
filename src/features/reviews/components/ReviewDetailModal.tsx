@@ -83,7 +83,13 @@ export function ReviewDetailModal({
         >
           {/* Carril del hilo: avatar reseña ─ línea ─ avatar usuario */}
           <div className="flex flex-col items-center">
-            <Avatar url={author.avatarUrl} name={author.username} />
+            <Link
+              href={`/u/${author.username}`}
+              aria-label={`Perfil de ${author.username}`}
+              className="transition-opacity hover:opacity-80"
+            >
+              <Avatar url={author.avatarUrl} name={author.username} />
+            </Link>
             <div className="my-1.5 w-px flex-1 bg-[rgba(74,30,8,0.18)]" />
             <Avatar
               url={user?.avatarUrl ?? null}
@@ -95,9 +101,12 @@ export function ReviewDetailModal({
           <div className="flex min-w-0 flex-1 flex-col gap-4">
             <div>
               <p className="text-[14px]">
-                <span className="text-ink font-semibold">
+                <Link
+                  href={`/u/${author.username}`}
+                  className="text-ink font-semibold underline-offset-2 transition-colors hover:underline"
+                >
                   {capitalize(author.username)}
-                </span>{' '}
+                </Link>{' '}
                 <span className="text-cinnamon font-normal">
                   @{author.username} · {timeAgo(vm.createdAt)}
                 </span>

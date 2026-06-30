@@ -3,12 +3,9 @@
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import { CountUp } from '@/shared/components/motion/CountUp';
+import { UserAvatar } from '@/shared/components/UserAvatar';
 import type { Profile } from '../types/profile.types';
 import type { UserRole } from '@/features/auth/types/auth.types';
-
-function initials(username: string) {
-  return username.slice(0, 2).toUpperCase();
-}
 
 function memberSince(iso: string) {
   return new Intl.DateTimeFormat('es', {
@@ -106,24 +103,11 @@ export function ProfileSidebar({
           Instituto del Alfajor · {roleLabel}
         </span>
 
-        {profile.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={profile.avatarUrl}
-            alt={profile.username}
-            className="mt-3 mb-4 h-20 w-20 rounded-full border-[3px] border-[rgba(255,255,255,0.22)] object-cover"
-          />
-        ) : (
-          <div
-            className="text-paper-raised mt-3 mb-4 flex h-20 w-20 items-center justify-center rounded-full border-[3px] border-[rgba(255,255,255,0.22)] text-[24px] font-bold"
-            style={{
-              background:
-                'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
-            }}
-          >
-            {initials(profile.username)}
-          </div>
-        )}
+        <UserAvatar
+          avatarUrl={profile.avatarUrl}
+          username={profile.username}
+          className="mt-3 mb-4 h-20 w-20 rounded-full border-[3px] border-[rgba(255,255,255,0.22)] object-cover"
+        />
 
         <h1 className="text-[24px] leading-none font-bold tracking-[-0.025em]">
           {profile.username}

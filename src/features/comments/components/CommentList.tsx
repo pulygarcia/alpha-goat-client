@@ -1,13 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { UserAvatar } from '@/shared/components/UserAvatar';
 import { useReviewComments } from '../hooks/useReviewComments';
 import { timeAgo } from '../lib/timeAgo';
 import { CommentLikeButton } from './CommentLikeButton';
-
-function initials(username: string) {
-  return username.slice(0, 2).toUpperCase();
-}
 
 /**
  * Listado de comentarios de una reseña (público, paginado). Maneja los estados
@@ -56,24 +53,11 @@ export function CommentList({ reviewId }: { reviewId: string }) {
         const username = c.author?.username ?? 'Usuario';
         return (
           <li key={c.id} className="flex items-center gap-[10px]">
-            {c.author?.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={c.author.avatarUrl}
-                alt={username}
-                className="h-[26px] w-[26px] shrink-0 rounded-full object-cover"
-              />
-            ) : (
-              <div
-                className="text-paper flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
-                style={{
-                  background:
-                    'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
-                }}
-              >
-                {initials(username)}
-              </div>
-            )}
+            <UserAvatar
+              avatarUrl={c.author?.avatarUrl ?? null}
+              username={username}
+              className="h-[26px] w-[26px] shrink-0 rounded-full object-cover"
+            />
             <div className="min-w-0 flex-1">
               {c.author?.username ? (
                 <Link

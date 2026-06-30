@@ -14,6 +14,7 @@ import { LikeButton } from './LikeButton';
 import { CommentList } from '@/features/comments/components/CommentList';
 import { CommentForm } from '@/features/comments/components/CommentForm';
 import { useAuth } from '@/shared/providers/AuthProvider';
+import { UserAvatar } from '@/shared/components/UserAvatar';
 import { timeAgo } from '@/features/comments/lib/timeAgo';
 import { AXIS_KEYS, AXIS_LABELS } from '../lib/axes';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
@@ -24,29 +25,17 @@ interface ReviewDetailModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-function initials(name: string) {
-  return name.slice(0, 2).toUpperCase();
-}
-
 function capitalize(name: string) {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 function Avatar({ url, name }: { url: string | null; name: string | null }) {
-  if (url) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={url}
-        alt={name ?? ''}
-        className="h-7 w-7 shrink-0 rounded-full object-cover"
-      />
-    );
-  }
   return (
-    <div className="text-cinnamon flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[rgba(74,30,8,0.14)] text-[10px] font-bold">
-      {name ? initials(name) : '·'}
-    </div>
+    <UserAvatar
+      avatarUrl={url}
+      username={name ?? ''}
+      className="h-7 w-7 shrink-0 rounded-full object-cover"
+    />
   );
 }
 

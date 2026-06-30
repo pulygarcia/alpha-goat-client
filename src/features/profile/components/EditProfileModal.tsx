@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/components/ui/dialog';
+import { UserAvatar } from '@/shared/components/UserAvatar';
 import { useUpdateProfile } from '../hooks/useUpdateProfile';
 import { useChangePassword } from '../hooks/useChangePassword';
 import { useUploadAvatar } from '../hooks/useUploadAvatar';
@@ -54,10 +55,6 @@ function TabButton({
       {children}
     </button>
   );
-}
-
-function initials(username: string) {
-  return username.slice(0, 2).toUpperCase();
 }
 
 /**
@@ -116,24 +113,11 @@ function AvatarSection({
 
   return (
     <div className="mb-5 flex items-center gap-4">
-      {shownUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={shownUrl}
-          alt={username}
-          className="h-16 w-16 rounded-full border border-[rgba(74,30,8,0.18)] object-cover"
-        />
-      ) : (
-        <div
-          className="text-paper flex h-16 w-16 items-center justify-center rounded-full text-[20px] font-bold"
-          style={{
-            background:
-              'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
-          }}
-        >
-          {initials(username)}
-        </div>
-      )}
+      <UserAvatar
+        avatarUrl={shownUrl}
+        username={username}
+        className="h-16 w-16 rounded-full border border-[rgba(74,30,8,0.18)] object-cover"
+      />
 
       <div className="flex flex-col gap-2">
         <label

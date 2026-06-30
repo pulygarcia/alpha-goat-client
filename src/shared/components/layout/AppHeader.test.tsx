@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { AppHeader } from './AppHeader';
+import { DEFAULT_AVATAR_SRC } from '@/shared/components/UserAvatar';
 import { useAuth } from '@/shared/providers/AuthProvider';
 import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 import { usePathname } from 'next/navigation';
@@ -86,13 +87,14 @@ describe('AppHeader', () => {
     );
   });
 
-  it('falls back to initials when the user has no avatar', () => {
+  it('falls back to the cat image when the user has no avatar', () => {
     setAuth(true, null);
     render(<AppHeader />);
 
-    expect(screen.queryByAltText('puly')).not.toBeInTheDocument();
-    // iniciales de "puly" → primera + última
-    expect(screen.getByLabelText('Menú de usuario')).toHaveTextContent('PY');
+    expect(screen.getByAltText('puly')).toHaveAttribute(
+      'src',
+      DEFAULT_AVATAR_SRC,
+    );
   });
 
   it('does not open the review modal for an anonymous user (gated)', () => {

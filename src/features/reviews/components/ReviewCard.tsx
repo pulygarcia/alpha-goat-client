@@ -5,11 +5,8 @@ import Link from 'next/link';
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import { LikeButton } from './LikeButton';
 import { ReviewDetailModal } from './ReviewDetailModal';
+import { UserAvatar } from '@/shared/components/UserAvatar';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
-
-function initials(username: string) {
-  return username.slice(0, 2).toUpperCase();
-}
 
 /** "hace X min/h/d" a partir de un ISO string. */
 function timeAgo(iso: string) {
@@ -79,38 +76,21 @@ export function ReviewCard({
             </div>
           )
         ) : (
-          <div
-            className="text-paper flex aspect-square w-full items-center justify-center rounded-[10px] text-[15px] font-bold"
-            style={{
-              background:
-                'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
-            }}
-          >
-            {initials(author.username)}
-          </div>
+          <UserAvatar
+            avatarUrl={author.avatarUrl}
+            username={author.username}
+            className="aspect-square w-full rounded-[10px] object-cover"
+          />
         )}
 
         {/* Cuerpo */}
         <div className="min-w-0">
           <div className="mb-2 flex items-center gap-[10px]">
-            {author.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={author.avatarUrl}
-                alt={author.username}
-                className="h-[26px] w-[26px] rounded-full object-cover"
-              />
-            ) : (
-              <div
-                className="text-paper flex h-[26px] w-[26px] items-center justify-center rounded-full text-[10px] font-bold"
-                style={{
-                  background:
-                    'linear-gradient(135deg, var(--color-curry), var(--color-curry-bright))',
-                }}
-              >
-                {initials(author.username)}
-              </div>
-            )}
+            <UserAvatar
+              avatarUrl={author.avatarUrl}
+              username={author.username}
+              className="h-[26px] w-[26px] rounded-full object-cover"
+            />
             <StopClick>
               <Link
                 href={`/u/${author.username}`}

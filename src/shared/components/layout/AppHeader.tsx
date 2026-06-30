@@ -23,6 +23,7 @@ import {
   SheetTrigger,
 } from '@/shared/components/ui/sheet';
 import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
+import { UserAvatar } from '@/shared/components/UserAvatar';
 import { useAuth } from '@/shared/providers/AuthProvider';
 import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 
@@ -34,17 +35,9 @@ const NAV_ITEMS = [
   { href: '/mi-huella', label: 'Mi huella' },
 ] as const;
 
-function initialsFromUsername(username: string): string {
-  const clean = username.replace(/[^a-zA-Z0-9]/g, '');
-  if (clean.length === 0) return '?';
-  if (clean.length === 1) return clean[0].toUpperCase();
-  return (clean[0] + clean[clean.length - 1]).toUpperCase();
-}
-
 export function AppHeader() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
-  const initials = user ? initialsFromUsername(user.username) : '?';
   const [quickOpen, setQuickOpen] = useState(false);
   const requireAuth = useRequireAuth();
   const reduceMotion = useReducedMotion();
@@ -172,16 +165,11 @@ export function AppHeader() {
             aria-label="Menú de usuario"
             className="border-sienna from-cinnamon to-curry text-sienna flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"
           >
-            {user?.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.avatarUrl}
-                alt={user.username}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              initials
-            )}
+            <UserAvatar
+              avatarUrl={user?.avatarUrl ?? null}
+              username={user?.username ?? ''}
+              className="h-full w-full object-cover"
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"

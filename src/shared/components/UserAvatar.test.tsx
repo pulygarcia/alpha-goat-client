@@ -20,9 +20,7 @@ describe('UserAvatar', () => {
   });
 
   it('passes the className through to the image', () => {
-    render(
-      <UserAvatar avatarUrl={null} username="pepe" className="h-9 w-9" />,
-    );
+    render(<UserAvatar avatarUrl={null} username="pepe" className="h-9 w-9" />);
     expect(screen.getByRole('img', { name: 'pepe' })).toHaveClass('h-9', 'w-9');
   });
 });

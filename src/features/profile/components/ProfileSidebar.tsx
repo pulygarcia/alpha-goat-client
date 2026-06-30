@@ -15,7 +15,7 @@ function memberSince(iso: string) {
 }
 
 const ROLE_LABEL: Record<UserRole, string> = {
-  USER: 'Socio',
+  USER: 'Usuario alphagoat',
   ADMIN: 'Curador',
 };
 
@@ -100,7 +100,7 @@ export function ProfileSidebar({
             textTransform: 'uppercase',
           }}
         >
-          Instituto del Alfajor · {roleLabel}
+          {roleLabel}
         </span>
 
         <UserAvatar

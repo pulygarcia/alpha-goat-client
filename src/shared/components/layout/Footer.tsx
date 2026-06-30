@@ -19,17 +19,7 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
   },
   {
     title: 'Herramientas',
-    links: [
-      { href: '/marcas', label: 'Marcas' },
-      { href: '/mi-huella', label: 'Mi huella' },
-    ],
-  },
-  {
-    title: 'El proyecto',
-    links: [
-      { href: '/metodo', label: 'Método' },
-      { href: '/', label: 'Sobre el índice' },
-    ],
+    links: [{ href: '/marcas', label: 'Marcas' }],
   },
 ];
 

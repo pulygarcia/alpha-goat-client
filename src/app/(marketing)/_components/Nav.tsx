@@ -16,9 +16,6 @@ export function Nav() {
         <Link href="/ranking" className={linkCls}>
           Ranking
         </Link>
-        <Link href="/metodo" className={`${linkCls} hidden lg:inline`}>
-          Método
-        </Link>
       </div>
 
       <Link href="/" aria-label="Inicio">

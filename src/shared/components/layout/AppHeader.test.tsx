@@ -52,15 +52,17 @@ describe('AppHeader', () => {
 
   it('renders the logo and every nav item', () => {
     render(<AppHeader />);
-    for (const label of [
-      'Feed',
-      'Alfajores',
-      'Ranking',
-      'Marcas',
-      'Mi huella',
-    ]) {
+    for (const label of ['Feed', 'Alfajores', 'Ranking', 'Marcas']) {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0);
     }
+  });
+
+  it('no longer renders the removed "Mi huella" nav link or the search box', () => {
+    render(<AppHeader />);
+    expect(screen.queryByText('Mi huella')).not.toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText(/buscar alfajor o marca/i),
+    ).not.toBeInTheDocument();
   });
 
   it('shows the "Entrar" CTA and no avatar for an anonymous user', () => {

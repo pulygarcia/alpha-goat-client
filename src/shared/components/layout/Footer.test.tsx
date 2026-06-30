@@ -21,10 +21,13 @@ describe('Footer', () => {
       'href',
       '/marcas',
     );
-    expect(screen.getByRole('link', { name: 'Método' })).toHaveAttribute(
-      'href',
-      '/metodo',
-    );
+  });
+
+  it('does not render the removed placeholder links', () => {
+    render(<Footer />);
+    expect(screen.queryByRole('link', { name: 'Método' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Mi huella' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Sobre el índice' })).toBeNull();
   });
 
   it('points the portfolio icon to the portfolio', () => {

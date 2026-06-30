@@ -105,7 +105,12 @@ describe('ReviewDetailModal', () => {
 
   it('links the alfajor when present (profile context)', () => {
     setup({
-      alfajor: { id: 'al9', nombre: 'Jorgito', tipo: 'CHOCOLATE' },
+      alfajor: {
+        id: 'al9',
+        nombre: 'Jorgito',
+        tipo: 'CHOCOLATE',
+        imagenUrl: null,
+      },
       marca: { nombre: 'Jorgito', provincia: 'Córdoba' },
     });
     const link = screen.getByRole('link', { name: /jorgito/i });

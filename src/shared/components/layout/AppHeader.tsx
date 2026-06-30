@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { LogOut, Menu, Plus, Search, User } from 'lucide-react';
+import { LogOut, Menu, Plus, User } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -32,7 +32,6 @@ const NAV_ITEMS = [
   { href: '/alfajores', label: 'Alfajores' },
   { href: '/ranking', label: 'Ranking' },
   { href: '/marcas', label: 'Marcas' },
-  { href: '/mi-huella', label: 'Mi huella' },
 ] as const;
 
 export function AppHeader() {
@@ -138,15 +137,6 @@ export function AppHeader() {
       </nav>
 
       <div className="flex-1" />
-
-      <label className="bg-paper-sunken hover:border-cinnamon hidden h-10 w-[220px] items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] pr-[10px] pl-3 shadow-[inset_0_1px_2px_rgba(74,30,8,0.06)] transition-colors lg:flex">
-        <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
-        <input
-          type="text"
-          placeholder="Buscar alfajor o marca"
-          className="text-ink h-full flex-1 bg-transparent p-0 text-[14px] leading-none placeholder:text-[rgba(44,18,9,0.62)] focus:outline-none"
-        />
-      </label>
 
       <button
         type="button"

@@ -6,7 +6,12 @@ import type { Review } from '../types/reviews.types';
 const feedItem: FeedItem = {
   id: 'r1',
   author: { id: 'u1', username: 'pepe', avatarUrl: 'a.png', isFollowing: true },
-  alfajor: { id: 'al1', nombre: 'Águila', tipo: 'CHOCOLATE', imagenUrl: null },
+  alfajor: {
+    id: 'al1',
+    nombre: 'Águila',
+    tipo: 'CHOCOLATE',
+    imagenUrl: 'aguila.png',
+  },
   marca: { id: 'm1', nombre: 'Águila', provincia: 'Córdoba' },
   quote: 'rico',
   photoUrl: 'p.png',
@@ -52,7 +57,12 @@ describe('feedItemToVM', () => {
         avatarUrl: 'a.png',
         isFollowing: true,
       },
-      alfajor: { id: 'al1', nombre: 'Águila', tipo: 'CHOCOLATE' },
+      alfajor: {
+        id: 'al1',
+        nombre: 'Águila',
+        tipo: 'CHOCOLATE',
+        imagenUrl: 'aguila.png',
+      },
       marca: { nombre: 'Águila', provincia: 'Córdoba' },
       quote: 'rico',
       photoUrl: 'p.png',
@@ -70,13 +80,19 @@ describe('reviewToVM', () => {
   it('maps the nested alfajor and marca when present (e.g. profile feed)', () => {
     const vm = reviewToVM({
       ...review,
-      alfajor: { id: 'al9', nombre: 'Jorgito', tipo: 'CHOCOLATE' },
+      alfajor: {
+        id: 'al9',
+        nombre: 'Jorgito',
+        tipo: 'CHOCOLATE',
+        imagenUrl: 'jorgito.png',
+      },
       marca: { nombre: 'Jorgito', provincia: 'Córdoba' },
     });
     expect(vm.alfajor).toEqual({
       id: 'al9',
       nombre: 'Jorgito',
       tipo: 'CHOCOLATE',
+      imagenUrl: 'jorgito.png',
     });
     expect(vm.marca).toEqual({ nombre: 'Jorgito', provincia: 'Córdoba' });
   });

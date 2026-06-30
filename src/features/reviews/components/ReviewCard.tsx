@@ -63,12 +63,13 @@ export function ReviewCard({
         }}
         className="grid cursor-pointer grid-cols-[64px_1fr] items-start gap-4 border-b border-[rgba(74,30,8,0.14)] py-[22px] outline-none last:border-b-0 focus-visible:rounded-[10px] focus-visible:ring-2 focus-visible:ring-[rgba(74,30,8,0.35)] md:grid-cols-[96px_1fr_64px] md:gap-6"
       >
-        {/* Foto: solo en el feed (en el detalle es el mismo alfajor de la página) */}
+        {/* Foto: solo en el feed (en el detalle es el mismo alfajor de la página).
+            Prioridad: foto de la reseña → imagen del alfajor → placeholder de tipo. */}
         {context === 'feed' ? (
-          photoUrl ? (
+          photoUrl || alfajor?.imagenUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={photoUrl}
+              src={photoUrl ?? alfajor?.imagenUrl ?? ''}
               alt={alfajor?.nombre ?? ''}
               className="aspect-square w-full rounded-[10px] object-cover"
             />

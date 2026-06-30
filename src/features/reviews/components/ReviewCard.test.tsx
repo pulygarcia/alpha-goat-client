@@ -17,7 +17,7 @@ vi.mock('./ReviewDetailModal', () => ({
 const feedVM: ReviewCardVM = {
   id: 'r1',
   author: { id: 'u1', username: 'pepe', avatarUrl: null, isFollowing: false },
-  alfajor: { id: 'al1', nombre: 'Águila', tipo: 'CHOCOLATE' },
+  alfajor: { id: 'al1', nombre: 'Águila', tipo: 'CHOCOLATE', imagenUrl: null },
   marca: { nombre: 'Águila', provincia: 'Córdoba' },
   quote: 'muy rico',
   photoUrl: null,
@@ -91,6 +91,38 @@ describe('ReviewCard', () => {
       'src',
       'foto.png',
     );
+  });
+
+  it('falls back to the alfajor image when there is no review photo', () => {
+    render(
+      <ReviewCard
+        vm={{
+          ...feedVM,
+          photoUrl: null,
+          alfajor: { ...feedVM.alfajor!, imagenUrl: 'alfajor.png' },
+        }}
+        context="feed"
+      />,
+    );
+    expect(screen.getByRole('img', { name: 'Águila' })).toHaveAttribute(
+      'src',
+      'alfajor.png',
+    );
+  });
+
+  it('shows the tipo placeholder only when neither photo nor alfajor image exist', () => {
+    render(
+      <ReviewCard
+        vm={{
+          ...feedVM,
+          photoUrl: null,
+          alfajor: { ...feedVM.alfajor!, imagenUrl: null },
+        }}
+        context="feed"
+      />,
+    );
+    expect(screen.queryByRole('img', { name: 'Águila' })).toBeNull();
+    expect(screen.getByText('CHOCOLATE')).toBeInTheDocument();
   });
 
   it('renders the author avatar image when present', () => {

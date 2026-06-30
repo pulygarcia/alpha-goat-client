@@ -25,7 +25,12 @@ export interface ReviewCardVM {
     avatarUrl: string | null;
     isFollowing: boolean;
   };
-  alfajor: { id: string; nombre: string; tipo: AlfajorTipo } | null;
+  alfajor: {
+    id: string;
+    nombre: string;
+    tipo: AlfajorTipo;
+    imagenUrl: string | null;
+  } | null;
   marca: { nombre: string; provincia: string | null } | null;
   quote: string | null;
   photoUrl: string | null;
@@ -45,6 +50,7 @@ export function feedItemToVM(item: FeedItem): ReviewCardVM {
       id: item.alfajor.id,
       nombre: item.alfajor.nombre,
       tipo: item.alfajor.tipo,
+      imagenUrl: item.alfajor.imagenUrl,
     },
     marca: { nombre: item.marca.nombre, provincia: item.marca.provincia },
     quote: item.quote,
@@ -74,6 +80,9 @@ export function reviewToVM(review: Review): ReviewCardVM {
           id: review.alfajor.id,
           nombre: review.alfajor.nombre,
           tipo: review.alfajor.tipo,
+          // El back todavía no anida `imagenUrl` en `GET /reviews` (pendiente):
+          // hasta entonces cae a null y el card usa el placeholder de tipo.
+          imagenUrl: review.alfajor.imagenUrl ?? null,
         }
       : null,
     marca: review.marca

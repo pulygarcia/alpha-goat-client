@@ -26,6 +26,9 @@ export interface ReviewAlfajor {
   id: string;
   nombre: string;
   tipo: AlfajorTipo;
+  // Opcional: el back todavía no lo anida en `GET /reviews` (pendiente). Cuando
+  // lo haga, el card del perfil mostrará la imagen del alfajor en vez del tipo.
+  imagenUrl?: string | null;
 }
 
 /** Marca del alfajor reseñado (anidada junto al alfajor). */

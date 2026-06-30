@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, ImagePlus } from 'lucide-react';
+import { ArrowLeft, ImagePlus, X } from 'lucide-react';
 import { Textarea } from '@/shared/components/ui/textarea';
+import { imageFileSchema } from '@/shared/schemas/imageFile.schema';
 import { reviewSchema, type ReviewFormValues } from '../lib/reviewSchema';
 import { useMyAlfajorReview } from '../hooks/useMyAlfajorReview';
 import { useSubmitReview } from '../hooks/useSubmitReview';
+import { useUploadReviewPhoto } from '../hooks/useUploadReviewPhoto';
 import { RatingSlider } from './RatingSlider';
 import type { Alfajor } from '@/features/alfajores/types/alfajores.types';
 import type { Review } from '../types/reviews.types';
@@ -88,7 +90,44 @@ function WizardInner({
     onStepChange?.(next);
   };
   const { mutate, isPending, isError } = useSubmitReview(alfajor.id);
+  const upload = useUploadReviewPhoto(alfajor.id);
   const isEdit = !!existing;
+
+  // Foto opcional: se elige acá (preview local) y se sube tras crear/editar la
+  // reseña, con el id que devuelve el back. Misma validación que el avatar.
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
+    };
+  }, [photoPreview]);
+
+  function clearPhoto() {
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhoto(null);
+    setPhotoPreview(null);
+    setPhotoError(null);
+    if (photoInputRef.current) photoInputRef.current.value = '';
+  }
+
+  function onPickPhoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const picked = e.target.files?.[0];
+    if (!picked) return;
+    const parsed = imageFileSchema.safeParse(picked);
+    if (!parsed.success) {
+      setPhotoError(parsed.error.issues[0].message);
+      setPhoto(null);
+      setPhotoPreview(null);
+      return;
+    }
+    setPhotoError(null);
+    setPhoto(picked);
+    setPhotoPreview(URL.createObjectURL(picked));
+  }
 
   const { control, register, handleSubmit, watch } = useForm<ReviewFormValues>({
     resolver: zodResolver(reviewSchema),
@@ -115,7 +154,19 @@ function WizardInner({
 
   function onSubmit(values: ReviewFormValues) {
     const comentario = values.comentario.trim() || undefined;
-    const onSuccess = () => onDone();
+    // Tras guardar la reseña, si hay foto se sube con el id devuelto y recién
+    // ahí se cierra; sin foto se cierra de una. Un fallo de la foto no bloquea
+    // (la reseña ya quedó publicada) — el hook avisa por toast.
+    const onSuccess = (review: Review) => {
+      if (photo) {
+        upload.mutate(
+          { reviewId: review.id, file: photo },
+          { onSettled: () => onDone() },
+        );
+      } else {
+        onDone();
+      }
+    };
 
     if (isEdit && existing) {
       mutate(
@@ -211,13 +262,49 @@ function WizardInner({
             ))}
           </div>
 
-          {/* Foto: aún sin uploads, placeholder por ahora. */}
-          <div className="flex items-center gap-3 rounded-[10px] border border-dashed border-[rgba(74,30,8,0.28)] px-4 py-3 opacity-70">
-            <ImagePlus className="text-cinnamon h-5 w-5" strokeWidth={2} />
-            <span className="text-sienna text-[13px]">
-              Subí una foto del alfajor{' '}
-              <span className="text-cinnamon">(próximamente)</span>
-            </span>
+          {/* Foto opcional del alfajor (preview local + confirmar al publicar). */}
+          <div className="flex flex-col gap-2">
+            {photoPreview ? (
+              <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={photoPreview}
+                  alt="Vista previa de la foto"
+                  className="max-h-56 w-full rounded-[10px] object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={clearPhoto}
+                  aria-label="Quitar foto"
+                  className="bg-paper/90 text-ink absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-[rgba(74,30,8,0.18)] backdrop-blur-sm transition-colors hover:border-[#3a1808]"
+                >
+                  <X className="h-4 w-4" strokeWidth={2} />
+                </button>
+              </div>
+            ) : (
+              <label
+                htmlFor="review-photo"
+                className="hover:border-cinnamon flex cursor-pointer items-center gap-3 rounded-[10px] border border-dashed border-[rgba(74,30,8,0.28)] px-4 py-3 transition-colors"
+              >
+                <ImagePlus className="text-cinnamon h-5 w-5" strokeWidth={2} />
+                <span className="text-sienna text-[13px]">
+                  Subí una foto del alfajor{' '}
+                  <span className="text-cinnamon">(opcional)</span>
+                </span>
+              </label>
+            )}
+            <input
+              ref={photoInputRef}
+              id="review-photo"
+              type="file"
+              aria-label="Foto de la reseña"
+              accept="image/jpeg,image/png,image/webp"
+              className="sr-only"
+              onChange={onPickPhoto}
+            />
+            {photoError && (
+              <p className="text-error text-[13px]">{photoError}</p>
+            )}
           </div>
 
           {isError && (

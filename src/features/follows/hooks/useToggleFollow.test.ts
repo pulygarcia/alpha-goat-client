@@ -11,6 +11,10 @@ import { followsApi } from '../api/follows.api';
 import { notifyError } from '@/shared/lib/toast';
 import type { FeedItem, FeedList } from '@/features/feed/types/feed.types';
 import type { Profile } from '@/features/profile/types/profile.types';
+import type {
+  PaginatedReviews,
+  Review,
+} from '@/features/reviews/types/reviews.types';
 
 vi.mock('../api/follows.api', () => ({
   followsApi: { follow: vi.fn(), unfollow: vi.fn() },
@@ -90,17 +94,55 @@ function makeProfile(
 }
 
 const PROFILE_KEY = ['profile', 'pepe'] as const;
+const REVIEWS_LIST_KEY = ['reviews', 'list', { alfajorId: 'a1' }] as const;
 
-function setup(initialFeed: InfiniteData<FeedList>, initialProfile?: Profile) {
+function makeReview(
+  id: string,
+  authorId: string,
+  isFollowing: boolean,
+): Review {
+  return {
+    id,
+    userId: authorId,
+    author: { id: authorId, username: 'pepe', avatarUrl: null, isFollowing },
+    alfajorId: 'a1',
+    ratingGeneral: 8,
+    dulzor: 8,
+    cantidadDDL: 7,
+    calidadBano: 9,
+    ratioTapaRelleno: 6,
+    textura: 8,
+    comentario: null,
+    fotoUrl: null,
+    createdAt: '2026-05-27T00:00:00.000Z',
+    updatedAt: '2026-05-27T00:00:00.000Z',
+  };
+}
+
+function seedReviewsList(items: Review[]): InfiniteData<PaginatedReviews> {
+  return {
+    pages: [{ items, total: items.length, page: 1, limit: 10 }],
+    pageParams: [1],
+  };
+}
+
+function setup(
+  initialFeed: InfiniteData<FeedList>,
+  initialProfile?: Profile,
+  initialReviewsList?: InfiniteData<PaginatedReviews>,
+) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
   // Evita refetch real en onSettled (no hay queryFn registrada aquí).
   client.setQueryDefaults(['feed', 'reviews'], { enabled: false });
   client.setQueryDefaults(['profile'], { enabled: false });
+  client.setQueryDefaults(['reviews', 'list'], { enabled: false });
   const key = FEED_KEY;
   client.setQueryData(key, initialFeed);
   if (initialProfile) client.setQueryData(PROFILE_KEY, initialProfile);
+  if (initialReviewsList)
+    client.setQueryData(REVIEWS_LIST_KEY, initialReviewsList);
 
   const wrapper = ({ children }: { children: React.ReactNode }) =>
     React.createElement(QueryClientProvider, { client }, children);
@@ -110,8 +152,18 @@ function setup(initialFeed: InfiniteData<FeedList>, initialProfile?: Profile) {
     client.getQueryData<InfiniteData<FeedList>>(key)!.pages[0].items[0].author
       .isFollowing;
   const readProfile = () => client.getQueryData<Profile>(PROFILE_KEY)!;
+  const readReviewsListFollowing = () =>
+    client.getQueryData<InfiniteData<PaginatedReviews>>(REVIEWS_LIST_KEY)!
+      .pages[0].items[0].author?.isFollowing;
 
-  return { result, client, key, readFollowing, readProfile };
+  return {
+    result,
+    client,
+    key,
+    readFollowing,
+    readProfile,
+    readReviewsListFollowing,
+  };
 }
 
 describe('useToggleFollow', () => {
@@ -196,6 +248,37 @@ describe('useToggleFollow', () => {
 
     await waitFor(() => expect(readProfile().isFollowing).toBe(false));
     expect(readProfile().followersCount).toBe(4);
+  });
+
+  it('flips isFollowing on the reviews-list cache used by the alfajor detail cards', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, readReviewsListFollowing } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+      undefined,
+      seedReviewsList([makeReview('r1', 'u1', false)]),
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(readReviewsListFollowing()).toBe(true));
+  });
+
+  it('rolls back the reviews-list cache on error', async () => {
+    vi.mocked(followsApi.follow).mockRejectedValue(new Error('boom'));
+    const { result, readReviewsListFollowing } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+      undefined,
+      seedReviewsList([makeReview('r1', 'u1', false)]),
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(readReviewsListFollowing()).toBe(false);
   });
 
   it('rolls back the profile cache on error', async () => {

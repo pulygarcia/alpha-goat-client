@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { AppHeader } from './AppHeader';
+import { AppHeader, menuMotion } from './AppHeader';
 import { DEFAULT_AVATAR_SRC } from '@/shared/components/UserAvatar';
 import { useAuth } from '@/shared/providers/AuthProvider';
 import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
@@ -118,6 +118,17 @@ describe('AppHeader', () => {
     render(<AppHeader />);
     fireEvent.click(screen.getByRole('button', { name: /Reseñar/i }));
     expect(screen.getByTestId('quick-review-modal')).toBeInTheDocument();
+  });
+
+  it('animates the drawer nav items by default and flat with reduced motion', () => {
+    const normal = menuMotion(false);
+    expect(normal.item.hidden).toMatchObject({ opacity: 0, x: -10 });
+    expect(normal.container.show.transition.staggerChildren).toBeGreaterThan(0);
+
+    const reduced = menuMotion(true);
+    expect(reduced.item.hidden).toMatchObject({ opacity: 1 });
+    expect(reduced.container.show.transition.staggerChildren).toBe(0);
+    expect(reduced.item.show.transition.duration).toBe(0);
   });
 
   it('marks the matching nav item as active from the pathname', () => {

@@ -3,7 +3,7 @@
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import { CountUp } from '@/shared/components/motion/CountUp';
-import { UserAvatar } from '@/shared/components/UserAvatar';
+import { ProfileAvatarModal } from './ProfileAvatarModal';
 import type { Profile } from '../types/profile.types';
 import type { UserRole } from '@/features/auth/types/auth.types';
 
@@ -103,11 +103,13 @@ export function ProfileSidebar({
           {roleLabel}
         </span>
 
-        <UserAvatar
-          avatarUrl={profile.avatarUrl}
-          username={profile.username}
-          className="mt-3 mb-4 h-20 w-20 rounded-full border-[3px] border-[rgba(255,255,255,0.22)] object-cover"
-        />
+        <div className="mt-3 mb-4">
+          <ProfileAvatarModal
+            avatarUrl={profile.avatarUrl}
+            username={profile.username}
+            className="h-20 w-20 rounded-full border-[3px] border-[rgba(255,255,255,0.22)] object-cover"
+          />
+        </div>
 
         <h1 className="text-[24px] leading-none font-bold tracking-[-0.025em]">
           {profile.username}

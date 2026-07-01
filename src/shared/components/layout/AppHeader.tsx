@@ -35,12 +35,42 @@ const NAV_ITEMS = [
   { href: '/marcas', label: 'Marcas' },
 ] as const;
 
+/**
+ * Variantes del stagger de entrada del nav del drawer (mobile). Con
+ * `prefers-reduced-motion` los items aparecen sin desplazamiento ni delay.
+ */
+export function menuMotion(reduce: boolean) {
+  return {
+    container: {
+      hidden: {},
+      show: {
+        transition: {
+          staggerChildren: reduce ? 0 : 0.05,
+          delayChildren: reduce ? 0 : 0.06,
+        },
+      },
+    },
+    item: {
+      hidden: reduce ? { opacity: 1 } : { opacity: 0, x: -10 },
+      show: {
+        opacity: 1,
+        x: 0,
+        transition: {
+          duration: reduce ? 0 : 0.25,
+          ease: [0.22, 1, 0.36, 1] as const,
+        },
+      },
+    },
+  };
+}
+
 export function AppHeader() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
   const [quickOpen, setQuickOpen] = useState(false);
   const requireAuth = useRequireAuth();
   const reduceMotion = useReducedMotion();
+  const menu = menuMotion(!!reduceMotion);
 
   return (
     <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
@@ -81,28 +111,35 @@ export function AppHeader() {
           <SheetHeader>
             <SheetTitle>Navegación</SheetTitle>
           </SheetHeader>
-          <nav className="mt-2 flex flex-col gap-1">
+          <motion.nav
+            className="mt-2 flex flex-col gap-1"
+            initial="hidden"
+            animate="show"
+            variants={menu.container}
+          >
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === '/feed'
                   ? pathname === '/feed'
                   : pathname?.startsWith(item.href);
               return (
-                <SheetClose asChild key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`rounded-[8px] px-3 py-[10px] text-[15px] font-medium transition-colors ${
-                      isActive
-                        ? 'bg-paper-sunken text-ink'
-                        : 'text-sienna hover:bg-paper-sunken hover:text-ink'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </SheetClose>
+                <motion.div key={item.href} variants={menu.item}>
+                  <SheetClose asChild>
+                    <Link
+                      href={item.href}
+                      className={`block rounded-[8px] px-3 py-[10px] text-[15px] font-medium transition-colors ${
+                        isActive
+                          ? 'bg-paper-sunken text-ink'
+                          : 'text-sienna hover:bg-paper-sunken hover:text-ink'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                </motion.div>
               );
             })}
-          </nav>
+          </motion.nav>
         </SheetContent>
       </Sheet>
 

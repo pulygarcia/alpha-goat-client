@@ -10,6 +10,7 @@ import { useToggleFollow } from './useToggleFollow';
 import { followsApi } from '../api/follows.api';
 import { notifyError } from '@/shared/lib/toast';
 import type { FeedItem, FeedList } from '@/features/feed/types/feed.types';
+import type { Profile } from '@/features/profile/types/profile.types';
 
 vi.mock('../api/follows.api', () => ({
   followsApi: { follow: vi.fn(), unfollow: vi.fn() },
@@ -66,14 +67,40 @@ function seedFeed(items: FeedItem[]): InfiniteData<FeedList> {
   };
 }
 
-function setup(initialFeed: InfiniteData<FeedList>) {
+function makeProfile(
+  id: string,
+  isFollowing: boolean,
+  followersCount: number,
+): Profile {
+  return {
+    id,
+    username: 'pepe',
+    avatarUrl: null,
+    role: 'USER',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    followersCount,
+    followingCount: 3,
+    reviewsCount: 4,
+    isFollowing,
+    commentsCount: 0,
+    alfajoresAddedCount: 0,
+    likesReceivedCount: 0,
+    avgScore: null,
+  };
+}
+
+const PROFILE_KEY = ['profile', 'pepe'] as const;
+
+function setup(initialFeed: InfiniteData<FeedList>, initialProfile?: Profile) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
-  // Evita refetch real del feed en onSettled (no hay queryFn registrada aquí).
+  // Evita refetch real en onSettled (no hay queryFn registrada aquí).
   client.setQueryDefaults(['feed', 'reviews'], { enabled: false });
+  client.setQueryDefaults(['profile'], { enabled: false });
   const key = FEED_KEY;
   client.setQueryData(key, initialFeed);
+  if (initialProfile) client.setQueryData(PROFILE_KEY, initialProfile);
 
   const wrapper = ({ children }: { children: React.ReactNode }) =>
     React.createElement(QueryClientProvider, { client }, children);
@@ -82,8 +109,9 @@ function setup(initialFeed: InfiniteData<FeedList>) {
   const readFollowing = () =>
     client.getQueryData<InfiniteData<FeedList>>(key)!.pages[0].items[0].author
       .isFollowing;
+  const readProfile = () => client.getQueryData<Profile>(PROFILE_KEY)!;
 
-  return { result, client, key, readFollowing };
+  return { result, client, key, readFollowing, readProfile };
 }
 
 describe('useToggleFollow', () => {
@@ -138,6 +166,52 @@ describe('useToggleFollow', () => {
         client.getQueryData<InfiniteData<FeedList>>(key)!.pages[0].items;
       expect(items.every((i) => i.author.isFollowing)).toBe(true);
     });
+  });
+
+  it('flips isFollowing and bumps the followers count on the cached profile', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, readProfile } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+      makeProfile('u1', false, 5),
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(readProfile().isFollowing).toBe(true));
+    expect(readProfile().followersCount).toBe(6);
+  });
+
+  it('decrements the followers count when unfollowing from the profile', async () => {
+    vi.mocked(followsApi.unfollow).mockResolvedValue();
+    const { result, readProfile } = setup(
+      seedFeed([makeItem('1', 'u1', true)]),
+      makeProfile('u1', true, 5),
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: true });
+    });
+
+    await waitFor(() => expect(readProfile().isFollowing).toBe(false));
+    expect(readProfile().followersCount).toBe(4);
+  });
+
+  it('rolls back the profile cache on error', async () => {
+    vi.mocked(followsApi.follow).mockRejectedValue(new Error('boom'));
+    const { result, readProfile } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+      makeProfile('u1', false, 5),
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(readProfile().isFollowing).toBe(false);
+    expect(readProfile().followersCount).toBe(5);
   });
 
   it('rolls back to the previous state on error', async () => {

@@ -81,28 +81,58 @@ export function AppHeader() {
           <SheetHeader>
             <SheetTitle>Navegación</SheetTitle>
           </SheetHeader>
-          <nav className="mt-2 flex flex-col gap-1">
+          <motion.nav
+            className="mt-2 flex flex-col gap-1"
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: {},
+              show: {
+                transition: {
+                  staggerChildren: reduceMotion ? 0 : 0.05,
+                  delayChildren: reduceMotion ? 0 : 0.06,
+                },
+              },
+            }}
+          >
             {NAV_ITEMS.map((item) => {
               const isActive =
                 item.href === '/feed'
                   ? pathname === '/feed'
                   : pathname?.startsWith(item.href);
               return (
-                <SheetClose asChild key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`rounded-[8px] px-3 py-[10px] text-[15px] font-medium transition-colors ${
-                      isActive
-                        ? 'bg-paper-sunken text-ink'
-                        : 'text-sienna hover:bg-paper-sunken hover:text-ink'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </SheetClose>
+                <motion.div
+                  key={item.href}
+                  variants={{
+                    hidden: reduceMotion
+                      ? { opacity: 1 }
+                      : { opacity: 0, x: -10 },
+                    show: {
+                      opacity: 1,
+                      x: 0,
+                      transition: {
+                        duration: reduceMotion ? 0 : 0.25,
+                        ease: [0.22, 1, 0.36, 1],
+                      },
+                    },
+                  }}
+                >
+                  <SheetClose asChild>
+                    <Link
+                      href={item.href}
+                      className={`block rounded-[8px] px-3 py-[10px] text-[15px] font-medium transition-colors ${
+                        isActive
+                          ? 'bg-paper-sunken text-ink'
+                          : 'text-sienna hover:bg-paper-sunken hover:text-ink'
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                </motion.div>
               );
             })}
-          </nav>
+          </motion.nav>
         </SheetContent>
       </Sheet>
 

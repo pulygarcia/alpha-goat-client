@@ -281,6 +281,37 @@ describe('useToggleFollow', () => {
     expect(readReviewsListFollowing()).toBe(false);
   });
 
+  it('leaves reviews from other authors untouched on the reviews-list cache', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, client } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+      undefined,
+      seedReviewsList([makeReview('r1', 'other-user', false)]),
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(
+      client.getQueryData<InfiniteData<PaginatedReviews>>(REVIEWS_LIST_KEY)!
+        .pages[0].items[0].author?.isFollowing,
+    ).toBe(false);
+  });
+
+  it('does not crash when the reviews-list cache entry has no data yet', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, client } = setup(seedFeed([makeItem('1', 'u1', false)]));
+    client.setQueryData(REVIEWS_LIST_KEY, undefined);
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  });
+
   it('rolls back the profile cache on error', async () => {
     vi.mocked(followsApi.follow).mockRejectedValue(new Error('boom'));
     const { result, readProfile } = setup(

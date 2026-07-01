@@ -133,7 +133,7 @@ function setup(options?: { feed?: FeedItem[]; reviewsList?: Review[] }) {
   const readReviewsListCount = () =>
     client.getQueryData<InfiniteData<PaginatedReviews>>(REVIEWS_LIST_KEY)!
       .pages[0].items[0].commentsCount;
-  return { result, invalidate, readFeedCount, readReviewsListCount };
+  return { result, client, invalidate, readFeedCount, readReviewsListCount };
 }
 
 describe('useCreateComment', () => {
@@ -177,6 +177,47 @@ describe('useCreateComment', () => {
     act(() => result.current.mutate({ contenido: 'rico' }));
 
     await waitFor(() => expect(readReviewsListCount()).toBe(3));
+  });
+
+  it('leaves other reviews untouched in the feed cache', async () => {
+    vi.mocked(commentsApi.create).mockResolvedValue(CREATED);
+    const { result, client } = setup({
+      feed: [makeFeedItem('other-review', 5)],
+    });
+
+    act(() => result.current.mutate({ contenido: 'rico' }));
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(
+      client.getQueryData<InfiniteData<FeedList>>(FEED_KEY)!.pages[0].items[0]
+        .commentsCount,
+    ).toBe(5);
+  });
+
+  it('leaves other reviews untouched in the reviews-list cache', async () => {
+    vi.mocked(commentsApi.create).mockResolvedValue(CREATED);
+    const { result, client } = setup({
+      reviewsList: [makeReview('other-review', 5)],
+    });
+
+    act(() => result.current.mutate({ contenido: 'rico' }));
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(
+      client.getQueryData<InfiniteData<PaginatedReviews>>(REVIEWS_LIST_KEY)!
+        .pages[0].items[0].commentsCount,
+    ).toBe(5);
+  });
+
+  it('does not crash when a matching cache entry has no data yet', async () => {
+    vi.mocked(commentsApi.create).mockResolvedValue(CREATED);
+    const { result, client } = setup();
+    client.setQueryData(FEED_KEY, undefined);
+    client.setQueryData(REVIEWS_LIST_KEY, undefined);
+
+    act(() => result.current.mutate({ contenido: 'rico' }));
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
   });
 
   it('notifies an error when creation fails', async () => {

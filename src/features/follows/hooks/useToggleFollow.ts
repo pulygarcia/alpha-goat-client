@@ -8,9 +8,12 @@ import {
 import { followsApi } from '../api/follows.api';
 import { notifyError } from '@/shared/lib/toast';
 import type { FeedList } from '@/features/feed/types/feed.types';
+import type { Profile } from '@/features/profile/types/profile.types';
 
 /** Prefijo de las queries del feed paginado: ['feed','reviews',{sort,scope,province}]. */
 const FEED_REVIEWS_PREFIX = ['feed', 'reviews'] as const;
+/** Prefijo de las queries de perfil: ['profile', username]. */
+const PROFILE_PREFIX = ['profile'] as const;
 
 interface ToggleFollowVars {
   userId: string;
@@ -40,11 +43,28 @@ function writeIsFollowing(
   };
 }
 
+/** Reescribe `isFollowing` + ajusta `followersCount` del perfil que matchee `userId`. */
+function writeProfileFollow(
+  profile: Profile | undefined,
+  userId: string,
+  next: boolean,
+): Profile | undefined {
+  if (!profile || profile.id !== userId) return profile;
+  return {
+    ...profile,
+    isFollowing: next,
+    followersCount: profile.followersCount + (next ? 1 : -1),
+  };
+}
+
 /**
- * Mutación de follow/unfollow con update optimista sobre el cache del feed.
- * El mismo autor puede aparecer en varias filas/páginas: el flip recorre todas
- * las queries `['feed','reviews', ...]` (match por prefijo, todos los sort/scope)
- * y reescribe cada autor que matchee. Rollback en error; invalida al settle.
+ * Mutación de follow/unfollow con update optimista sobre dos caches:
+ * - el feed paginado (`['feed','reviews', ...]`), donde el mismo autor puede
+ *   aparecer en varias filas/páginas: el flip recorre todas las queries y
+ *   reescribe cada autor que matchee;
+ * - el perfil (`['profile', username]`), de donde el `FollowButton` de la página
+ *   de perfil lee su estado — sin esto el botón no cambia hasta refrescar.
+ * Rollback de ambos en error; invalida ambos al settle.
  */
 export function useToggleFollow() {
   const queryClient = useQueryClient();
@@ -54,24 +74,39 @@ export function useToggleFollow() {
       isFollowing ? followsApi.unfollow(userId) : followsApi.follow(userId),
 
     onMutate: async ({ userId, isFollowing }: ToggleFollowVars) => {
-      const filter = { queryKey: FEED_REVIEWS_PREFIX } as const;
-      await queryClient.cancelQueries(filter);
+      const feedFilter = { queryKey: FEED_REVIEWS_PREFIX } as const;
+      const profileFilter = { queryKey: PROFILE_PREFIX } as const;
+      await Promise.all([
+        queryClient.cancelQueries(feedFilter),
+        queryClient.cancelQueries(profileFilter),
+      ]);
 
-      // Snapshot de todas las queries del feed para poder revertir.
-      const snapshots = queryClient.getQueriesData<FeedInfinite>(filter);
       const next = !isFollowing;
-      for (const [key, data] of snapshots) {
+
+      // Snapshot de ambos caches para poder revertir exactamente.
+      const feedSnapshots =
+        queryClient.getQueriesData<FeedInfinite>(feedFilter);
+      for (const [key, data] of feedSnapshots) {
         queryClient.setQueryData<FeedInfinite>(
           key,
           writeIsFollowing(data, userId, next),
         );
       }
 
-      return { snapshots };
+      const profileSnapshots =
+        queryClient.getQueriesData<Profile>(profileFilter);
+      for (const [key, data] of profileSnapshots) {
+        queryClient.setQueryData<Profile>(
+          key,
+          writeProfileFollow(data, userId, next),
+        );
+      }
+
+      return { snapshots: [...feedSnapshots, ...profileSnapshots] };
     },
 
     onError: (_err, _vars, context) => {
-      // Restaura exactamente el cache previo.
+      // Restaura exactamente el cache previo (feed + perfil).
       context?.snapshots.forEach(([key, data]) => {
         queryClient.setQueryData(key, data);
       });
@@ -80,6 +115,7 @@ export function useToggleFollow() {
 
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: FEED_REVIEWS_PREFIX });
+      void queryClient.invalidateQueries({ queryKey: PROFILE_PREFIX });
     },
   });
 }

@@ -190,7 +190,11 @@ export function AppHeader() {
       <QuickReviewModal open={quickOpen} onOpenChange={setQuickOpen} />
 
       {isAuthenticated ? (
-        <DropdownMenu>
+        // `modal={false}`: este dropdown no tiene overlay de pantalla completa,
+        // así que el scroll-lock por defecto de Radix (padding-right en el
+        // body para compensar la scrollbar) queda al descubierto como una
+        // franja del bg del body. Sin overlay que la tape, no lo necesitamos.
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             aria-label="Menú de usuario"
             className="border-sienna from-cinnamon to-curry text-sienna flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"

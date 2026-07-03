@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { LogOut, Menu, Plus, User } from 'lucide-react';
+import { LogOut, Menu, Plus, ShieldCheck, User } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -228,6 +228,17 @@ export function AppHeader() {
                 Mi perfil
               </Link>
             </DropdownMenuItem>
+            {user?.role === 'ADMIN' && (
+              <DropdownMenuItem
+                asChild
+                className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+              >
+                <Link href="/admin">
+                  <ShieldCheck className="h-4 w-4" strokeWidth={2} />
+                  Moderación
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onSelect={logout}
               className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"

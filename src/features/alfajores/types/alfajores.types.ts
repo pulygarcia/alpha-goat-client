@@ -22,6 +22,10 @@ export interface Alfajor {
   descripcion: string | null;
   imagenUrl: string | null;
   status: AlfajorStatus;
+  /** Motivo del rechazo (moderación); null salvo status REJECTED. Opcional: solo lo consume el panel admin. */
+  rejectionReason?: string | null;
+  /** Usuario que lo propuso; null si lo cargó un admin/seed. Opcional: solo lo consume el panel admin. */
+  createdById?: string | null;
   createdAt: string;
 }
 

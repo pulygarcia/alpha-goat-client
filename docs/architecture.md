@@ -37,9 +37,8 @@ src/
 │   ├── perfil/
 │   │   ├── page.tsx                      # mi perfil
 │   │   └── [username]/page.tsx           # perfil público
-│   └── admin/
-│       ├── layout.tsx                    # protege con role admin
-│       └── moderacion/page.tsx
+│   └── admin/                            # (dentro de (app)/) panel de moderación
+│       └── page.tsx                      # AdminGuard (404 a no-admins) + ModerationQueue
 │
 ├── features/                             # ⭐ carne del proyecto
 │   ├── auth/
@@ -90,7 +89,11 @@ src/
 │   │   └── ...
 │   │
 │   ├── ranking/
-│   └── moderation/                       # admin
+│   └── moderation/                       # admin: cola PENDING, aprobar/rechazar
+│       ├── components/                   # AdminGuard, ModerationQueue, PendingAlfajorCard, RejectAlfajorDialog
+│       ├── hooks/                        # useModerationQueue, useModerateAlfajor
+│       ├── api/                          # moderation.api.ts (GET pending, PATCH approve/reject)
+│       └── schemas/                      # rejectAlfajor.schema.ts (motivo 1–500)
 │
 ├── shared/
 │   ├── components/

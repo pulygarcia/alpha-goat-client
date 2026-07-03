@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { AppHeader, menuMotion } from './AppHeader';
 import { DEFAULT_AVATAR_SRC } from '@/shared/components/UserAvatar';
 import { useAuth } from '@/shared/providers/AuthProvider';
@@ -25,10 +26,14 @@ const mockedAuth = vi.mocked(useAuth);
 const mockedRequireAuth = vi.mocked(useRequireAuth);
 const mockedPathname = vi.mocked(usePathname);
 
-function setAuth(isAuthenticated: boolean, avatarUrl: string | null = null) {
+function setAuth(
+  isAuthenticated: boolean,
+  avatarUrl: string | null = null,
+  role: 'USER' | 'ADMIN' = 'USER',
+) {
   mockedAuth.mockReturnValue({
     user: isAuthenticated
-      ? { username: 'puly', email: 'puly@test.com', avatarUrl }
+      ? { username: 'puly', email: 'puly@test.com', avatarUrl, role }
       : null,
     isAuthenticated,
     logout: vi.fn(),
@@ -118,6 +123,28 @@ describe('AppHeader', () => {
     render(<AppHeader />);
     fireEvent.click(screen.getByRole('button', { name: /Reseñar/i }));
     expect(screen.getByTestId('quick-review-modal')).toBeInTheDocument();
+  });
+
+  it('shows the "Moderación" item in the avatar menu for an ADMIN', async () => {
+    const user = userEvent.setup();
+    setAuth(true, null, 'ADMIN');
+    render(<AppHeader />);
+
+    await user.click(screen.getByLabelText('Menú de usuario'));
+
+    const item = await screen.findByRole('menuitem', { name: /Moderación/ });
+    expect(item).toHaveAttribute('href', '/admin');
+  });
+
+  it('does not show the moderation item for a regular user', async () => {
+    const user = userEvent.setup();
+    setAuth(true, null, 'USER');
+    render(<AppHeader />);
+
+    await user.click(screen.getByLabelText('Menú de usuario'));
+
+    await screen.findByRole('menuitem', { name: /Mi perfil/ });
+    expect(screen.queryByText('Moderación')).not.toBeInTheDocument();
   });
 
   it('animates the drawer nav items by default and flat with reduced motion', () => {

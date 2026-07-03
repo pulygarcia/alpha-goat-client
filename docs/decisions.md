@@ -138,3 +138,9 @@ El CTA "Solicitá agregarlo" del `QuickReviewModal` abre un `ProposeAlfajorModal
 **Por qué confirmación in-modal y no permitir reseñar al toque:** el alfajor nace `PENDING` y el catálogo público solo lista `APPROVED`, así que no es reseñable hasta que un admin lo apruebe. En vez de devolver al flujo de reseña (que confundiría: el que propuso no aparece), el modal muestra una pantalla "pendiente de aprobación". La mutación es fina: no invalida caches (no hay lista pública que refrescar) ni emite toast de éxito.
 
 **Selector de marca en `features/marcas`:** `MarcaCombobox` + `useMarcasSearch` (`GET /marcas?q=` debounced) viven en `marcas` (su dominio), no en `alfajores`. Un `409` del create (ya existe ese nombre+marca) se muestra inline bajo el nombre; otros errores van a toast.
+
+## Panel admin: guard client-side que responde 404, no redirect ni middleware
+
+`/admin` monta un `AdminGuard` que, resuelta la sesión, llama al `notFound()` de Next para cualquier visitante no-ADMIN; mientras carga muestra skeleton. No hay chequeo en `middleware.ts` ni redirect a `/feed`.
+
+**Por qué:** el JWT es HTTP-only y en Edge no se puede leer el rol sin verificar el token (o pegarle al back en cada request); y un redirect delata que la ruta existe. El 404 no revela nada. Es solo UX: la seguridad real la pone el back (401/403 en `/admin/alfajores/*`). Moderar usa **invalidación simple** en vez del update optimista de likes/follows — cola de un solo operador, la corrección vale más que los milisegundos; un 400 (ya moderado en otra pestaña) muestra toast específico e invalida para despawnear el card viejo.

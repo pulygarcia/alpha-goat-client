@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 import { notifyError } from '@/shared/lib/toast';
+import { imageFileSchema } from '@/shared/schemas/imageFile.schema';
 import { ALFAJOR_TIPOS } from '@/shared/types/alfajor';
 import { MarcaCombobox } from '@/features/marcas/components/MarcaCombobox';
 import type { Marca } from '@/features/marcas/types/marcas.types';
@@ -47,6 +48,10 @@ export function ProposeAlfajorModal({
 }) {
   const [submitted, setSubmitted] = useState(false);
   const [marca, setMarca] = useState<Marca | null>(null);
+  const [foto, setFoto] = useState<File | null>(null);
+  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
+  const [fotoError, setFotoError] = useState<string | null>(null);
+  const [fotoFailed, setFotoFailed] = useState(false);
   const propose = useProposeAlfajor();
 
   const {
@@ -66,9 +71,33 @@ export function ProposeAlfajorModal({
     if (!next) {
       setSubmitted(false);
       setMarca(null);
+      clearFoto();
+      setFotoFailed(false);
       reset();
     }
     onOpenChange(next);
+  }
+
+  function clearFoto() {
+    if (fotoPreview) URL.revokeObjectURL(fotoPreview);
+    setFoto(null);
+    setFotoPreview(null);
+    setFotoError(null);
+  }
+
+  function pickFoto(e: React.ChangeEvent<HTMLInputElement>) {
+    const picked = e.target.files?.[0];
+    if (!picked) return;
+    const parsed = imageFileSchema.safeParse(picked);
+    if (!parsed.success) {
+      clearFoto();
+      setFotoError(parsed.error.issues[0].message);
+      return;
+    }
+    if (fotoPreview) URL.revokeObjectURL(fotoPreview);
+    setFotoError(null);
+    setFoto(picked);
+    setFotoPreview(URL.createObjectURL(picked));
   }
 
   function pickMarca(next: Marca | null) {
@@ -77,8 +106,11 @@ export function ProposeAlfajorModal({
   }
 
   const onSubmit = handleSubmit((values) => {
-    propose.mutate(values, {
-      onSuccess: () => setSubmitted(true),
+    propose.mutate({ input: values, foto: foto ?? undefined }, {
+      onSuccess: (result) => {
+        setFotoFailed(!result.fotoUploaded);
+        setSubmitted(true);
+      },
       onError: (err) => {
         if (axios.isAxiosError(err) && err.response?.status === 409) {
           setError('nombre', {
@@ -106,6 +138,12 @@ export function ProposeAlfajorModal({
               Quedó <strong>pendiente de aprobación</strong>. Lo revisamos y te
               avisamos cuando esté disponible para reseñar.
             </p>
+            {fotoFailed && (
+              <p className="text-sienna text-[13px]">
+                Ojo: la foto no se pudo subir, pero la propuesta quedó
+                registrada igual.
+              </p>
+            )}
             <button
               type="button"
               onClick={() => handleOpenChange(false)}
@@ -161,6 +199,38 @@ export function ProposeAlfajorModal({
               {errors.tipo && (
                 <p className={errorClass}>{errors.tipo.message}</p>
               )}
+            </div>
+
+            <div>
+              <label htmlFor="propose-foto" className={labelClass}>
+                Foto (opcional)
+              </label>
+              <input
+                id="propose-foto"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={pickFoto}
+                className="text-sienna file:bg-paper-sunken file:text-ink w-full text-[13px] file:mr-3 file:cursor-pointer file:rounded-[8px] file:border file:border-[rgba(74,30,8,0.18)] file:px-3 file:py-1.5 file:text-[12.5px] file:font-semibold"
+              />
+              {fotoPreview && (
+                <div className="mt-2 flex items-center gap-3">
+                  {/* Preview local (objectURL); <img> a propósito, next/image no optimiza blobs. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={fotoPreview}
+                    alt="Vista previa de la foto"
+                    className="h-16 w-16 rounded-[10px] border border-[rgba(74,30,8,0.18)] object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={clearFoto}
+                    className="text-sienna text-[12.5px] underline underline-offset-2"
+                  >
+                    Quitar foto
+                  </button>
+                </div>
+              )}
+              {fotoError && <p className={errorClass}>{fotoError}</p>}
             </div>
 
             <button

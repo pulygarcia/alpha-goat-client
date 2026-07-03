@@ -53,26 +53,102 @@ function conflict() {
   } as never);
 }
 
+const FOTO = new File(['x'], 'alfajor.png', { type: 'image/png' });
+
 describe('ProposeAlfajorModal', () => {
   beforeEach(() => {
     vi.mocked(useProposeAlfajor).mockReset();
     vi.mocked(notifyError).mockReset();
+    vi.stubGlobal('URL', {
+      ...URL,
+      createObjectURL: vi.fn(() => 'blob:preview'),
+      revokeObjectURL: vi.fn(),
+    });
   });
 
   it('submits a valid proposal and shows the confirmation view', async () => {
-    setMutation((_input, opts: { onSuccess: () => void }) => opts.onSuccess());
+    setMutation(
+      (
+        _input,
+        opts: { onSuccess: (d: { fotoUploaded: boolean }) => void },
+      ) => opts.onSuccess({ fotoUploaded: true }),
+    );
     render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
 
     await fillForm();
     await userEvent.click(screen.getByRole('button', { name: /enviar/i }));
 
     expect(mutate).toHaveBeenCalledWith(
-      { nombre: 'Havanna Mixto', marcaId: 'm1', tipo: 'NEGRO' },
+      {
+        input: { nombre: 'Havanna Mixto', marcaId: 'm1', tipo: 'NEGRO' },
+        foto: undefined,
+      },
       expect.anything(),
     );
     expect(
       await screen.findByText(/pendiente de aprobaci/i),
     ).toBeInTheDocument();
+  });
+
+  it('includes the picked photo in the submission', async () => {
+    setMutation(
+      (
+        _input,
+        opts: { onSuccess: (d: { fotoUploaded: boolean }) => void },
+      ) => opts.onSuccess({ fotoUploaded: true }),
+    );
+    render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
+
+    await fillForm();
+    await userEvent.upload(screen.getByLabelText(/foto/i), FOTO);
+    await userEvent.click(screen.getByRole('button', { name: /enviar/i }));
+
+    expect(mutate).toHaveBeenCalledWith(
+      expect.objectContaining({ foto: FOTO }),
+      expect.anything(),
+    );
+    expect(
+      await screen.findByText(/pendiente de aprobaci/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/foto no se pudo subir/i)).not.toBeInTheDocument();
+  });
+
+  it('rejects an invalid file inline and does not include it', async () => {
+    setMutation(() => {});
+    render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
+
+    await fillForm();
+    const bad = new File(['x'], 'nota.txt', { type: 'text/plain' });
+    await userEvent.upload(screen.getByLabelText(/foto/i), bad, {
+      applyAccept: false,
+    });
+
+    expect(await screen.findByText(/formato no válido/i)).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', { name: /enviar/i }));
+    expect(mutate).toHaveBeenCalledWith(
+      expect.objectContaining({ foto: undefined }),
+      expect.anything(),
+    );
+  });
+
+  it('confirms the proposal with a warning when the photo upload fails', async () => {
+    setMutation(
+      (
+        _input,
+        opts: { onSuccess: (d: { fotoUploaded: boolean }) => void },
+      ) => opts.onSuccess({ fotoUploaded: false }),
+    );
+    render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
+
+    await fillForm();
+    await userEvent.upload(screen.getByLabelText(/foto/i), FOTO);
+    await userEvent.click(screen.getByRole('button', { name: /enviar/i }));
+
+    expect(
+      await screen.findByText(/pendiente de aprobaci/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/foto no se pudo subir/i)).toBeInTheDocument();
   });
 
   it('shows an inline error on 409 conflict without a toast', async () => {

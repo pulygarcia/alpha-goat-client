@@ -33,9 +33,7 @@ describe('moderationApi.approve', () => {
 
     const result = await moderationApi.approve('a1');
 
-    expect(apiClient.patch).toHaveBeenCalledWith(
-      '/admin/alfajores/a1/approve',
-    );
+    expect(apiClient.patch).toHaveBeenCalledWith('/admin/alfajores/a1/approve');
     expect(result).toEqual({ id: 'a1', status: 'APPROVED' });
   });
 });
@@ -48,10 +46,9 @@ describe('moderationApi.reject', () => {
 
     const result = await moderationApi.reject('a1', 'Duplicado de otro');
 
-    expect(apiClient.patch).toHaveBeenCalledWith(
-      '/admin/alfajores/a1/reject',
-      { rejectionReason: 'Duplicado de otro' },
-    );
+    expect(apiClient.patch).toHaveBeenCalledWith('/admin/alfajores/a1/reject', {
+      rejectionReason: 'Duplicado de otro',
+    });
     expect(result).toEqual({ id: 'a1', status: 'REJECTED' });
   });
 });

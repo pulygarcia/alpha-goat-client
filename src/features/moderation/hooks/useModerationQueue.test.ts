@@ -16,7 +16,12 @@ const PAGE: PaginatedAlfajores = {
       id: 'a1',
       nombre: 'Capitán del Espacio',
       marcaId: 'm1',
-      marca: { id: 'm1', nombre: 'CDE', provincia: 'Buenos Aires', logoUrl: null },
+      marca: {
+        id: 'm1',
+        nombre: 'CDE',
+        provincia: 'Buenos Aires',
+        logoUrl: null,
+      },
       tipo: 'CHOCOLATE',
       descripcion: null,
       imagenUrl: null,

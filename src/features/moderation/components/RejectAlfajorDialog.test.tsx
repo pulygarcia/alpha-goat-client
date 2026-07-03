@@ -32,9 +32,7 @@ describe('RejectAlfajorDialog', () => {
       screen.getByLabelText('Motivo del rechazo'),
       '  Duplicado  ',
     );
-    await user.click(
-      screen.getByRole('button', { name: 'Confirmar rechazo' }),
-    );
+    await user.click(screen.getByRole('button', { name: 'Confirmar rechazo' }));
 
     await waitFor(() => expect(onConfirm).toHaveBeenCalledWith('Duplicado'));
   });
@@ -43,9 +41,7 @@ describe('RejectAlfajorDialog', () => {
     const user = userEvent.setup();
     renderDialog();
 
-    await user.click(
-      screen.getByRole('button', { name: 'Confirmar rechazo' }),
-    );
+    await user.click(screen.getByRole('button', { name: 'Confirmar rechazo' }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Contanos por qué lo rechazás',

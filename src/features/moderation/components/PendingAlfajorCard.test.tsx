@@ -42,7 +42,9 @@ describe('PendingAlfajorCard', () => {
     render(<PendingAlfajorCard alfajor={ALFAJOR} />);
 
     expect(screen.getByText('Capitán del Espacio')).toBeInTheDocument();
-    expect(screen.getByText(/CDE · Buenos Aires · Chocolate/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/CDE · Buenos Aires · Chocolate/),
+    ).toBeInTheDocument();
   });
 
   it('approves on Aprobar click', async () => {
@@ -65,9 +67,7 @@ describe('PendingAlfajorCard', () => {
       await screen.findByLabelText('Motivo del rechazo'),
       'Duplicado',
     );
-    await user.click(
-      screen.getByRole('button', { name: 'Confirmar rechazo' }),
-    );
+    await user.click(screen.getByRole('button', { name: 'Confirmar rechazo' }));
 
     expect(mutate).toHaveBeenCalledWith(
       { id: 'a1', action: 'reject', rejectionReason: 'Duplicado' },

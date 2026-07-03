@@ -56,9 +56,7 @@ export function RejectAlfajorDialog({
         </DialogHeader>
 
         <form
-          onSubmit={handleSubmit((values) =>
-            onConfirm(values.rejectionReason),
-          )}
+          onSubmit={handleSubmit((values) => onConfirm(values.rejectionReason))}
           className="flex flex-col gap-3"
         >
           <textarea

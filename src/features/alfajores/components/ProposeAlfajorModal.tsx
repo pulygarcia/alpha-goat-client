@@ -106,21 +106,24 @@ export function ProposeAlfajorModal({
   }
 
   const onSubmit = handleSubmit((values) => {
-    propose.mutate({ input: values, foto: foto ?? undefined }, {
-      onSuccess: (result) => {
-        setFotoFailed(!result.fotoUploaded);
-        setSubmitted(true);
+    propose.mutate(
+      { input: values, foto: foto ?? undefined },
+      {
+        onSuccess: (result) => {
+          setFotoFailed(!result.fotoUploaded);
+          setSubmitted(true);
+        },
+        onError: (err) => {
+          if (axios.isAxiosError(err) && err.response?.status === 409) {
+            setError('nombre', {
+              message: 'Ese alfajor ya existe para esa marca.',
+            });
+            return;
+          }
+          notifyError('No pudimos enviar la propuesta');
+        },
       },
-      onError: (err) => {
-        if (axios.isAxiosError(err) && err.response?.status === 409) {
-          setError('nombre', {
-            message: 'Ese alfajor ya existe para esa marca.',
-          });
-          return;
-        }
-        notifyError('No pudimos enviar la propuesta');
-      },
-    });
+    );
   });
 
   return (

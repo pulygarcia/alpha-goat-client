@@ -68,10 +68,8 @@ describe('ProposeAlfajorModal', () => {
 
   it('submits a valid proposal and shows the confirmation view', async () => {
     setMutation(
-      (
-        _input,
-        opts: { onSuccess: (d: { fotoUploaded: boolean }) => void },
-      ) => opts.onSuccess({ fotoUploaded: true }),
+      (_input, opts: { onSuccess: (d: { fotoUploaded: boolean }) => void }) =>
+        opts.onSuccess({ fotoUploaded: true }),
     );
     render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
 
@@ -92,10 +90,8 @@ describe('ProposeAlfajorModal', () => {
 
   it('includes the picked photo in the submission', async () => {
     setMutation(
-      (
-        _input,
-        opts: { onSuccess: (d: { fotoUploaded: boolean }) => void },
-      ) => opts.onSuccess({ fotoUploaded: true }),
+      (_input, opts: { onSuccess: (d: { fotoUploaded: boolean }) => void }) =>
+        opts.onSuccess({ fotoUploaded: true }),
     );
     render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
 
@@ -110,7 +106,9 @@ describe('ProposeAlfajorModal', () => {
     expect(
       await screen.findByText(/pendiente de aprobaci/i),
     ).toBeInTheDocument();
-    expect(screen.queryByText(/foto no se pudo subir/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/foto no se pudo subir/i),
+    ).not.toBeInTheDocument();
   });
 
   it('rejects an invalid file inline and does not include it', async () => {
@@ -134,10 +132,8 @@ describe('ProposeAlfajorModal', () => {
 
   it('confirms the proposal with a warning when the photo upload fails', async () => {
     setMutation(
-      (
-        _input,
-        opts: { onSuccess: (d: { fotoUploaded: boolean }) => void },
-      ) => opts.onSuccess({ fotoUploaded: false }),
+      (_input, opts: { onSuccess: (d: { fotoUploaded: boolean }) => void }) =>
+        opts.onSuccess({ fotoUploaded: false }),
     );
     render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
 

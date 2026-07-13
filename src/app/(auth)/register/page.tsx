@@ -4,7 +4,7 @@ import SignUpForm from '@/features/auth/components/SignUpForm';
 import { GuestOnly } from '@/shared/components/auth/GuestOnly';
 
 export const metadata: Metadata = {
-  title: 'Sumate al Instituto — Alfajorímetro',
+  title: 'Crear cuenta — Alfajorímetro',
 };
 
 export default function SumatePage() {

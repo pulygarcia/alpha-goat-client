@@ -57,7 +57,7 @@ export default function LoginForm() {
           className="mt-1.5 text-[0.88rem] leading-[1.4]"
           style={{ color: 'rgba(246,201,119,0.55)' }}
         >
-          Bienvenido de vuelta al Instituto.
+          Bienvenido de vuelta a AlphaGoat.
         </p>
       </div>
 
@@ -126,7 +126,7 @@ export default function LoginForm() {
         className="text-center text-[0.82rem]"
         style={{ color: 'rgba(246,201,119,0.45)' }}
       >
-        ¿Todavía no sos del Instituto?{' '}
+        ¿Todavía no tenés cuenta?{' '}
         <Link
           href="/register"
           className="underline-offset-2 hover:underline"

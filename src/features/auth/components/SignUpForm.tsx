@@ -148,7 +148,7 @@ export default function SignUpForm() {
         className="text-center text-[0.82rem]"
         style={{ color: 'rgba(246,201,119,0.45)' }}
       >
-        ¿Ya sos del Instituto?{' '}
+        ¿Ya tenés cuenta?{' '}
         <Link
           href="/login"
           className="underline-offset-2 hover:underline"

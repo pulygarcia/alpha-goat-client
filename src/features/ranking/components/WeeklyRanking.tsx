@@ -26,11 +26,50 @@ const TREND_CLASS: Record<WeeklyTrend, string> = {
   new: 'text-curry-deep',
 };
 
+// Altura del pedestal por puesto: el 1 al centro y más alto.
+const PODIUM_HEIGHT: Record<number, number> = { 1: 56, 2: 38, 3: 28 };
+
+function PodiumCol({ item, pos }: { item: WeeklyRankingItem; pos: number }) {
+  return (
+    <div className="flex flex-1 flex-col justify-end text-center">
+      <div className="text-ink text-[12.5px] leading-tight font-semibold">
+        {item.nombre}
+      </div>
+      <div className="text-sienna mt-[2px]" style={MONO_META}>
+        {item.marca.nombre}
+      </div>
+      <div
+        className="text-curry-deep mt-1 text-[13px] font-bold"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        {item.score.toFixed(1)}
+      </div>
+      <div
+        className={`mt-[2px] text-[0.62rem] font-bold uppercase ${TREND_CLASS[item.trend]}`}
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        {TREND_LABEL[item.trend]}
+      </div>
+      <div
+        className="bg-paper-sunken mt-2 flex items-start justify-center rounded-t-[6px] border border-b-0 border-[rgba(74,30,8,0.22)] pt-1"
+        style={{ height: PODIUM_HEIGHT[pos] }}
+      >
+        <span
+          className="text-curry-deep"
+          style={{ fontFamily: 'var(--font-archivo)', fontSize: 18 }}
+        >
+          {pos}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function RankRow({ item, pos }: { item: WeeklyRankingItem; pos: number }) {
   return (
     <div className="grid grid-cols-[32px_1fr_auto] items-center gap-3 border-b border-dashed border-[rgba(74,30,8,0.22)] py-[11px]">
       <div
-        className={pos <= 2 ? 'text-curry-deep' : 'text-sienna'}
+        className="text-sienna"
         style={{
           fontFamily: 'var(--font-archivo)',
           fontSize: 22,
@@ -78,7 +117,7 @@ export function WeeklyRanking() {
           fontWeight: 700,
         }}
       >
-        Ranking semanal
+        Top 3 del momento
       </h5>
 
       {isLoading && (
@@ -111,11 +150,25 @@ export function WeeklyRanking() {
         </p>
       )}
 
-      {data &&
-        data.length > 0 &&
-        data.map((item, i) => (
-          <RankRow key={item.id} item={item} pos={i + 1} />
-        ))}
+      {data && data.length > 0 && (
+        <>
+          {/* Podio: 2 - 1 - 3; con menos de 3 items degrada al orden natural. */}
+          <div className="flex items-end gap-2 border-b border-dashed border-[rgba(74,30,8,0.22)]">
+            {(data.length >= 3
+              ? ([data[1], data[0], data[2]] as const).map((item) => ({
+                  item,
+                  pos: data.indexOf(item) + 1,
+                }))
+              : data.map((item, i) => ({ item, pos: i + 1 }))
+            ).map(({ item, pos }) => (
+              <PodiumCol key={item.id} item={item} pos={pos} />
+            ))}
+          </div>
+          {data.slice(3).map((item, i) => (
+            <RankRow key={item.id} item={item} pos={i + 4} />
+          ))}
+        </>
+      )}
     </section>
   );
 }

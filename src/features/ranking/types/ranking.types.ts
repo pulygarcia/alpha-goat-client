@@ -31,6 +31,15 @@ export interface RankingQuery {
 
 export type PaginatedRanking = Paginated<RankingItem>;
 
+// --- GET /ranking/worst ("El peor votado" del feed, público) ---
+
+/**
+ * El alfajor con peor promedio histórico de ratingGeneral. Mismo piso de
+ * 5 reseñas que el ranking global para no escrachar alfajores con 1 voto.
+ * El back responde 204 cuando ninguno califica.
+ */
+export type WorstRatedItem = RankingItem & { imagenUrl: string | null };
+
 // --- GET /ranking/weekly ("Ranking semanal" del rail, público) ---
 
 /** Dirección vs la semana anterior; `new` si el alfajor no tenía reviews. */

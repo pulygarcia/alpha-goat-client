@@ -3,6 +3,7 @@ import type {
   PaginatedRanking,
   RankingQuery,
   WeeklyRankingItem,
+  WorstRatedItem,
 } from '../types/ranking.types';
 
 export const rankingApi = {
@@ -14,6 +15,17 @@ export const rankingApi = {
   global: async (params: RankingQuery = {}): Promise<PaginatedRanking> => {
     const res = await apiClient.get<PaginatedRanking>('/ranking', { params });
     return res.data;
+  },
+
+  /**
+   * GET /ranking/worst (público)
+   * El peor votado all-time (piso 5 reseñas). Devuelve null cuando el back
+   * responde 204 (ningún alfajor califica todavía).
+   */
+  worst: async (): Promise<WorstRatedItem | null> => {
+    const res = await apiClient.get<WorstRatedItem | ''>('/ranking/worst');
+    if (res.status === 204 || !res.data) return null;
+    return res.data as WorstRatedItem;
   },
 
   /**

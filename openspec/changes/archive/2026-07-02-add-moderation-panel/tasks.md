@@ -21,5 +21,5 @@
 ## 4. Verification & docs
 
 - [x] 4.1 Run `npm run test:coverage` (≥85% all metrics), `npm run lint`, `npx tsc --noEmit`
-- [ ] 4.2 Manual check in browser with an admin and a regular user
+- [x] 4.2 Manual check in browser with an admin and a regular user
 - [x] 4.3 Update `docs/architecture.md` (new feature) and `docs/decisions.md` if any non-obvious decision emerged; review `docs/progress.md`/README per repo docs rule

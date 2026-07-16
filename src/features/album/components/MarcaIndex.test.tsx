@@ -13,8 +13,8 @@ describe('MarcaIndex', () => {
   it('renders one pill per hoja with its completion percentage', () => {
     render(<MarcaIndex hojas={HOJAS} activeMarcaId="m2" onSelect={vi.fn()} />);
 
-    expect(screen.getByRole('button', { name: /Águila.*100%/s })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Havanna.*67%/s })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Águila[\s\S]*100%/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Havanna[\s\S]*67%/ })).toBeInTheDocument();
   });
 
   it('marks the active pill and calls onSelect with the marca id on click', async () => {

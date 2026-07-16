@@ -13,7 +13,7 @@ export function MarcaIndex({
   onSelect: (marcaId: string) => void;
 }) {
   return (
-    <ScrollArea className="w-full whitespace-nowrap">
+    <ScrollArea className="w-full pb-3 whitespace-nowrap">
       <div className="flex gap-2.5 py-1">
         {hojas.map((hoja) => {
           const active = hoja.marca.id === activeMarcaId;

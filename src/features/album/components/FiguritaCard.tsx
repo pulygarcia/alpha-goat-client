@@ -52,12 +52,9 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
           className={cn(
             'h-[110px] rounded-md bg-cover bg-center',
             !collected && 'grayscale',
+            !figurita.imagenUrl && 'bg-gradient-to-br from-cinnamon via-curry to-curry-soft',
           )}
-          style={{
-            backgroundImage: figurita.imagenUrl
-              ? `url(${figurita.imagenUrl})`
-              : 'linear-gradient(135deg, #b86015, #f4a02b 60%, #f6c977)',
-          }}
+          style={figurita.imagenUrl ? { backgroundImage: `url(${figurita.imagenUrl})` } : undefined}
         />
 
         <h3

@@ -1,3 +1,4 @@
+import { ScrollArea, ScrollBar } from '@/shared/components/ui/scroll-area';
 import { cn } from '@/shared/lib/utils';
 import type { AlbumHoja } from '../types/album.types';
 
@@ -12,36 +13,39 @@ export function MarcaIndex({
   onSelect: (marcaId: string) => void;
 }) {
   return (
-    <div className="scrollbar-none flex gap-2.5 overflow-x-auto py-1">
-      {hojas.map((hoja) => {
-        const active = hoja.marca.id === activeMarcaId;
-        const full = hoja.stats.pct === 100;
+    <ScrollArea className="w-full whitespace-nowrap">
+      <div className="flex gap-2.5 py-1">
+        {hojas.map((hoja) => {
+          const active = hoja.marca.id === activeMarcaId;
+          const full = hoja.stats.pct === 100;
 
-        return (
-          <button
-            key={hoja.marca.id}
-            type="button"
-            aria-pressed={active}
-            onClick={() => onSelect(hoja.marca.id)}
-            className={cn(
-              'flex flex-none cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-medium whitespace-nowrap',
-              active
-                ? 'bg-ink text-paper border-ink'
-                : 'bg-paper-raised text-ink border-[rgba(74,30,8,0.14)]',
-            )}
-          >
-            {hoja.marca.nombre}
-            <span
+          return (
+            <button
+              key={hoja.marca.id}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onSelect(hoja.marca.id)}
               className={cn(
-                'font-mono text-[10px]',
-                full ? 'text-[#7dd693]' : active ? 'text-curry' : 'text-cinnamon',
+                'flex flex-none cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-medium whitespace-nowrap',
+                active
+                  ? 'bg-ink text-paper border-ink'
+                  : 'bg-paper-raised text-ink border-[rgba(74,30,8,0.14)]',
               )}
             >
-              {hoja.stats.pct}%
-            </span>
-          </button>
-        );
-      })}
-    </div>
+              {hoja.marca.nombre}
+              <span
+                className={cn(
+                  'font-mono text-[10px]',
+                  full ? 'text-[#7dd693]' : active ? 'text-curry' : 'text-cinnamon',
+                )}
+              >
+                {hoja.stats.pct}%
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 }

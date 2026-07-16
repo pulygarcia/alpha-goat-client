@@ -18,7 +18,7 @@ export function AlbumHoja({
   const needsFiller = hoja.alfajores.length <= 2;
 
   return (
-    <section className="bg-paper-raised relative overflow-hidden rounded-3xl p-6 shadow-[0_30px_80px_-30px_rgba(74,30,8,0.5)] md:p-9">
+    <section className="relative overflow-hidden rounded-3xl p-6 shadow-[0_30px_80px_-30px_rgba(74,30,8,0.5)] md:p-9">
       <span
         aria-hidden
         className="text-ink/[0.05] pointer-events-none absolute -right-10 -bottom-24 font-archivo text-[340px] leading-none select-none"

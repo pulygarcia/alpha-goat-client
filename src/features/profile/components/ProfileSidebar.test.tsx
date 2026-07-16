@@ -77,4 +77,14 @@ describe('ProfileSidebar', () => {
     expect(onEditClick).toHaveBeenCalledOnce();
     expect(screen.queryByTestId('follow-button')).not.toBeInTheDocument();
   });
+
+  it('links to the album page for this username', () => {
+    mockCurrentUser('u1');
+    render(<ProfileSidebar profile={PROFILE} onEditClick={vi.fn()} />);
+
+    expect(screen.getByRole('link', { name: /álbum/i })).toHaveAttribute(
+      'href',
+      `/u/${PROFILE.username}/album`,
+    );
+  });
 });

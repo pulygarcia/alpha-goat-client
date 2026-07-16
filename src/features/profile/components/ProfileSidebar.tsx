@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import { CountUp } from '@/shared/components/motion/CountUp';
@@ -140,6 +141,12 @@ export function ProfileSidebar({
               isFollowing={profile.isFollowing ?? false}
             />
           )}
+          <Link
+            href={`/u/${profile.username}/album`}
+            className="text-curry-bright mt-2 block text-center text-[12px] font-semibold tracking-wide underline-offset-4 hover:underline"
+          >
+            Ver álbum
+          </Link>
         </div>
 
         <div className="my-5 flex flex-col gap-[9px]">

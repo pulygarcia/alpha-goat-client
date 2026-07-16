@@ -78,6 +78,19 @@ describe('AlbumView', () => {
     expect(replace).toHaveBeenCalledWith('/u/pulyg/album?marca=m2', { scroll: false });
   });
 
+  it('resyncs the active hoja when ?marca= changes externally (browser back/forward)', () => {
+    const { rerender } = render(<AlbumView username="pulyg" />);
+
+    expect(screen.getByRole('heading', { name: 'Águila' })).toBeInTheDocument();
+
+    // Simulate browser back/forward: the URL changes without any click.
+    searchParams = new URLSearchParams('marca=m2');
+    rerender(<AlbumView username="pulyg" />);
+
+    expect(screen.getByRole('heading', { name: 'Havanna' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Águila' })).not.toBeInTheDocument();
+  });
+
   it('shows the skeleton while loading', () => {
     vi.mocked(useAlbum).mockReturnValue({
       data: undefined,

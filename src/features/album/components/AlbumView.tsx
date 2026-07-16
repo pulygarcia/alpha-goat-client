@@ -23,16 +23,19 @@ export function AlbumView({ username }: { username: string }) {
 
   const [activeMarcaId, setActiveMarcaId] = useState<string | null>(null);
   const [syncedAlbum, setSyncedAlbum] = useState<AlbumResponse | undefined>(undefined);
+  const marcaParam = searchParams.get('marca');
+  const [syncedMarcaParam, setSyncedMarcaParam] = useState<string | null>(null);
 
-  // Derive the initial (or refreshed) active sheet from the URL whenever a
-  // new album payload arrives, without the cascading-render risk of doing
-  // this inside a useEffect (see https://react.dev/learn/you-might-not-need-an-effect).
-  if (album !== syncedAlbum) {
+  // Derive the active sheet from the URL whenever a new album payload
+  // arrives OR the `marca` query param changes externally (e.g. browser
+  // back/forward), without the cascading-render risk of doing this inside
+  // a useEffect (see https://react.dev/learn/you-might-not-need-an-effect).
+  if (album !== syncedAlbum || marcaParam !== syncedMarcaParam) {
     setSyncedAlbum(album);
+    setSyncedMarcaParam(marcaParam);
     if (album) {
-      const requested = searchParams.get('marca');
-      const found = album.hojas.some((h) => h.marca.id === requested);
-      setActiveMarcaId(found ? requested : (album.hojas[0]?.marca.id ?? null));
+      const found = album.hojas.some((h) => h.marca.id === marcaParam);
+      setActiveMarcaId(found ? marcaParam : (album.hojas[0]?.marca.id ?? null));
     } else {
       setActiveMarcaId(null);
     }

@@ -35,7 +35,7 @@ describe('FiguritaCard', () => {
     expect(screen.getByRole('link')).toHaveAttribute('href', '/alfajores/a1');
   });
 
-  it('shows the "sin conseguir" tag and hides my rating when not collected', () => {
+  it('shows the "faltante" tag and hides my rating when not collected', () => {
     render(<FiguritaCard figurita={UNCOLLECTED} />);
 
     expect(screen.getByText('Faltante')).toBeInTheDocument();

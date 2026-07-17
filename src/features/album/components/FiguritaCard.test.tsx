@@ -31,14 +31,14 @@ describe('FiguritaCard', () => {
 
     expect(screen.getByText('70% Cacao')).toBeInTheDocument();
     expect(screen.getByText('8.5')).toBeInTheDocument();
-    expect(screen.queryByText('Sin conseguir')).not.toBeInTheDocument();
+    expect(screen.queryByText('Faltante')).not.toBeInTheDocument();
     expect(screen.getByRole('link')).toHaveAttribute('href', '/alfajores/a1');
   });
 
   it('shows the "sin conseguir" tag and hides my rating when not collected', () => {
     render(<FiguritaCard figurita={UNCOLLECTED} />);
 
-    expect(screen.getByText('Sin conseguir')).toBeInTheDocument();
+    expect(screen.getByText('Faltante')).toBeInTheDocument();
     expect(screen.queryByText('8.5')).not.toBeInTheDocument();
     expect(screen.getByRole('link')).toHaveAttribute('href', '/alfajores/a2');
   });

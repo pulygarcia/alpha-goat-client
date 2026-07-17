@@ -2,6 +2,17 @@ import Link from 'next/link';
 import { cn } from '@/shared/lib/utils';
 import type { AlbumFigurita } from '../types/album.types';
 
+/** Color del sello de nota: dorado desde 8, neutral en el medio, rojo por debajo de 4. */
+function ratingBadgeClasses(rating: number): string {
+  if (rating >= 8) return 'bg-curry text-sienna';
+  if (rating < 4) return 'bg-[#ff7a59] text-paper';
+  return 'bg-ink text-paper';
+}
+
+/** Recorte tipo sello postal: 12 dientes triangulares alrededor del círculo. */
+const SEAL_CLIP_PATH =
+  'polygon(50% 0%, 59.83% 13.3%, 75% 6.7%, 76.87% 23.13%, 93.3% 25%, 86.7% 40.17%, 100% 50%, 86.7% 59.83%, 93.3% 75%, 76.87% 76.87%, 75% 93.3%, 59.83% 86.7%, 50% 100%, 40.17% 86.7%, 25% 93.3%, 23.13% 76.87%, 6.7% 75%, 13.3% 59.83%, 0% 50%, 13.3% 40.17%, 6.7% 25%, 23.13% 23.13%, 25% 6.7%, 40.17% 13.3%)';
+
 /**
  * Una figurita del álbum, estilo "estampilla postal": borde perforado
  * (simulado con muescas semicirculares arriba y abajo), conseguida a color
@@ -16,7 +27,9 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
       href={`/alfajores/${figurita.id}`}
       className={cn(
         'group relative block p-2',
-        collected ? 'bg-paper-raised' : 'bg-paper-sunken',
+        collected
+          ? 'bg-paper-raised shadow-[0_10px_22px_-12px_rgba(74,30,8,0.45)]'
+          : 'bg-paper-sunken',
       )}
     >
       <div
@@ -78,16 +91,22 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
 
         {!collected && (
           <span className="bg-ink/80 text-paper absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-6 rounded font-mono text-[9px] tracking-[0.2em] uppercase px-2.5 py-1">
-            Sin conseguir
-          </span>
-        )}
-
-        {collected && (
-          <span className="text-curry absolute top-2 right-2 font-archivo text-[15px] drop-shadow-[0_1px_4px_rgba(74,30,8,0.5)]">
-            {figurita.myRating}
+            Faltante
           </span>
         )}
       </div>
+
+      {collected && figurita.myRating !== null && (
+        <span
+          className={cn(
+            'border-paper-raised absolute -top-3 -right-3 z-10 flex h-10 w-10 items-center justify-center border-[3px] font-archivo text-[13px]',
+            ratingBadgeClasses(figurita.myRating),
+          )}
+          style={{ clipPath: SEAL_CLIP_PATH }}
+        >
+          {figurita.myRating}
+        </span>
+      )}
     </Link>
   );
 }

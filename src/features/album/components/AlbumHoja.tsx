@@ -3,10 +3,6 @@ import { FiguritaCard } from './FiguritaCard';
 import { FichaMarca } from './FichaMarca';
 import type { AlbumHoja as AlbumHojaType } from '../types/album.types';
 
-function initial(nombre: string): string {
-  return nombre[0]?.toUpperCase() ?? '';
-}
-
 /** Una hoja de marca: header con progreso + grilla de figuritas (3 cols en md+, 2 en mobile). */
 export function AlbumHoja({
   hoja,
@@ -18,14 +14,7 @@ export function AlbumHoja({
   const needsFiller = hoja.alfajores.length <= 2;
 
   return (
-    <section className="relative overflow-hidden rounded-3xl p-6 md:p-9">
-      <span
-        aria-hidden
-        className="text-ink/[0.05] pointer-events-none absolute -right-10 -bottom-24 font-archivo text-[340px] leading-none select-none"
-      >
-        {initial(hoja.marca.nombre)}
-      </span>
-
+    <section className="relative overflow-hidden rounded-3xl p-6 md:px-0 md:py-9">
       <div className="relative flex items-end justify-between gap-4">
         <div>
           <p className="text-ink/55 font-mono text-[10px] tracking-[0.26em] uppercase">
@@ -53,7 +42,7 @@ export function AlbumHoja({
         />
       </div>
 
-      <div className="relative grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-5">
+      <div className="relative grid grid-cols-2 gap-4 px-3 md:grid-cols-3 md:gap-5 md:px-4">
         {hoja.alfajores.map((figurita, i) => (
           <StaggerItem key={figurita.id} index={i}>
             <FiguritaCard figurita={figurita} />

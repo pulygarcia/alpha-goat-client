@@ -32,7 +32,6 @@ const NAV_ITEMS = [
   { href: '/feed', label: 'Feed' },
   { href: '/alfajores', label: 'Alfajores' },
   { href: '/ranking', label: 'Ranking' },
-  { href: '/marcas', label: 'Marcas' },
 ] as const;
 
 /**

@@ -17,10 +17,6 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
       { href: '/ranking', label: 'Ranking' },
     ],
   },
-  {
-    title: 'Herramientas',
-    links: [{ href: '/marcas', label: 'Marcas' }],
-  },
 ];
 
 const PORTFOLIO_URL = 'https://pp-v5.vercel.app';

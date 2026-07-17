@@ -11,14 +11,32 @@ const HOJAS: AlbumHoja[] = [
 ];
 
 describe('HojaPager', () => {
-  it('shows the current position and navigates to the next hoja', async () => {
+  it('shows one indicator dot per hoja, marking the active one', () => {
+    render(<HojaPager hojas={HOJAS} activeIndex={1} onNavigate={vi.fn()} />);
+
+    expect(
+      screen.getByRole('button', { name: 'Ir a la hoja de Havanna' }),
+    ).toHaveAttribute('aria-current', 'true');
+    expect(
+      screen.getByRole('button', { name: 'Ir a la hoja de Águila' }),
+    ).toHaveAttribute('aria-current', 'false');
+  });
+
+  it('navigates when an indicator dot is clicked', async () => {
     const onNavigate = vi.fn();
     render(<HojaPager hojas={HOJAS} activeIndex={1} onNavigate={onNavigate} />);
 
-    expect(screen.getByText('Hoja 2 de 3')).toBeInTheDocument();
-    expect(screen.getByText('Havanna · CABA')).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Ir a la hoja de Cachafaz' }),
+    );
+    expect(onNavigate).toHaveBeenCalledWith('m3');
+  });
 
-    await userEvent.click(screen.getByRole('button', { name: /Cachafaz/ }));
+  it('navigates to the next hoja via the arrow button', async () => {
+    const onNavigate = vi.fn();
+    render(<HojaPager hojas={HOJAS} activeIndex={1} onNavigate={onNavigate} />);
+
+    await userEvent.click(screen.getByRole('button', { name: /siguiente/i }));
     expect(onNavigate).toHaveBeenCalledWith('m3');
   });
 

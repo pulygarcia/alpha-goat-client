@@ -23,8 +23,10 @@ export default async function AlbumPage({
           'radial-gradient(ellipse 50% 60% at 95% 90%, rgba(184,96,21,0.10) 0%, transparent 65%)',
           'radial-gradient(ellipse 70% 50% at 55% 45%, rgba(217,181,105,0.14) 0%, transparent 70%)',
         ].join(', '),
-        backgroundSize: '180px 180px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%',
-        backgroundRepeat: 'repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat',
+        backgroundSize:
+          '180px 180px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%',
+        backgroundRepeat:
+          'repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat',
       }}
     >
       <div className="flex h-screen flex-col">

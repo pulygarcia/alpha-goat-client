@@ -21,7 +21,7 @@ export function AlbumHoja({
             Hoja {String(index).padStart(2, '0')}
             {hoja.marca.provincia ? ` · ${hoja.marca.provincia}` : ''}
           </p>
-          <h2 className="mt-1 font-archivo text-3xl tracking-tight md:text-4xl">
+          <h2 className="font-archivo mt-1 text-3xl tracking-tight md:text-4xl">
             {hoja.marca.nombre}
           </h2>
         </div>

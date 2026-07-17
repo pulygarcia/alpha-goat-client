@@ -36,7 +36,11 @@ export function MarcaIndex({
               <span
                 className={cn(
                   'font-mono text-[10px]',
-                  full ? 'text-[#7dd693]' : active ? 'text-curry' : 'text-cinnamon',
+                  full
+                    ? 'text-[#7dd693]'
+                    : active
+                      ? 'text-curry'
+                      : 'text-cinnamon',
                 )}
               >
                 {hoja.stats.pct}%

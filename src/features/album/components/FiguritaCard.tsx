@@ -35,7 +35,9 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
       <div
         className={cn(
           'relative border p-2',
-          collected ? 'border-[rgba(74,30,8,0.25)]' : 'border-dashed border-[rgba(74,30,8,0.35)]',
+          collected
+            ? 'border-[rgba(74,30,8,0.25)]'
+            : 'border-dashed border-[rgba(74,30,8,0.35)]',
         )}
       >
         <div
@@ -65,9 +67,14 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
           className={cn(
             'h-[110px] rounded-md bg-cover bg-center',
             !collected && 'grayscale',
-            !figurita.imagenUrl && 'bg-gradient-to-br from-cinnamon via-curry to-curry-soft',
+            !figurita.imagenUrl &&
+              'from-cinnamon via-curry to-curry-soft bg-gradient-to-br',
           )}
-          style={figurita.imagenUrl ? { backgroundImage: `url(${figurita.imagenUrl})` } : undefined}
+          style={
+            figurita.imagenUrl
+              ? { backgroundImage: `url(${figurita.imagenUrl})` }
+              : undefined
+          }
         />
 
         <h3
@@ -90,7 +97,7 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
         </p>
 
         {!collected && (
-          <span className="bg-ink/80 text-paper absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-6 rounded font-mono text-[9px] tracking-[0.2em] uppercase px-2.5 py-1">
+          <span className="bg-ink/80 text-paper absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-6 rounded px-2.5 py-1 font-mono text-[9px] tracking-[0.2em] uppercase">
             Faltante
           </span>
         )}
@@ -99,7 +106,7 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
       {collected && figurita.myRating !== null && (
         <span
           className={cn(
-            'border-paper-raised absolute -top-3 -right-3 z-10 flex h-10 w-10 items-center justify-center border-[3px] font-archivo text-[13px]',
+            'border-paper-raised font-archivo absolute -top-3 -right-3 z-10 flex h-10 w-10 items-center justify-center border-[3px] text-[13px]',
             ratingBadgeClasses(figurita.myRating),
           )}
           style={{ clipPath: SEAL_CLIP_PATH }}

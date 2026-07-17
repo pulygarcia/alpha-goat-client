@@ -24,7 +24,9 @@ export function AlbumView({ username }: { username: string }) {
   const searchParams = useSearchParams();
 
   const [activeMarcaId, setActiveMarcaId] = useState<string | null>(null);
-  const [syncedAlbum, setSyncedAlbum] = useState<AlbumResponse | undefined>(undefined);
+  const [syncedAlbum, setSyncedAlbum] = useState<AlbumResponse | undefined>(
+    undefined,
+  );
   const marcaParam = searchParams.get('marca');
   const [syncedMarcaParam, setSyncedMarcaParam] = useState<string | null>(null);
 

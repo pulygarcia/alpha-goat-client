@@ -55,7 +55,9 @@ describe('AlbumHeader', () => {
       />,
     );
 
-    expect(screen.getByRole('heading', { name: 'Tu Álbum' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Tu Álbum' }),
+    ).toBeInTheDocument();
   });
 
   it('shows "Álbum" for someone else\'s album', () => {

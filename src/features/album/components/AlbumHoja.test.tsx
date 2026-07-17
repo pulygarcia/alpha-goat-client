@@ -7,9 +7,36 @@ const HOJA_LLENA: AlbumHojaType = {
   marca: { id: 'm1', nombre: 'Havanna', provincia: 'Buenos Aires' },
   stats: { collected: 2, total: 3, pct: 67 },
   alfajores: [
-    { id: 'a1', nombre: '70% Cacao', tipo: 'Chocolate negro', imagenUrl: null, avgRating: 4.6, collected: true, myRating: 8.5, reviewId: 'r1' },
-    { id: 'a2', nombre: 'Clásico', tipo: 'Chocolate', imagenUrl: null, avgRating: 4.4, collected: true, myRating: 9, reviewId: 'r2' },
-    { id: 'a3', nombre: 'Blanco DDL', tipo: 'Chocolate blanco', imagenUrl: null, avgRating: 4.1, collected: false, myRating: null, reviewId: null },
+    {
+      id: 'a1',
+      nombre: '70% Cacao',
+      tipo: 'Chocolate negro',
+      imagenUrl: null,
+      avgRating: 4.6,
+      collected: true,
+      myRating: 8.5,
+      reviewId: 'r1',
+    },
+    {
+      id: 'a2',
+      nombre: 'Clásico',
+      tipo: 'Chocolate',
+      imagenUrl: null,
+      avgRating: 4.4,
+      collected: true,
+      myRating: 9,
+      reviewId: 'r2',
+    },
+    {
+      id: 'a3',
+      nombre: 'Blanco DDL',
+      tipo: 'Chocolate blanco',
+      imagenUrl: null,
+      avgRating: 4.1,
+      collected: false,
+      myRating: null,
+      reviewId: null,
+    },
   ],
 };
 
@@ -17,8 +44,26 @@ const HOJA_FLACA: AlbumHojaType = {
   marca: { id: 'm2', nombre: 'Grido', provincia: 'Córdoba' },
   stats: { collected: 1, total: 2, pct: 50 },
   alfajores: [
-    { id: 'a4', nombre: 'Helado DDL', tipo: 'Helado', imagenUrl: null, avgRating: 3.8, collected: true, myRating: 7, reviewId: 'r4' },
-    { id: 'a5', nombre: 'Bombón', tipo: 'Chocolate', imagenUrl: null, avgRating: null, collected: false, myRating: null, reviewId: null },
+    {
+      id: 'a4',
+      nombre: 'Helado DDL',
+      tipo: 'Helado',
+      imagenUrl: null,
+      avgRating: 3.8,
+      collected: true,
+      myRating: 7,
+      reviewId: 'r4',
+    },
+    {
+      id: 'a5',
+      nombre: 'Bombón',
+      tipo: 'Chocolate',
+      imagenUrl: null,
+      avgRating: null,
+      collected: false,
+      myRating: null,
+      reviewId: null,
+    },
   ],
 };
 

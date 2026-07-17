@@ -5,9 +5,21 @@ import { HojaPager } from './HojaPager';
 import type { AlbumHoja } from '../types/album.types';
 
 const HOJAS: AlbumHoja[] = [
-  { marca: { id: 'm1', nombre: 'Águila', provincia: 'Córdoba' }, stats: { collected: 4, total: 4, pct: 100 }, alfajores: [] },
-  { marca: { id: 'm2', nombre: 'Havanna', provincia: 'CABA' }, stats: { collected: 4, total: 6, pct: 67 }, alfajores: [] },
-  { marca: { id: 'm3', nombre: 'Cachafaz', provincia: null }, stats: { collected: 1, total: 3, pct: 33 }, alfajores: [] },
+  {
+    marca: { id: 'm1', nombre: 'Águila', provincia: 'Córdoba' },
+    stats: { collected: 4, total: 4, pct: 100 },
+    alfajores: [],
+  },
+  {
+    marca: { id: 'm2', nombre: 'Havanna', provincia: 'CABA' },
+    stats: { collected: 4, total: 6, pct: 67 },
+    alfajores: [],
+  },
+  {
+    marca: { id: 'm3', nombre: 'Cachafaz', provincia: null },
+    stats: { collected: 1, total: 3, pct: 33 },
+    alfajores: [],
+  },
 ];
 
 describe('HojaPager', () => {

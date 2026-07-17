@@ -25,7 +25,7 @@ export function HojaPager({
         aria-label="Hoja anterior"
         disabled={!prev}
         onClick={() => prev && onNavigate(prev.marca.id)}
-        className="bg-curry text-sienna hover:bg-curry-bright inline-flex h-11 w-11 flex-none cursor-pointer items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-curry"
+        className="bg-curry text-sienna hover:bg-curry-bright disabled:hover:bg-curry inline-flex h-11 w-11 flex-none cursor-pointer items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30"
       >
         <ChevronLeft className="h-5 w-5" strokeWidth={2.4} />
       </button>
@@ -56,7 +56,7 @@ export function HojaPager({
         aria-label="Hoja siguiente"
         disabled={!next}
         onClick={() => next && onNavigate(next.marca.id)}
-        className="bg-curry text-sienna hover:bg-curry-bright inline-flex h-11 w-11 flex-none cursor-pointer items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-curry"
+        className="bg-curry text-sienna hover:bg-curry-bright disabled:hover:bg-curry inline-flex h-11 w-11 flex-none cursor-pointer items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-30"
       >
         <ChevronRight className="h-5 w-5" strokeWidth={2.4} />
       </button>

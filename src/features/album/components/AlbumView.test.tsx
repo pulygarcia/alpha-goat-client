@@ -28,17 +28,62 @@ const ALBUM: AlbumResponse = {
       marca: { id: 'm1', nombre: 'Águila', provincia: 'Córdoba' },
       stats: { collected: 2, total: 2, pct: 100 },
       alfajores: [
-        { id: 'a1', nombre: 'Clásico', tipo: 'Chocolate', imagenUrl: null, avgRating: 4.5, collected: true, myRating: 8, reviewId: 'r1' },
-        { id: 'a2', nombre: 'Blanco', tipo: 'Chocolate blanco', imagenUrl: null, avgRating: 4.2, collected: true, myRating: 7, reviewId: 'r2' },
+        {
+          id: 'a1',
+          nombre: 'Clásico',
+          tipo: 'Chocolate',
+          imagenUrl: null,
+          avgRating: 4.5,
+          collected: true,
+          myRating: 8,
+          reviewId: 'r1',
+        },
+        {
+          id: 'a2',
+          nombre: 'Blanco',
+          tipo: 'Chocolate blanco',
+          imagenUrl: null,
+          avgRating: 4.2,
+          collected: true,
+          myRating: 7,
+          reviewId: 'r2',
+        },
       ],
     },
     {
       marca: { id: 'm2', nombre: 'Havanna', provincia: 'CABA' },
       stats: { collected: 1, total: 3, pct: 33 },
       alfajores: [
-        { id: 'a3', nombre: 'Cacao', tipo: 'Chocolate', imagenUrl: null, avgRating: 4.6, collected: true, myRating: 9, reviewId: 'r3' },
-        { id: 'a4', nombre: 'Merengue', tipo: 'Merengue', imagenUrl: null, avgRating: null, collected: false, myRating: null, reviewId: null },
-        { id: 'a5', nombre: 'Ítalo', tipo: 'Chocolate', imagenUrl: null, avgRating: null, collected: false, myRating: null, reviewId: null },
+        {
+          id: 'a3',
+          nombre: 'Cacao',
+          tipo: 'Chocolate',
+          imagenUrl: null,
+          avgRating: 4.6,
+          collected: true,
+          myRating: 9,
+          reviewId: 'r3',
+        },
+        {
+          id: 'a4',
+          nombre: 'Merengue',
+          tipo: 'Merengue',
+          imagenUrl: null,
+          avgRating: null,
+          collected: false,
+          myRating: null,
+          reviewId: null,
+        },
+        {
+          id: 'a5',
+          nombre: 'Ítalo',
+          tipo: 'Chocolate',
+          imagenUrl: null,
+          avgRating: null,
+          collected: false,
+          myRating: null,
+          reviewId: null,
+        },
       ],
     },
   ],
@@ -63,7 +108,9 @@ describe('AlbumView', () => {
     render(<AlbumView username="pulyg" />);
 
     expect(screen.getByRole('heading', { name: 'Águila' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Havanna' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Havanna' }),
+    ).not.toBeInTheDocument();
   });
 
   it('opens the hoja from ?marca= when present', () => {
@@ -71,7 +118,9 @@ describe('AlbumView', () => {
 
     render(<AlbumView username="pulyg" />);
 
-    expect(screen.getByRole('heading', { name: 'Havanna' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Havanna' }),
+    ).toBeInTheDocument();
   });
 
   it('switches hoja and syncs the URL when a pill is clicked', async () => {
@@ -79,10 +128,16 @@ describe('AlbumView', () => {
 
     // MarcaIndex pill and HojaPager's next button both match /Havanna/;
     // the pill is the first match in DOM order.
-    await userEvent.click(screen.getAllByRole('button', { name: /Havanna/ })[0]!);
+    await userEvent.click(
+      screen.getAllByRole('button', { name: /Havanna/ })[0]!,
+    );
 
-    expect(screen.getByRole('heading', { name: 'Havanna' })).toBeInTheDocument();
-    expect(replace).toHaveBeenCalledWith('/u/pulyg/album?marca=m2', { scroll: false });
+    expect(
+      screen.getByRole('heading', { name: 'Havanna' }),
+    ).toBeInTheDocument();
+    expect(replace).toHaveBeenCalledWith('/u/pulyg/album?marca=m2', {
+      scroll: false,
+    });
   });
 
   it('resyncs the active hoja when ?marca= changes externally (browser back/forward)', () => {
@@ -94,8 +149,12 @@ describe('AlbumView', () => {
     searchParams = new URLSearchParams('marca=m2');
     rerender(<AlbumView username="pulyg" />);
 
-    expect(screen.getByRole('heading', { name: 'Havanna' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Águila' })).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Havanna' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: 'Águila' }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows the skeleton while loading', () => {
@@ -121,7 +180,9 @@ describe('AlbumView', () => {
 
     render(<AlbumView username="ghost" />);
 
-    expect(screen.getByText(/no encontramos a este usuario/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/no encontramos a este usuario/i),
+    ).toBeInTheDocument();
   });
 
   it('shows a retry message on a non-404 error', () => {
@@ -139,7 +200,11 @@ describe('AlbumView', () => {
 
   it('shows an empty state when the catalog has no hojas', () => {
     vi.mocked(useAlbum).mockReturnValue({
-      data: { owner: ALBUM.owner, stats: { collected: 0, total: 0, pct: 0 }, hojas: [] },
+      data: {
+        owner: ALBUM.owner,
+        stats: { collected: 0, total: 0, pct: 0 },
+        hojas: [],
+      },
       isLoading: false,
       isError: false,
       error: null,
@@ -147,6 +212,8 @@ describe('AlbumView', () => {
 
     render(<AlbumView username="pulyg" />);
 
-    expect(screen.getByText(/todavía no hay alfajores en el catálogo/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/todavía no hay alfajores en el catálogo/i),
+    ).toBeInTheDocument();
   });
 });

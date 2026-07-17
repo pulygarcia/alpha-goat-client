@@ -5,7 +5,10 @@ function initials(nombre: string): string {
 
   // If multiple words, take first letter of each (up to 2)
   if (words.length > 1) {
-    return words.slice(0, 2).map((w) => w[0]!.toUpperCase()).join('');
+    return words
+      .slice(0, 2)
+      .map((w) => w[0]!.toUpperCase())
+      .join('');
   }
 
   // If single word, take first 2 characters
@@ -27,7 +30,7 @@ export function FichaMarca({
   return (
     <aside className="bg-paper-sunken flex flex-col justify-between rounded-xl border border-[rgba(74,30,8,0.12)] p-4">
       <div>
-        <div className="border-ink/40 text-ink/55 mb-3 flex h-14 w-14 -rotate-6 items-center justify-center rounded-full border-2 border-dashed font-archivo text-lg">
+        <div className="border-ink/40 text-ink/55 font-archivo mb-3 flex h-14 w-14 -rotate-6 items-center justify-center rounded-full border-2 border-dashed text-lg">
           {initials(marca.nombre)}
         </div>
         <p className="text-ink/70 font-mono text-[10px] tracking-[0.24em] uppercase">
@@ -38,7 +41,7 @@ export function FichaMarca({
         </p>
       </div>
       {marca.provincia && (
-        <p className="mt-3 font-archivo text-[14px] tracking-tight">
+        <p className="font-archivo mt-3 text-[14px] tracking-tight">
           {marca.provincia.toUpperCase()} · AR
         </p>
       )}

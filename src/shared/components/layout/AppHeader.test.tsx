@@ -147,6 +147,17 @@ describe('AppHeader', () => {
     expect(screen.queryByText('Moderación')).not.toBeInTheDocument();
   });
 
+  it('links to the album page for the logged-in user', async () => {
+    const user = userEvent.setup();
+    setAuth(true, null, 'USER');
+    render(<AppHeader />);
+
+    await user.click(screen.getByLabelText('Menú de usuario'));
+
+    const item = await screen.findByRole('menuitem', { name: /Álbum/ });
+    expect(item).toHaveAttribute('href', '/u/puly/album');
+  });
+
   it('animates the drawer nav items by default and flat with reduced motion', () => {
     const normal = menuMotion(false);
     expect(normal.item.hidden).toMatchObject({ opacity: 0, x: -10 });

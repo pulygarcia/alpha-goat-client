@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { LogOut, Menu, Plus, ShieldCheck, User } from 'lucide-react';
+import { LogOut, Menu, Plus, ShieldCheck, Sticker, User } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -226,6 +226,15 @@ export function AppHeader() {
               <Link href={`/u/${user?.username}`}>
                 <User className="h-4 w-4" strokeWidth={2} />
                 Mi perfil
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              asChild
+              className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+            >
+              <Link href={`/u/${user?.username}/album`}>
+                <Sticker className="h-4 w-4" strokeWidth={2} />
+                Álbum
               </Link>
             </DropdownMenuItem>
             {user?.role === 'ADMIN' && (

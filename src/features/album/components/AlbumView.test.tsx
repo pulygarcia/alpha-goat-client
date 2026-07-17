@@ -3,9 +3,13 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AlbumView } from './AlbumView';
 import { useAlbum } from '../hooks/useAlbum';
+import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import type { AlbumResponse } from '../types/album.types';
 
 vi.mock('../hooks/useAlbum');
+vi.mock('@/features/auth/hooks/useCurrentUser', () => ({
+  useCurrentUser: vi.fn(),
+}));
 
 const replace = vi.fn();
 let searchParams = new URLSearchParams();
@@ -50,6 +54,9 @@ describe('AlbumView', () => {
       isError: false,
       error: null,
     } as never);
+    vi.mocked(useCurrentUser).mockReturnValue({
+      data: null,
+    } as ReturnType<typeof useCurrentUser>);
   });
 
   it('renders the first hoja by default', () => {

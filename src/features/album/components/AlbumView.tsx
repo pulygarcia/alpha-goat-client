@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { useAlbum } from '../hooks/useAlbum';
 import { AlbumHeader } from './AlbumHeader';
 import { MarcaIndex } from './MarcaIndex';
@@ -17,6 +18,7 @@ function statusOf(error: unknown): number | undefined {
 /** Página del álbum: header global + índice de marcas + hoja activa + pager. */
 export function AlbumView({ username }: { username: string }) {
   const { data: album, isLoading, isError, error } = useAlbum(username);
+  const { data: currentUser } = useCurrentUser();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -78,19 +80,27 @@ export function AlbumView({ username }: { username: string }) {
   const activeHoja = album.hojas[activeIndex]!;
 
   return (
-    <div className="flex flex-col gap-6">
-      <AlbumHeader owner={album.owner} stats={album.stats} />
-      <MarcaIndex
-        hojas={album.hojas}
-        activeMarcaId={activeHoja.marca.id}
-        onSelect={goToMarca}
-      />
-      <AlbumHoja hoja={activeHoja} index={activeIndex + 1} />
-      <HojaPager
-        hojas={album.hojas}
-        activeIndex={activeIndex}
-        onNavigate={goToMarca}
-      />
+    <div className="flex h-full flex-col gap-6">
+      <div className="flex flex-col gap-6">
+        <AlbumHeader
+          owner={album.owner}
+          stats={album.stats}
+          isOwnAlbum={currentUser?.id === album.owner.id}
+        />
+        <MarcaIndex
+          hojas={album.hojas}
+          activeMarcaId={activeHoja.marca.id}
+          onSelect={goToMarca}
+        />
+        <AlbumHoja hoja={activeHoja} index={activeIndex + 1} />
+      </div>
+      <div className="mt-auto">
+        <HojaPager
+          hojas={album.hojas}
+          activeIndex={activeIndex}
+          onNavigate={goToMarca}
+        />
+      </div>
     </div>
   );
 }

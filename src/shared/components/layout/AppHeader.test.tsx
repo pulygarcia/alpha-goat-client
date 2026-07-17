@@ -57,9 +57,14 @@ describe('AppHeader', () => {
 
   it('renders the logo and every nav item', () => {
     render(<AppHeader />);
-    for (const label of ['Feed', 'Alfajores', 'Ranking', 'Marcas']) {
+    for (const label of ['Feed', 'Alfajores', 'Ranking']) {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0);
     }
+  });
+
+  it('does not render the removed Marcas nav item', () => {
+    render(<AppHeader />);
+    expect(screen.queryByText('Marcas')).toBeNull();
   });
 
   it('links the logo to the feed', () => {

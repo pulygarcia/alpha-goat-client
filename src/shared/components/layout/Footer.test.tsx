@@ -17,10 +17,6 @@ describe('Footer', () => {
       'href',
       '/ranking',
     );
-    expect(screen.getByRole('link', { name: 'Marcas' })).toHaveAttribute(
-      'href',
-      '/marcas',
-    );
   });
 
   it('does not render the removed placeholder links', () => {
@@ -28,6 +24,7 @@ describe('Footer', () => {
     expect(screen.queryByRole('link', { name: 'Método' })).toBeNull();
     expect(screen.queryByRole('link', { name: 'Mi huella' })).toBeNull();
     expect(screen.queryByRole('link', { name: 'Sobre el índice' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Marcas' })).toBeNull();
   });
 
   it('points the portfolio icon to the portfolio', () => {

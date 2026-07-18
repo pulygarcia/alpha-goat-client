@@ -1,6 +1,7 @@
 import { StaggerItem } from '@/shared/components/motion/StaggerItem';
 import { FiguritaCard } from './FiguritaCard';
 import { FichaMarca } from './FichaMarca';
+import { HojaProgressGauge } from './HojaProgressGauge';
 import type { AlbumHoja as AlbumHojaType } from '../types/album.types';
 
 /** Una hoja de marca: header con progreso + grilla de figuritas (3 cols en md+, 2 en mobile). */
@@ -25,22 +26,20 @@ export function AlbumHoja({
             {hoja.marca.nombre}
           </h2>
         </div>
-        <div className="text-right">
-          <p className="font-archivo text-cinnamon text-2xl">
-            {hoja.stats.collected}/{hoja.stats.total}
-          </p>
-          <p className="text-ink/55 font-mono text-[10px] tracking-[0.26em] uppercase">
-            {hoja.stats.pct}% de la hoja
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <p className="font-archivo text-cinnamon text-2xl">
+              {hoja.stats.collected}/{hoja.stats.total}
+            </p>
+            <p className="text-ink/55 font-mono text-[10px] tracking-[0.26em] uppercase">
+              de la hoja
+            </p>
+          </div>
+          <HojaProgressGauge pct={hoja.stats.pct} />
         </div>
       </div>
 
-      <div className="bg-paper-sunken relative mt-3.5 mb-7 h-2 overflow-hidden rounded-full">
-        <div
-          className="from-cinnamon to-curry h-full rounded-full bg-gradient-to-r"
-          style={{ width: `${hoja.stats.pct}%` }}
-        />
-      </div>
+      <div className="mt-3.5 mb-7" />
 
       <div className="relative grid grid-cols-2 gap-4 px-3 md:grid-cols-3 md:gap-5 md:px-4">
         {hoja.alfajores.map((figurita, i) => (

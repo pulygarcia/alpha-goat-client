@@ -186,3 +186,15 @@
     animation: none;
   }
 }
+
+/* Oculta la scrollbar nativa manteniendo el scroll funcional (para listas
+   horizontales navegables por drag, ej. el índice de marcas del álbum). */
+.no-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}

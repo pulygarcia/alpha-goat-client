@@ -3,9 +3,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { LogOut, Menu, Plus, ShieldCheck, Sticker, User } from 'lucide-react';
+import {
+  LogOut,
+  Menu,
+  Plus,
+  Search,
+  ShieldCheck,
+  Sticker,
+  User,
+} from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -24,6 +32,7 @@ import {
   SheetTrigger,
 } from '@/shared/components/ui/sheet';
 import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
+import { UserSearchModal } from '@/features/users/components/UserSearchModal';
 import { UserAvatar } from '@/shared/components/UserAvatar';
 import { useAuth } from '@/shared/providers/AuthProvider';
 import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
@@ -67,9 +76,22 @@ export function AppHeader() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
   const [quickOpen, setQuickOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const requireAuth = useRequireAuth();
   const reduceMotion = useReducedMotion();
   const menu = menuMotion(!!reduceMotion);
+
+  // Atajo Cmd/Ctrl+K: abre el buscador de usuarios (gateado, requiere sesión).
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        requireAuth(() => setSearchOpen(true));
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [requireAuth]);
 
   return (
     <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
@@ -176,6 +198,17 @@ export function AppHeader() {
       </nav>
 
       <div className="flex-1" />
+
+      <button
+        type="button"
+        aria-label="Buscar usuario"
+        onClick={() => requireAuth(() => setSearchOpen(true))}
+        className="text-sienna hover:bg-paper-sunken hover:text-ink flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-colors"
+      >
+        <Search className="h-[18px] w-[18px]" strokeWidth={2} />
+      </button>
+
+      <UserSearchModal open={searchOpen} onOpenChange={setSearchOpen} />
 
       <button
         type="button"

@@ -15,6 +15,7 @@ import type {
   PaginatedReviews,
   Review,
 } from '@/features/reviews/types/reviews.types';
+import type { UserSearchResult } from '@/features/users/types/users.types';
 
 vi.mock('../api/follows.api', () => ({
   followsApi: { follow: vi.fn(), unfollow: vi.fn() },
@@ -95,6 +96,7 @@ function makeProfile(
 
 const PROFILE_KEY = ['profile', 'pepe'] as const;
 const REVIEWS_LIST_KEY = ['reviews', 'list', { alfajorId: 'a1' }] as const;
+const USERS_SEARCH_KEY = ['users', 'search', 'pep'] as const;
 
 function makeReview(
   id: string,
@@ -130,6 +132,7 @@ function setup(
   initialFeed: InfiniteData<FeedList>,
   initialProfile?: Profile,
   initialReviewsList?: InfiniteData<PaginatedReviews>,
+  initialUsersSearch?: UserSearchResult[],
 ) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -138,11 +141,14 @@ function setup(
   client.setQueryDefaults(['feed', 'reviews'], { enabled: false });
   client.setQueryDefaults(['profile'], { enabled: false });
   client.setQueryDefaults(['reviews', 'list'], { enabled: false });
+  client.setQueryDefaults(['users', 'search'], { enabled: false });
   const key = FEED_KEY;
   client.setQueryData(key, initialFeed);
   if (initialProfile) client.setQueryData(PROFILE_KEY, initialProfile);
   if (initialReviewsList)
     client.setQueryData(REVIEWS_LIST_KEY, initialReviewsList);
+  if (initialUsersSearch)
+    client.setQueryData(USERS_SEARCH_KEY, initialUsersSearch);
 
   const wrapper = ({ children }: { children: React.ReactNode }) =>
     React.createElement(QueryClientProvider, { client }, children);
@@ -155,6 +161,8 @@ function setup(
   const readReviewsListFollowing = () =>
     client.getQueryData<InfiniteData<PaginatedReviews>>(REVIEWS_LIST_KEY)!
       .pages[0].items[0].author?.isFollowing;
+  const readUsersSearchFollowing = () =>
+    client.getQueryData<UserSearchResult[]>(USERS_SEARCH_KEY)![0].isFollowing;
 
   return {
     result,
@@ -163,6 +171,7 @@ function setup(
     readFollowing,
     readProfile,
     readReviewsListFollowing,
+    readUsersSearchFollowing,
   };
 }
 
@@ -310,6 +319,39 @@ describe('useToggleFollow', () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  });
+
+  it('flips isFollowing on the users-search cache used by the search modal', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, readUsersSearchFollowing } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+      undefined,
+      undefined,
+      [{ id: 'u1', username: 'pepe', avatarUrl: null, isFollowing: false }],
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(readUsersSearchFollowing()).toBe(true));
+  });
+
+  it('rolls back the users-search cache on error', async () => {
+    vi.mocked(followsApi.follow).mockRejectedValue(new Error('boom'));
+    const { result, readUsersSearchFollowing } = setup(
+      seedFeed([makeItem('1', 'u1', false)]),
+      undefined,
+      undefined,
+      [{ id: 'u1', username: 'pepe', avatarUrl: null, isFollowing: false }],
+    );
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(readUsersSearchFollowing()).toBe(false);
   });
 
   it('rolls back the profile cache on error', async () => {

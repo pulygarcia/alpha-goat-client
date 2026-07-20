@@ -10,6 +10,8 @@ import { notifyError } from '@/shared/lib/toast';
 import type { FeedList } from '@/features/feed/types/feed.types';
 import type { Profile } from '@/features/profile/types/profile.types';
 import type { PaginatedReviews } from '@/features/reviews/types/reviews.types';
+import type { UserSearchResult } from '@/features/users/types/users.types';
+import { USERS_SEARCH_PREFIX } from '@/features/users/hooks/useUsersSearch';
 
 /** Prefijo de las queries del feed paginado: ['feed','reviews',{sort,scope,province}]. */
 const FEED_REVIEWS_PREFIX = ['feed', 'reviews'] as const;
@@ -67,6 +69,16 @@ function writeReviewsListFollowing(
   };
 }
 
+/** Igual que `writeIsFollowing` pero para `['users','search',q]` (array plano, no infinito). */
+function writeUsersSearchFollowing(
+  data: UserSearchResult[] | undefined,
+  userId: string,
+  next: boolean,
+): UserSearchResult[] | undefined {
+  if (!data) return data;
+  return data.map((u) => (u.id === userId ? { ...u, isFollowing: next } : u));
+}
+
 /** Reescribe `isFollowing` + ajusta `followersCount` del perfil que matchee `userId`. */
 function writeProfileFollow(
   profile: Profile | undefined,
@@ -82,15 +94,16 @@ function writeProfileFollow(
 }
 
 /**
- * Mutación de follow/unfollow con update optimista sobre tres caches:
+ * Mutación de follow/unfollow con update optimista sobre cuatro caches:
  * - el feed paginado (`['feed','reviews', ...]`), donde el mismo autor puede
  *   aparecer en varias filas/páginas: el flip recorre todas las queries y
  *   reescribe cada autor que matchee;
  * - el perfil (`['profile', username]`), de donde el `FollowButton` de la página
  *   de perfil lee su estado — sin esto el botón no cambia hasta refrescar;
  * - las reseñas por alfajor (`['reviews','list', {alfajorId}]`), que alimentan
- *   las cards de `/alfajores/[id]` — mismo problema que el perfil.
- * Rollback de los tres en error; invalida los tres al settle.
+ *   las cards de `/alfajores/[id]` — mismo problema que el perfil;
+ * - el buscador de usuarios (`['users','search', q]`), array plano (no infinito).
+ * Rollback de las cuatro en error; invalida las cuatro al settle.
  */
 export function useToggleFollow() {
   const queryClient = useQueryClient();
@@ -103,10 +116,12 @@ export function useToggleFollow() {
       const feedFilter = { queryKey: FEED_REVIEWS_PREFIX } as const;
       const profileFilter = { queryKey: PROFILE_PREFIX } as const;
       const reviewsListFilter = { queryKey: REVIEWS_LIST_PREFIX } as const;
+      const usersSearchFilter = { queryKey: USERS_SEARCH_PREFIX } as const;
       await Promise.all([
         queryClient.cancelQueries(feedFilter),
         queryClient.cancelQueries(profileFilter),
         queryClient.cancelQueries(reviewsListFilter),
+        queryClient.cancelQueries(usersSearchFilter),
       ]);
 
       const next = !isFollowing;
@@ -139,11 +154,21 @@ export function useToggleFollow() {
         );
       }
 
+      const usersSearchSnapshots =
+        queryClient.getQueriesData<UserSearchResult[]>(usersSearchFilter);
+      for (const [key, data] of usersSearchSnapshots) {
+        queryClient.setQueryData<UserSearchResult[]>(
+          key,
+          writeUsersSearchFollowing(data, userId, next),
+        );
+      }
+
       return {
         snapshots: [
           ...feedSnapshots,
           ...profileSnapshots,
           ...reviewsListSnapshots,
+          ...usersSearchSnapshots,
         ],
       };
     },
@@ -160,6 +185,7 @@ export function useToggleFollow() {
       void queryClient.invalidateQueries({ queryKey: FEED_REVIEWS_PREFIX });
       void queryClient.invalidateQueries({ queryKey: PROFILE_PREFIX });
       void queryClient.invalidateQueries({ queryKey: REVIEWS_LIST_PREFIX });
+      void queryClient.invalidateQueries({ queryKey: USERS_SEARCH_PREFIX });
     },
   });
 }

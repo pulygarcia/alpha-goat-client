@@ -21,6 +21,11 @@ vi.mock('@/features/reviews/components/QuickReviewModal', () => ({
   QuickReviewModal: ({ open }: { open: boolean }) =>
     open ? <div data-testid="quick-review-modal" /> : null,
 }));
+// El modal trae dependencias pesadas (query) ajenas a este test.
+vi.mock('@/features/users/components/UserSearchModal', () => ({
+  UserSearchModal: ({ open }: { open: boolean }) =>
+    open ? <div data-testid="user-search-modal" /> : null,
+}));
 
 const mockedAuth = vi.mocked(useAuth);
 const mockedRequireAuth = vi.mocked(useRequireAuth);
@@ -128,6 +133,19 @@ describe('AppHeader', () => {
     render(<AppHeader />);
     fireEvent.click(screen.getByRole('button', { name: /Reseñar/i }));
     expect(screen.getByTestId('quick-review-modal')).toBeInTheDocument();
+  });
+
+  it('opens the user search modal from the search button when the gate passes', () => {
+    render(<AppHeader />);
+    fireEvent.click(screen.getByRole('button', { name: 'Buscar usuario' }));
+    expect(screen.getByTestId('user-search-modal')).toBeInTheDocument();
+  });
+
+  it('does not open the user search modal for an anonymous user (gated)', () => {
+    setRequireAuth(false);
+    render(<AppHeader />);
+    fireEvent.click(screen.getByRole('button', { name: 'Buscar usuario' }));
+    expect(screen.queryByTestId('user-search-modal')).not.toBeInTheDocument();
   });
 
   it('shows the "Moderación" item in the avatar menu for an ADMIN', async () => {

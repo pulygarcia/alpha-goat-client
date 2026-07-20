@@ -7,10 +7,11 @@ import type { UserSearchResult } from '../types/users.types';
 /** Prefijo de la query de búsqueda de usuarios: ['users','search',q]. */
 export const USERS_SEARCH_PREFIX = ['users', 'search'] as const;
 
-export const usersSearchKey = (q: string) => [...USERS_SEARCH_PREFIX, q] as const;
+export const usersSearchKey = (q: string) =>
+  [...USERS_SEARCH_PREFIX, q] as const;
 
 /**
- * Busca usuarios por username para el buscador global (modal Cmd/Ctrl+K). La
+ * Busca usuarios por username para el buscador global (modal del ícono lupa). La
  * query se deshabilita con `q` vacío (devuelve `[]`) para no pegarle al back
  * sin término; el llamador ya viene debounced.
  */

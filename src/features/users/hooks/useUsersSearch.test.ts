@@ -11,9 +11,7 @@ vi.mock('../api/users.api', () => ({
 }));
 
 const PAGE: PaginatedUserSearchResults = {
-  items: [
-    { id: 'u1', username: 'pulyg', avatarUrl: null, isFollowing: false },
-  ],
+  items: [{ id: 'u1', username: 'pulyg', avatarUrl: null, isFollowing: false }],
   total: 1,
   page: 1,
   limit: 20,

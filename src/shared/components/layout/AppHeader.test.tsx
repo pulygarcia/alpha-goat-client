@@ -148,12 +148,6 @@ describe('AppHeader', () => {
     expect(screen.queryByTestId('user-search-modal')).not.toBeInTheDocument();
   });
 
-  it('opens the user search modal with Cmd/Ctrl+K when the gate passes', () => {
-    render(<AppHeader />);
-    fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
-    expect(screen.getByTestId('user-search-modal')).toBeInTheDocument();
-  });
-
   it('shows the "Moderación" item in the avatar menu for an ADMIN', async () => {
     const user = userEvent.setup();
     setAuth(true, null, 'ADMIN');

@@ -14,7 +14,7 @@ import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 import { useUsersSearch } from '../hooks/useUsersSearch';
 
 /**
- * Buscador global de usuarios (modal centrado, atajo Cmd/Ctrl+K + ícono lupa
+ * Buscador global de usuarios (modal centrado, disparado por el ícono lupa
  * del `AppHeader`). Input debounced contra `GET /users?q=`; cada fila lleva
  * su propio `FollowButton` y navega al perfil al hacer click.
  */
@@ -44,7 +44,7 @@ export function UserSearchModal({
         if (!next) setText('');
       }}
     >
-      <DialogContent className="top-[20%] max-w-md translate-y-0 gap-3 px-4 pt-8 pb-4">
+      <DialogContent className="top-[20%] max-w-md translate-y-0 gap-3 border-none px-4 pt-4 pb-4 [&>button]:hidden">
         <DialogTitle className="sr-only">Buscar usuarios</DialogTitle>
 
         <label className="bg-paper-sunken focus-within:border-cinnamon flex h-11 items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] px-3 transition-colors">

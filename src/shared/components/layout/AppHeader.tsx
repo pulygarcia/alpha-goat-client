@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   LogOut,
@@ -80,18 +80,6 @@ export function AppHeader() {
   const requireAuth = useRequireAuth();
   const reduceMotion = useReducedMotion();
   const menu = menuMotion(!!reduceMotion);
-
-  // Atajo Cmd/Ctrl+K: abre el buscador de usuarios (gateado, requiere sesión).
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        requireAuth(() => setSearchOpen(true));
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [requireAuth]);
 
   return (
     <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">

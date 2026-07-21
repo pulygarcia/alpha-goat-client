@@ -152,6 +152,54 @@ describe('FeedReviews', () => {
     });
   });
 
+  it('shows the default title when there is no scope', () => {
+    mocked.mockReturnValue(baseReturn({ data: { pages: [] } as never }));
+    render(<FeedReviews />);
+    expect(
+      screen.getByRole('heading', { name: 'Reseñas destacadas' }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows "Reseñas de hoy" when scope is today', () => {
+    useFeedFilters.setState({ scope: 'today' });
+    mocked.mockReturnValue(baseReturn({ data: { pages: [] } as never }));
+    render(<FeedReviews />);
+    expect(
+      screen.getByRole('heading', { name: 'Reseñas de hoy' }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows "Reseñas de esta semana" when scope is week', () => {
+    useFeedFilters.setState({ scope: 'week' });
+    mocked.mockReturnValue(baseReturn({ data: { pages: [] } as never }));
+    render(<FeedReviews />);
+    expect(
+      screen.getByRole('heading', { name: 'Reseñas de esta semana' }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows "Reseñas de gente que seguís" when scope is following', () => {
+    useFeedFilters.setState({ scope: 'following' });
+    mocked.mockReturnValue(
+      baseReturn({
+        data: {
+          pages: [
+            {
+              items: [makeItem('1', 'Jorgito')],
+              total: 1,
+              page: 1,
+              limit: 20,
+            },
+          ],
+        } as never,
+      }),
+    );
+    render(<FeedReviews />);
+    expect(
+      screen.getByRole('heading', { name: 'Reseñas de gente que seguís' }),
+    ).toBeInTheDocument();
+  });
+
   it('calls fetchNextPage when "Cargar más" is clicked', () => {
     const fetchNextPage = vi.fn();
     mocked.mockReturnValue(

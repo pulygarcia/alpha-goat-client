@@ -1,5 +1,6 @@
 'use client';
 
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   PolarAngleAxis,
   PolarGrid,
@@ -9,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { useFeedHero } from '../hooks/useFeedHero';
+import { useFeedFilters } from '../store/feedFilters.store';
 import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
 import type { FeedHeroRatings } from '../types/feed.types';
 import { FeedHeroSkeleton } from './FeedHeroSkeleton';
@@ -29,116 +31,200 @@ function toRadarData(r: FeedHeroRatings) {
 }
 
 export function FeedHero() {
+  const scope = useFeedFilters((s) => s.scope);
   const { data, isLoading, isError } = useFeedHero();
   const { ref, revealed, animate } = useRevealOnScroll<HTMLDivElement>();
+  const reduceMotion = useReducedMotion();
 
-  if (isLoading) {
-    return <FeedHeroSkeleton />;
-  }
+  const collapsed = scope !== null;
 
-  if (isError) {
-    return (
+  let content: React.ReactNode = null;
+
+  if (collapsed) {
+    if (!isLoading && !isError && data) {
+      content = (
+        <CollapsedHero
+          alfajorNombre={data.alfajor.nombre}
+          ratings={data.ratings}
+        />
+      );
+    }
+  } else if (isLoading) {
+    content = <FeedHeroSkeleton />;
+  } else if (isError) {
+    content = (
       <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
         No pudimos contactar al servidor. Probá recargar.
       </div>
     );
-  }
-
-  if (!data) {
-    return (
+  } else if (!data) {
+    content = (
       <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
         Todavía no hay reseñas. Sé el primero en reseñar un alfajor.
       </div>
     );
+  } else {
+    const { alfajor, ratings, stats } = data;
+    const deltaSign =
+      stats.deltaPct === null ? '' : stats.deltaPct >= 0 ? '▲' : '▼';
+    const deltaText =
+      stats.deltaPct === null
+        ? 'sin base previa'
+        : `${deltaSign} ${Math.abs(stats.deltaPct).toFixed(0)}% vs sem. anterior`;
+
+    content = (
+      <section className="border-b border-[rgba(74,30,8,0.14)] px-5 py-8 md:px-8 md:py-9">
+        <p
+          className="text-curry-deep"
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.7rem',
+            letterSpacing: '0.26em',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          }}
+        >
+          Goat del momento
+        </p>
+
+        <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
+          <div>
+            <h2
+              className="text-ink text-[40px] md:text-[48px] lg:text-[56px]"
+              style={{
+                fontFamily: 'var(--font-archivo)',
+                letterSpacing: '-0.045em',
+                lineHeight: 0.96,
+              }}
+            >
+              {alfajor.nombre}
+            </h2>
+            <p className="text-sienna mt-2 text-[15px]">
+              {alfajor.marca.nombre}
+              {alfajor.marca.provincia
+                ? ` · ${alfajor.marca.provincia}`
+                : ''} · <span className="lowercase">{alfajor.tipo}</span>
+            </p>
+
+            <dl className="mt-6 grid max-w-[520px] grid-cols-3 gap-4 md:gap-6">
+              <Stat label="Rating gral." value={ratings.general.toFixed(1)} />
+              <Stat
+                label="Reseñas semana"
+                value={String(stats.reviewsThisWeek)}
+                hint={deltaText}
+              />
+              <Stat label="Total reseñas" value={String(stats.totalReviews)} />
+            </dl>
+          </div>
+
+          <div ref={ref} className="h-[280px] w-full">
+            <ResponsiveContainer
+              width="100%"
+              height="100%"
+              minWidth={0}
+              minHeight={0}
+            >
+              <RadarChart data={toRadarData(ratings)} outerRadius="78%">
+                <PolarGrid stroke="rgba(74,30,8,0.18)" />
+                <PolarAngleAxis
+                  dataKey="axis"
+                  tick={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 10,
+                    letterSpacing: '0.18em',
+                    fill: 'rgba(44,18,9,0.7)',
+                  }}
+                />
+                <PolarRadiusAxis
+                  domain={[0, 10]}
+                  tick={false}
+                  axisLine={false}
+                />
+                {revealed && (
+                  <Radar
+                    dataKey="value"
+                    stroke="var(--color-curry-deep)"
+                    fill="var(--color-curry-deep)"
+                    fillOpacity={0.28}
+                    isAnimationActive={animate}
+                    animationDuration={700}
+                  />
+                )}
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </section>
+    );
   }
 
-  const { alfajor, ratings, stats } = data;
-  const deltaSign =
-    stats.deltaPct === null ? '' : stats.deltaPct >= 0 ? '▲' : '▼';
-  const deltaText =
-    stats.deltaPct === null
-      ? 'sin base previa'
-      : `${deltaSign} ${Math.abs(stats.deltaPct).toFixed(0)}% vs sem. anterior`;
-
   return (
-    <section className="border-b border-[rgba(74,30,8,0.14)] px-5 py-8 md:px-8 md:py-9">
+    <motion.div
+      layout={!reduceMotion}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {content}
+    </motion.div>
+  );
+}
+
+function CollapsedHero({
+  alfajorNombre,
+  ratings,
+}: {
+  alfajorNombre: string;
+  ratings: FeedHeroRatings;
+}) {
+  return (
+    <div className="border-b border-[rgba(74,30,8,0.14)] px-5 py-6 md:px-8 md:py-7">
       <p
         className="text-curry-deep"
         style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
-          letterSpacing: '0.26em',
+          fontSize: '0.62rem',
+          letterSpacing: '0.22em',
           textTransform: 'uppercase',
           fontWeight: 700,
         }}
       >
         Goat del momento
       </p>
+      <div className="mt-1 flex items-center gap-5">
+        <p
+          className="text-ink flex items-baseline gap-2 truncate"
+          style={{
+            fontFamily: 'var(--font-archivo)',
+            fontSize: 26,
+            letterSpacing: '-0.03em',
+          }}
+        >
+          {alfajorNombre}
+          <span className="text-cinnamon text-[15px] font-semibold">
+            {ratings.general.toFixed(1)}
+          </span>
+        </p>
 
-      <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
-        <div>
-          <h2
-            className="text-ink text-[40px] md:text-[48px] lg:text-[56px]"
-            style={{
-              fontFamily: 'var(--font-archivo)',
-              letterSpacing: '-0.045em',
-              lineHeight: 0.96,
-            }}
-          >
-            {alfajor.nombre}
-          </h2>
-          <p className="text-sienna mt-2 text-[15px]">
-            {alfajor.marca.nombre}
-            {alfajor.marca.provincia
-              ? ` · ${alfajor.marca.provincia}`
-              : ''} · <span className="lowercase">{alfajor.tipo}</span>
-          </p>
-
-          <dl className="mt-6 grid max-w-[520px] grid-cols-3 gap-4 md:gap-6">
-            <Stat label="Rating gral." value={ratings.general.toFixed(1)} />
-            <Stat
-              label="Reseñas semana"
-              value={String(stats.reviewsThisWeek)}
-              hint={deltaText}
-            />
-            <Stat label="Total reseñas" value={String(stats.totalReviews)} />
-          </dl>
-        </div>
-
-        <div ref={ref} className="h-[280px] w-full">
+        <div data-testid="feed-hero-mini-radar" className="h-14 w-14 shrink-0">
           <ResponsiveContainer
             width="100%"
             height="100%"
             minWidth={0}
             minHeight={0}
           >
-            <RadarChart data={toRadarData(ratings)} outerRadius="78%">
-              <PolarGrid stroke="rgba(74,30,8,0.18)" />
-              <PolarAngleAxis
-                dataKey="axis"
-                tick={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 10,
-                  letterSpacing: '0.18em',
-                  fill: 'rgba(44,18,9,0.7)',
-                }}
+            <RadarChart data={toRadarData(ratings)} outerRadius="88%">
+              <Radar
+                dataKey="value"
+                stroke="var(--color-curry-deep)"
+                fill="var(--color-curry-deep)"
+                fillOpacity={0.32}
+                strokeWidth={1.3}
+                isAnimationActive={false}
               />
-              <PolarRadiusAxis domain={[0, 10]} tick={false} axisLine={false} />
-              {revealed && (
-                <Radar
-                  dataKey="value"
-                  stroke="var(--color-curry-deep)"
-                  fill="var(--color-curry-deep)"
-                  fillOpacity={0.28}
-                  isAnimationActive={animate}
-                  animationDuration={700}
-                />
-              )}
             </RadarChart>
           </ResponsiveContainer>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

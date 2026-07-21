@@ -78,7 +78,7 @@ export function MarcaIndex({
             aria-pressed={active}
             onClick={() => handleSelect(hoja.marca.id)}
             className={cn(
-              'flex flex-none cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-medium whitespace-nowrap',
+              'flex flex-none cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-medium whitespace-nowrap outline-none focus-visible:outline-none',
               active
                 ? 'bg-ink text-paper border-ink'
                 : 'bg-paper-raised text-ink border-[rgba(74,30,8,0.14)]',

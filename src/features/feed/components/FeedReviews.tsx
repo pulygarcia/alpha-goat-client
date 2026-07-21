@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useFeedReviews } from '../hooks/useFeedReviews';
 import { useFeedFilters } from '../store/feedFilters.store';
-import type { FeedSort } from '../types/feed.types';
+import type { FeedScope, FeedSort } from '../types/feed.types';
 import { FeedReviewsSkeleton } from './FeedReviewsSkeleton';
 import { ReviewCard } from '@/features/reviews/components/ReviewCard';
 import { feedItemToVM } from '@/features/reviews/lib/reviewCardVM';
@@ -14,6 +14,17 @@ const SORTS: Array<{ value: FeedSort; label: string }> = [
   { value: 'recent', label: 'Recientes' },
   { value: 'rating', label: 'Mejor puntuadas' },
 ];
+
+const TITLES: Record<FeedScope, string> = {
+  today: 'Reseñas de hoy',
+  week: 'Reseñas de esta semana',
+  following: 'Reseñas de gente que seguís',
+  province: 'Reseñas destacadas',
+};
+
+function titleFor(scope: FeedScope | null): string {
+  return scope === null ? 'Reseñas destacadas' : TITLES[scope];
+}
 
 export function FeedReviews() {
   const [sort, setSort] = useState<FeedSort>('recent');
@@ -36,7 +47,7 @@ export function FeedReviews() {
     <section className="px-5 py-8 md:px-8 md:py-9">
       <div className="mb-5 flex flex-col gap-[14px] border-b border-[rgba(74,30,8,0.14)] pb-4">
         <h4 className="text-ink text-[24px] font-semibold tracking-[-0.02em]">
-          Reseñas destacadas
+          {titleFor(scope)}
         </h4>
         <div
           className="flex gap-[6px]"

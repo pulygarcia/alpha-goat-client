@@ -17,7 +17,7 @@ function memberSince(iso: string) {
 
 const ROLE_LABEL: Record<UserRole, string> = {
   USER: 'Usuario alphagoat',
-  ADMIN: 'Curador',
+  ADMIN: 'Administrador',
 };
 
 function CoreRow({

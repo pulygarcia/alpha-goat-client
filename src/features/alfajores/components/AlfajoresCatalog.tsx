@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 import { useAlfajores } from '../hooks/useAlfajores';
-import { AlfajorCard } from './AlfajorCard';
-import { AlfajoresGridSkeleton } from './AlfajoresGridSkeleton';
+import { AlfajorRow } from './AlfajorRow';
+import { AlfajorRowsSkeleton } from './AlfajorRowsSkeleton';
 
 export function AlfajoresCatalog() {
   const [search, setSearch] = useState('');
@@ -43,7 +43,7 @@ export function AlfajoresCatalog() {
         </h1>
       </header>
 
-      <label className="bg-paper-sunken focus-within:border-cinnamon mb-7 flex h-11 w-full max-w-[420px] items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] px-3 transition-colors">
+      <label className="mb-7 flex h-11 w-full max-w-[420px] items-center gap-2 rounded-[10px] border border-[rgba(74,30,8,0.12)] bg-black/[0.015] px-3 transition-colors focus-within:border-[rgba(74,30,8,0.22)]">
         <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
         <input
           type="search"
@@ -54,7 +54,7 @@ export function AlfajoresCatalog() {
         />
       </label>
 
-      {isLoading && <AlfajoresGridSkeleton />}
+      {isLoading && <AlfajorRowsSkeleton />}
 
       {isError && (
         <p className="text-sienna text-[14px]">
@@ -71,9 +71,9 @@ export function AlfajoresCatalog() {
       )}
 
       {items.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="flex flex-col gap-1">
           {items.map((alfajor) => (
-            <AlfajorCard key={alfajor.id} alfajor={alfajor} />
+            <AlfajorRow key={alfajor.id} alfajor={alfajor} />
           ))}
         </div>
       )}

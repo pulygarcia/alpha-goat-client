@@ -84,14 +84,14 @@ export function AlfajorImageUploader({
   }
 
   return (
-    <div>
+    <div className="w-full max-w-[220px] md:max-w-none">
       <div className={SLOT_CLASS}>
         {shownUrl ? (
           <Image
             src={shownUrl}
             alt={nombre}
             fill
-            sizes="(max-width: 768px) 100vw, 420px"
+            sizes="(max-width: 768px) 220px, 420px"
             className="object-cover"
             unoptimized={!!previewUrl}
           />
@@ -103,9 +103,9 @@ export function AlfajorImageUploader({
           <>
             <label
               htmlFor="alfajor-image-file"
-              className="text-ink bg-paper/90 absolute right-3 bottom-3 inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-[10px] border border-[rgba(74,30,8,0.18)] px-3 text-[13px] font-semibold backdrop-blur-sm transition-colors hover:border-[#3a1808]"
+              className="text-ink bg-paper/90 absolute right-2 bottom-2 inline-flex h-7 cursor-pointer items-center gap-1 rounded-[8px] border border-[rgba(74,30,8,0.18)] px-2 text-[11px] font-semibold backdrop-blur-sm transition-colors hover:border-[#3a1808] md:right-3 md:bottom-3 md:h-9 md:gap-1.5 md:rounded-[10px] md:px-3 md:text-[13px]"
             >
-              <ImagePlus className="h-4 w-4" strokeWidth={2} />
+              <ImagePlus className="h-3 w-3 md:h-4 md:w-4" strokeWidth={2} />
               Cambiar foto
             </label>
             <input

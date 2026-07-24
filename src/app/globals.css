@@ -14,8 +14,8 @@
 
   /* Cream paper palette — used by the post-login feed ("El Diario").
      Coexists with the dark curry palette used in marketing/auth. */
-  --color-paper: #f5ead0;
-  --color-paper-raised: #f9efd9;
+  --color-paper: #fbf5e5;
+  --color-paper-raised: #fffaf0;
   --color-paper-sunken: #efe0b6;
   --color-paper-field: #e7d3a0;
   --color-paper-emph: #d9b569;
@@ -197,4 +197,23 @@
   display: none !important;
   width: 0 !important;
   height: 0 !important;
+}
+
+/* Scrollbar fina on-brand para paneles con scroll propio (ej. modal de reseña). */
+.paper-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(74, 30, 8, 0.22) transparent;
+}
+.paper-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.paper-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.paper-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(74, 30, 8, 0.22);
+  border-radius: 999px;
+}
+.paper-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(74, 30, 8, 0.35);
 }

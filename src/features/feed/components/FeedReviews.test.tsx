@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { FeedReviews } from './FeedReviews';
 import { useFeedReviews } from '../hooks/useFeedReviews';
 import { useFeedFilters } from '../store/feedFilters.store';
@@ -136,7 +137,8 @@ describe('FeedReviews', () => {
     expect(screen.getByText('Guaymallén')).toBeInTheDocument();
   });
 
-  it('defaults to the "recent" sort and re-renders with the selected sort', () => {
+  it('defaults to the "recent" sort and re-renders with the selected sort', async () => {
+    const user = userEvent.setup();
     mocked.mockReturnValue(baseReturn({ data: { pages: [] } as never }));
     render(<FeedReviews />);
 
@@ -145,7 +147,7 @@ describe('FeedReviews', () => {
       scope: undefined,
     });
 
-    fireEvent.click(screen.getByText('Más likes'));
+    await user.click(screen.getByText('Más likes'));
     expect(mocked).toHaveBeenLastCalledWith({
       sort: 'likes',
       scope: undefined,

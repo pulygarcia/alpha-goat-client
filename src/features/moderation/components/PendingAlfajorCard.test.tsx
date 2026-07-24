@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PendingAlfajorCard } from './PendingAlfajorCard';
 import { useModerateAlfajor } from '../hooks/useModerateAlfajor';
@@ -73,6 +73,12 @@ describe('PendingAlfajorCard', () => {
       { id: 'a1', action: 'reject', rejectionReason: 'Duplicado' },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+
+    const { onSuccess } = mutate.mock.calls[0][1];
+    act(() => onSuccess());
+    expect(
+      screen.queryByLabelText('Motivo del rechazo'),
+    ).not.toBeInTheDocument();
   });
 
   it('disables both actions while a mutation is in flight', () => {

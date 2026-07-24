@@ -1,8 +1,29 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Footer } from './Footer';
 
+const useReducedMotionMock = vi.fn();
+
+vi.mock('framer-motion', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('framer-motion')>();
+  return {
+    ...actual,
+    useReducedMotion: () => useReducedMotionMock(),
+  };
+});
+
 describe('Footer', () => {
+  it('skips hover/tap and enter/exit motion when reduced motion is preferred', () => {
+    useReducedMotionMock.mockReturnValue(true);
+    render(<Footer />);
+    fireEvent.change(screen.getByPlaceholderText(/ingresá tu email/i), {
+      target: { value: 'puly@alfajores.com' },
+    });
+    fireEvent.submit(screen.getByRole('form', { name: /newsletter/i }));
+    expect(screen.getByText(/te sumaste/i)).toBeInTheDocument();
+    useReducedMotionMock.mockReturnValue(false);
+  });
+
   it('links the explore routes to real pages', () => {
     render(<Footer />);
     expect(screen.getByRole('link', { name: 'Feed' })).toHaveAttribute(

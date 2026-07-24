@@ -73,12 +73,6 @@ export default function SignUpForm() {
         >
           Crear nuevo perfil
         </h1>
-        <p
-          className="mt-1.5 text-[0.88rem] leading-[1.4]"
-          style={{ color: 'rgba(246,201,119,0.55)' }}
-        >
-          Ingresá tus datos básicos para empezar el viaje.
-        </p>
       </div>
 
       {/* Form */}

@@ -33,8 +33,8 @@ export function LikeButton({ reviewId, likes, isLiked }: LikeButtonProps) {
       aria-pressed={isLiked}
       aria-label={isLiked ? 'Quitar like' : 'Dar like'}
       className={
-        'inline-flex cursor-pointer items-center gap-1.5 rounded-md px-1.5 py-1 transition-colors ' +
-        (isLiked ? 'text-curry-deep' : 'hover:text-curry-deep')
+        'inline-flex cursor-pointer items-center gap-[5px] transition-colors ' +
+        (isLiked ? 'text-sienna' : 'hover:text-sienna')
       }
     >
       <ThumbsUp

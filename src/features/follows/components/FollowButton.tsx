@@ -35,10 +35,17 @@ export function FollowButton({ userId, isFollowing }: FollowButtonProps) {
       disabled={toggle.isPending}
       aria-pressed={isFollowing}
       className={
-        'rounded-full border px-3 py-[3px] text-[11px] font-semibold transition-colors disabled:opacity-60 ' +
-        (isFollowing
-          ? 'text-cinnamon hover:border-curry-deep hover:text-curry-deep border-[rgba(74,30,8,0.22)]'
-          : 'border-curry-deep bg-curry-deep text-paper hover:bg-curry-bright')
+        isFollowing
+          ? 'text-cinnamon hover:border-curry-deep hover:text-curry-deep rounded-full border border-[rgba(74,30,8,0.22)] px-3 py-[3px] text-[11px] font-semibold transition-colors disabled:opacity-60'
+          : 'rounded-[20px] px-3 py-1 text-[11px] font-bold transition-opacity hover:opacity-90 disabled:opacity-60'
+      }
+      style={
+        isFollowing
+          ? undefined
+          : {
+              background: 'linear-gradient(180deg, #b3702a, #92561d)',
+              color: '#fff8ec',
+            }
       }
     >
       {isFollowing ? 'Siguiendo' : 'Seguir'}

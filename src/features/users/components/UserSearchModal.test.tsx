@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserSearchModal } from './UserSearchModal';
 import { useUsersSearch } from '../hooks/useUsersSearch';
+import { useSuggestedUsers } from '../hooks/useSuggestedUsers';
 import type { UserSearchResult } from '../types/users.types';
 
 const push = vi.fn();
@@ -11,6 +12,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('../hooks/useUsersSearch');
+vi.mock('../hooks/useSuggestedUsers');
 vi.mock('@/shared/hooks/useDebouncedValue', () => ({
   useDebouncedValue: (v: unknown) => v,
 }));
@@ -37,6 +39,9 @@ describe('UserSearchModal', () => {
     push.mockReset();
     vi.mocked(useUsersSearch).mockReset();
     mockSearch([]);
+    vi.mocked(useSuggestedUsers).mockReturnValue({
+      data: [],
+    } as never);
   });
 
   it('prompts to type when the query is empty', () => {
@@ -84,6 +89,16 @@ describe('UserSearchModal', () => {
 
     expect(push).toHaveBeenCalledWith('/u/pulyg');
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('shows suggested users when the query is empty', () => {
+    vi.mocked(useSuggestedUsers).mockReturnValue({
+      data: [PULYG],
+    } as never);
+    render(<UserSearchModal open onOpenChange={vi.fn()} />);
+
+    expect(screen.getByText('Sugeridos')).toBeInTheDocument();
+    expect(screen.getByText('pulyg')).toBeInTheDocument();
   });
 
   it('renders a FollowButton per result', async () => {

@@ -36,7 +36,7 @@ describe('useUserReviews', () => {
     expect(reviewsApi.list).toHaveBeenCalledWith({
       userId: 'u1',
       page: 1,
-      limit: 10,
+      limit: 5,
     });
   });
 

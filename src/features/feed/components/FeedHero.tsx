@@ -69,7 +69,7 @@ export function FeedHero() {
       stats.deltaPct === null ? '' : stats.deltaPct >= 0 ? '▲' : '▼';
     const deltaText =
       stats.deltaPct === null
-        ? 'sin base previa'
+        ? undefined
         : `${deltaSign} ${Math.abs(stats.deltaPct).toFixed(0)}% vs sem. anterior`;
 
     content = (
@@ -87,7 +87,7 @@ export function FeedHero() {
           Goat del momento
         </p>
 
-        <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
+        <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:items-center lg:gap-10">
           <div>
             <h2
               className="text-ink text-[40px] md:text-[48px] lg:text-[56px]"
@@ -106,10 +106,10 @@ export function FeedHero() {
                 : ''} · <span className="lowercase">{alfajor.tipo}</span>
             </p>
 
-            <dl className="mt-6 grid max-w-[520px] grid-cols-3 gap-4 md:gap-6">
-              <Stat label="Rating gral." value={ratings.general.toFixed(1)} />
+            <dl className="mt-6 grid grid-cols-3 gap-3 md:gap-6">
+              <Stat label="Rating" value={ratings.general.toFixed(1)} />
               <Stat
-                label="Reseñas semana"
+                label="Esta semana"
                 value={String(stats.reviewsThisWeek)}
                 hint={deltaText}
               />
@@ -117,7 +117,14 @@ export function FeedHero() {
             </dl>
           </div>
 
-          <div ref={ref} className="h-[280px] w-full">
+          <motion.div
+            ref={ref}
+            className="h-[280px] w-full"
+            style={{ transformOrigin: 'center' }}
+            initial={animate ? { opacity: 0, scale: 0.7 } : false}
+            animate={revealed ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          >
             <ResponsiveContainer
               width="100%"
               height="100%"
@@ -146,13 +153,12 @@ export function FeedHero() {
                     stroke="var(--color-curry-deep)"
                     fill="var(--color-curry-deep)"
                     fillOpacity={0.28}
-                    isAnimationActive={animate}
-                    animationDuration={700}
+                    isAnimationActive={false}
                   />
                 )}
               </RadarChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
         </div>
       </section>
     );
@@ -238,30 +244,28 @@ function Stat({
   hint?: string;
 }) {
   return (
-    <div>
+    <div className="flex min-w-0 flex-col items-center text-center">
       <p
-        className="text-cinnamon"
+        className="text-cinnamon truncate text-[9.5px] tracking-[0.14em] uppercase md:text-[0.62rem] md:tracking-[0.26em]"
         style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.62rem',
-          letterSpacing: '0.26em',
-          textTransform: 'uppercase',
           fontWeight: 700,
         }}
       >
         {label}
       </p>
       <p
-        className="text-ink mt-1"
+        className="text-ink mt-1 text-[23px] md:text-[28px]"
         style={{
           fontFamily: 'var(--font-archivo)',
-          fontSize: 28,
           letterSpacing: '-0.02em',
         }}
       >
         {value}
       </p>
-      {hint && <p className="text-sienna mt-1 text-[11px]">{hint}</p>}
+      {hint && (
+        <p className="text-sienna mt-1 text-[10px] md:text-[11px]">{hint}</p>
+      )}
     </div>
   );
 }

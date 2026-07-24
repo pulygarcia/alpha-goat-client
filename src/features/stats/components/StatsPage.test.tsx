@@ -28,9 +28,7 @@ describe('StatsPage', () => {
     } as never);
     render(<StatsPage />);
 
-    expect(
-      screen.getByTestId('stats-counters-skeleton'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('stats-counters-skeleton')).toBeInTheDocument();
   });
 
   it('shows an error message on failure', () => {

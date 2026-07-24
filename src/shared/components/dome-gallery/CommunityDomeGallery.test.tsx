@@ -44,7 +44,12 @@ describe('CommunityDomeGallery', () => {
     users.mockReturnValue(
       loaded({
         items: [
-          { id: 'u1', username: 'pepe', avatarUrl: 'p.png', isFollowing: false },
+          {
+            id: 'u1',
+            username: 'pepe',
+            avatarUrl: 'p.png',
+            isFollowing: false,
+          },
           { id: 'u2', username: 'ana', avatarUrl: null, isFollowing: false },
         ],
       }),

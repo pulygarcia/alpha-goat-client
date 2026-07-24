@@ -27,7 +27,7 @@ export function AlbumHoja({
           </h2>
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-right">
+          <div className="hidden text-right md:block">
             <p className="font-archivo text-cinnamon text-2xl">
               {hoja.stats.collected}/{hoja.stats.total}
             </p>

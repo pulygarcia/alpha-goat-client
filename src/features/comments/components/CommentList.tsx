@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { motion, useReducedMotion } from 'framer-motion';
 import { UserAvatar } from '@/shared/components/UserAvatar';
 import { useReviewComments } from '../hooks/useReviewComments';
 import { timeAgo } from '../lib/timeAgo';
@@ -10,6 +11,9 @@ import { CommentLikeButton } from './CommentLikeButton';
  * Listado de comentarios de una reseña (público, paginado). Maneja los estados
  * loading / error / vacío y un "cargar más" para las páginas siguientes.
  */
+const STAGGER_STEP = 0.045; // s entre cada comentario
+const STAGGER_MAX_DELAY = 0.32; // tope: tandas largas no esperan eternamente
+
 export function CommentList({ reviewId }: { reviewId: string }) {
   const {
     data,
@@ -19,6 +23,7 @@ export function CommentList({ reviewId }: { reviewId: string }) {
     hasNextPage,
     isFetchingNextPage,
   } = useReviewComments(reviewId);
+  const reduce = useReducedMotion();
 
   if (isLoading) {
     return (
@@ -41,7 +46,7 @@ export function CommentList({ reviewId }: { reviewId: string }) {
 
   if (items.length === 0) {
     return (
-      <p className="text-cinnamon text-[14px]">
+      <p className="text-ink/55 text-[14px]">
         Todavía no hay comentarios. Sé el primero.
       </p>
     );
@@ -49,10 +54,20 @@ export function CommentList({ reviewId }: { reviewId: string }) {
 
   return (
     <ul className="flex flex-col gap-4">
-      {items.map((c) => {
+      {items.map((c, i) => {
         const username = c.author?.username ?? 'Usuario';
         return (
-          <li key={c.id} className="flex items-center gap-[10px]">
+          <motion.li
+            key={c.id}
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.32,
+              delay: Math.min(i * STAGGER_STEP, STAGGER_MAX_DELAY),
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="flex items-center gap-[10px]"
+          >
             <UserAvatar
               avatarUrl={c.author?.avatarUrl ?? null}
               username={username}
@@ -83,7 +98,7 @@ export function CommentList({ reviewId }: { reviewId: string }) {
               likesCount={c.likesCount}
               isLiked={c.isLiked}
             />
-          </li>
+          </motion.li>
         );
       })}
 

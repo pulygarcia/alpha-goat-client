@@ -68,7 +68,7 @@ describe('UserReviews', () => {
       fetchNextPage,
     });
     render(<UserReviews userId="u1" username="puly" />);
-    screen.getByRole('button', { name: /cargar más/i }).click();
+    screen.getByRole('button', { name: /ver más/i }).click();
     expect(fetchNextPage).toHaveBeenCalledOnce();
   });
 });

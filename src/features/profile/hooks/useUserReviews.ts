@@ -3,7 +3,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { reviewsApi } from '@/features/reviews/api/reviews.api';
 
-const LIMIT = 10;
+const LIMIT = 5;
 
 export const userReviewsKey = (userId: string) =>
   ['reviews', 'list', { userId }] as const;

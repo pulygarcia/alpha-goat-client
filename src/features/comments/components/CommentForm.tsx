@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Send } from 'lucide-react';
 import { Spinner } from '@/shared/components/ui/spinner';
 import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
@@ -26,6 +27,7 @@ export function CommentForm({
 }) {
   const create = useCreateComment(reviewId);
   const requireAuth = useRequireAuth();
+  const reduce = useReducedMotion();
 
   const {
     register,
@@ -47,6 +49,15 @@ export function CommentForm({
     );
   };
 
+  const submitForm = handleSubmit(onSubmit);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      void submitForm();
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <p className="text-cinnamon mb-1.5 text-[0.72rem]">
@@ -58,20 +69,30 @@ export function CommentForm({
           rows={2}
           placeholder="Sumá un comentario…"
           aria-label="Comentario"
+          onKeyDown={handleKeyDown}
           className="text-ink w-full resize-none rounded-[14px] bg-[rgba(74,30,8,0.07)] py-2.5 pr-11 pl-3.5 text-[14px] leading-[1.5] placeholder:text-[rgba(74,30,8,0.4)] focus:outline-none"
         />
-        <button
+        <motion.button
           type="submit"
           disabled={!isValid || create.isPending}
           aria-label="Enviar comentario"
-          className="text-curry-deep absolute right-2 bottom-2.5 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-[rgba(74,30,8,0.08)] transition-colors hover:bg-[rgba(74,30,8,0.16)] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[rgba(74,30,8,0.08)]"
+          animate={
+            reduce
+              ? undefined
+              : {
+                  scale: isValid && !create.isPending ? 1 : 0.92,
+                  opacity: isValid && !create.isPending ? 1 : 0.4,
+                }
+          }
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="text-curry-deep absolute right-2 bottom-2.5 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-[rgba(74,30,8,0.08)] transition-colors hover:bg-[rgba(74,30,8,0.16)] disabled:cursor-not-allowed disabled:hover:bg-[rgba(74,30,8,0.08)]"
         >
           {create.isPending ? (
             <Spinner className="size-4" />
           ) : (
             <Send size={16} strokeWidth={2} />
           )}
-        </button>
+        </motion.button>
       </div>
       <div className="mt-1 flex items-center justify-between gap-2">
         {errors.contenido ? (

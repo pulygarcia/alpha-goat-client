@@ -11,9 +11,9 @@ vi.mock('@/shared/hooks/useDebouncedValue', () => ({
   useDebouncedValue: (v: unknown) => v,
 }));
 
-// Card mockeada (evita next/image en jsdom): solo el nombre.
-vi.mock('./AlfajorCard', () => ({
-  AlfajorCard: ({ alfajor }: { alfajor: Alfajor }) => (
+// Row mockeada (evita next/image en jsdom): solo el nombre.
+vi.mock('./AlfajorRow', () => ({
+  AlfajorRow: ({ alfajor }: { alfajor: Alfajor }) => (
     <div>{alfajor.nombre}</div>
   ),
 }));
@@ -56,7 +56,7 @@ describe('AlfajoresCatalog', () => {
   it('shows the loading skeleton while fetching', () => {
     mocked.mockReturnValue(baseReturn({ isLoading: true }));
     render(<AlfajoresCatalog />);
-    expect(screen.getByTestId('alfajores-grid-skeleton')).toBeInTheDocument();
+    expect(screen.getByTestId('alfajores-rows-skeleton')).toBeInTheDocument();
   });
 
   it('shows an error message on failure', () => {

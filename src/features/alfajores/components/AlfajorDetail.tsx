@@ -48,7 +48,7 @@ export function AlfajorDetail({ id }: { id: string }) {
 
       {data && (
         <>
-          <article className="grid gap-8 md:grid-cols-[minmax(0,420px)_1fr]">
+          <article className="flex flex-col items-center gap-6 text-center md:grid md:grid-cols-[minmax(0,420px)_1fr] md:items-start md:gap-8 md:text-left">
             <AlfajorImageUploader
               alfajorId={data.id}
               imagenUrl={data.imagenUrl}
@@ -56,31 +56,18 @@ export function AlfajorDetail({ id }: { id: string }) {
               placeholder={tipoLabel(data.tipo)}
             />
 
-            <div className="pt-1">
-              <span
-                className="text-curry-deep"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.62rem',
-                  letterSpacing: '0.24em',
-                  textTransform: 'uppercase',
-                  fontWeight: 700,
-                }}
-              >
-                {tipoLabel(data.tipo)}
-              </span>
-
-              <h1 className="text-ink mt-2 text-[40px] leading-[1.02] tracking-[-0.03em] md:text-[48px]">
+            <div className="w-full md:pt-1">
+              <h1 className="text-ink text-[26px] leading-[1.08] tracking-[-0.02em] md:text-[48px] md:leading-[1.02] md:tracking-[-0.03em]">
                 {data.nombre}
               </h1>
 
-              <p className="text-sienna mt-3 text-[15px]">
+              <p className="text-sienna mt-2 text-[13.5px] md:mt-3 md:text-[15px]">
                 {data.marca?.nombre ?? 'Marca desconocida'}
                 {data.marca?.provincia ? ` · ${data.marca.provincia}` : ''}
               </p>
 
               {data.descripcion && (
-                <p className="text-ink/80 mt-6 max-w-[560px] text-[15px] leading-relaxed">
+                <p className="text-ink/80 mx-auto mt-5 max-w-[560px] text-[14px] leading-relaxed md:mx-0 md:mt-6 md:text-[15px]">
                   {data.descripcion}
                 </p>
               )}
@@ -88,7 +75,7 @@ export function AlfajorDetail({ id }: { id: string }) {
               <button
                 type="button"
                 onClick={() => setReviewOpen(true)}
-                className="text-paper mt-7 inline-flex h-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-6 text-[14px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110"
+                className="text-paper mt-6 inline-flex h-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110 md:mt-7 md:h-11 md:px-6 md:text-[14px]"
               >
                 Reseñar
               </button>

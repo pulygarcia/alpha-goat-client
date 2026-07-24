@@ -41,6 +41,7 @@ const NAV_ITEMS = [
   { href: '/feed', label: 'Feed' },
   { href: '/alfajores', label: 'Alfajores' },
   { href: '/ranking', label: 'Ranking' },
+  { href: '/stats', label: 'Números' },
 ] as const;
 
 /**

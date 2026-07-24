@@ -413,6 +413,30 @@ describe('useToggleFollow', () => {
     expect(notifyError).not.toHaveBeenCalled();
   });
 
+  it('does not crash when the profile cache entry has no data yet', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, client } = setup(seedFeed([makeItem('1', 'u1', false)]));
+    client.setQueryData(PROFILE_KEY, undefined);
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  });
+
+  it('does not crash when the users-search cache entry has no data yet', async () => {
+    vi.mocked(followsApi.follow).mockResolvedValue();
+    const { result, client } = setup(seedFeed([makeItem('1', 'u1', false)]));
+    client.setQueryData(USERS_SEARCH_KEY, undefined);
+
+    act(() => {
+      result.current.mutate({ userId: 'u1', isFollowing: false });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  });
+
   it('does not fire a second request while one is pending', async () => {
     let resolve!: () => void;
     vi.mocked(followsApi.follow).mockReturnValue(

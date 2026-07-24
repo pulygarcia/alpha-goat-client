@@ -77,4 +77,22 @@ describe('useAlfajorReviews', () => {
 
     await waitFor(() => expect(result.current.isError).toBe(true));
   });
+
+  it('has no next page once all reviews have been fetched', async () => {
+    vi.mocked(reviewsApi.list).mockResolvedValue(PAGE);
+
+    const { result } = renderHook(() => useAlfajorReviews('a1'), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.hasNextPage).toBe(false);
+  });
+
+  it('has a next page when more reviews remain than the current page covers', async () => {
+    vi.mocked(reviewsApi.list).mockResolvedValue({ ...PAGE, total: 25 });
+
+    const { result } = renderHook(() => useAlfajorReviews('a1'), { wrapper });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.hasNextPage).toBe(true);
+  });
 });

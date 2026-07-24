@@ -5,9 +5,11 @@ import { useAuth } from '@/shared/providers/AuthProvider';
 
 const pushMock = vi.fn();
 
+let pathnameMock = '/feed';
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: pushMock }),
-  usePathname: () => '/feed',
+  usePathname: () => pathnameMock,
 }));
 
 vi.mock('@/shared/providers/AuthProvider', () => ({
@@ -17,6 +19,7 @@ vi.mock('@/shared/providers/AuthProvider', () => ({
 describe('useRequireAuth', () => {
   beforeEach(() => {
     pushMock.mockReset();
+    pathnameMock = '/feed';
   });
 
   it('runs the action when authenticated', () => {
@@ -39,5 +42,16 @@ describe('useRequireAuth', () => {
 
     expect(action).not.toHaveBeenCalled();
     expect(pushMock).toHaveBeenCalledWith('/login?next=%2Ffeed');
+  });
+
+  it('redirects to plain /login when there is no pathname', () => {
+    pathnameMock = '';
+    vi.mocked(useAuth).mockReturnValue({ isAuthenticated: false } as never);
+    const action = vi.fn();
+
+    const { result } = renderHook(() => useRequireAuth());
+    result.current(action);
+
+    expect(pushMock).toHaveBeenCalledWith('/login');
   });
 });

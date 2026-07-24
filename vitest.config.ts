@@ -59,7 +59,13 @@ export default defineConfig({
         'src/features/alfajores/components/CatalogHeader.tsx',
         'src/features/alfajores/components/AlfajorDetailSkeleton.tsx',
         'src/features/alfajores/components/AlfajoresGridSkeleton.tsx',
-        'src/features/reviews/components/RatingSlider.tsx',
+        'src/features/stats/components/StatsCountersSkeleton.tsx',
+        // 3D drag/gesture gallery (WebGL-adjacent interactive showpiece,
+        // same class as webgl-liquid.tsx) — not meaningfully unit-testable
+        // in jsdom, and its behavior is exercised visually, not via specs.
+        'src/shared/components/dome-gallery/DomeGallery.tsx',
+        'src/shared/components/dome-gallery/ReviewsDomeGallery.tsx',
+        'src/app/(app)/dev-gallery/**',
       ],
     },
   },

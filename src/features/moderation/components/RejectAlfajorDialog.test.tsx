@@ -54,4 +54,14 @@ describe('RejectAlfajorDialog', () => {
 
     expect(screen.getByRole('button', { name: 'Rechazando…' })).toBeDisabled();
   });
+
+  it('resets the form and notifies the parent when closed', async () => {
+    const user = userEvent.setup();
+    renderDialog();
+
+    await user.type(screen.getByLabelText('Motivo del rechazo'), 'Duplicado');
+    await user.keyboard('{Escape}');
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
 });

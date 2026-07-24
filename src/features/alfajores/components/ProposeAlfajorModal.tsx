@@ -26,7 +26,7 @@ const inputClass =
 const labelClass = 'text-cinnamon mb-1 block text-[12px] font-semibold';
 const errorClass = 'text-sienna mt-1 text-[12px]';
 const submitClass =
-  'text-paper mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] bg-gradient-to-br from-[#3a1808] to-[#1c0a03] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-125 disabled:opacity-60';
+  'text-paper mt-2 inline-flex h-10 w-full items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60';
 
 /** "CHOCOLATE" → "Chocolate". */
 function tipoLabel(tipo: string) {
@@ -213,7 +213,7 @@ export function ProposeAlfajorModal({
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 onChange={pickFoto}
-                className="text-sienna file:bg-paper-sunken file:text-ink w-full text-[13px] file:mr-3 file:cursor-pointer file:rounded-[8px] file:border file:border-[rgba(74,30,8,0.18)] file:px-3 file:py-1.5 file:text-[12.5px] file:font-semibold"
+                className="text-sienna file:text-paper w-full text-[13px] file:mr-3 file:cursor-pointer file:rounded-[8px] file:border-none file:bg-gradient-to-br file:from-[#a86432] file:to-[#3a1808] file:px-3 file:py-1.5 file:text-[12.5px] file:font-semibold file:transition-[filter] hover:file:brightness-110"
               />
               {fotoPreview && (
                 <div className="mt-2 flex items-center gap-3">

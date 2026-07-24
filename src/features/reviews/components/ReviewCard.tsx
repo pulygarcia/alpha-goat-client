@@ -3,19 +3,21 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { FollowButton } from '@/features/follows/components/FollowButton';
+import { CommentIcon } from './CommentIcon';
 import { LikeButton } from './LikeButton';
 import { ReviewDetailModal } from './ReviewDetailModal';
 import { UserAvatar } from '@/shared/components/UserAvatar';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
 
-/** "hace X min/h/d" a partir de un ISO string. */
-function timeAgo(iso: string) {
+/** "hace X min/h/d" a partir de un ISO string, con una variante corta para mobile ("20d"). */
+function timeAgo(iso: string): { full: string; compact: string } {
   const min = Math.floor((Date.now() - new Date(iso).getTime()) / 60_000);
-  if (min < 1) return 'recién';
-  if (min < 60) return `hace ${min} min`;
+  if (min < 1) return { full: 'recién', compact: 'ahora' };
+  if (min < 60) return { full: `hace ${min} min`, compact: `${min}m` };
   const h = Math.floor(min / 60);
-  if (h < 24) return `hace ${h} h`;
-  return `hace ${Math.floor(h / 24)} d`;
+  if (h < 24) return { full: `hace ${h} h`, compact: `${h}h` };
+  const d = Math.floor(h / 24);
+  return { full: `hace ${d} d`, compact: `${d}d` };
 }
 
 /** Frena la propagación: los controles propios (seguir, like, link al alfajor)
@@ -58,7 +60,7 @@ export function ReviewCard({
             setOpen(true);
           }
         }}
-        className="grid cursor-pointer grid-cols-[64px_1fr] items-start gap-4 border-b border-[rgba(74,30,8,0.14)] py-[22px] outline-none last:border-b-0 focus-visible:rounded-[10px] focus-visible:ring-2 focus-visible:ring-[rgba(74,30,8,0.35)] md:grid-cols-[96px_1fr_64px] md:gap-6"
+        className="bg-paper-raised relative grid cursor-pointer grid-cols-[64px_1fr] items-start gap-4 rounded-2xl border border-[rgba(90,60,25,0.13)] p-4 transition-colors outline-none hover:bg-[color-mix(in_srgb,var(--color-paper-raised),black_2.5%)] focus-visible:ring-2 focus-visible:ring-[rgba(74,30,8,0.35)] md:grid-cols-[96px_1fr_64px] md:gap-6 md:p-5"
       >
         {/* Foto: solo en el feed (en el detalle es el mismo alfajor de la página).
             Prioridad: foto de la reseña → imagen del alfajor → placeholder de tipo. */}
@@ -84,7 +86,7 @@ export function ReviewCard({
         )}
 
         {/* Cuerpo */}
-        <div className="min-w-0">
+        <div className="min-w-0 pr-16 md:pr-0">
           <div className="mb-2 flex items-center gap-[10px]">
             <UserAvatar
               avatarUrl={author.avatarUrl}
@@ -100,16 +102,19 @@ export function ReviewCard({
               </Link>
             </StopClick>
             <span
-              className="text-cinnamon"
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.6rem',
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
                 fontWeight: 500,
+                color: '#6f5c42',
               }}
             >
-              {timeAgo(vm.createdAt)}
+              <span className="md:hidden">{timeAgo(vm.createdAt).compact}</span>
+              <span className="hidden md:inline">
+                {timeAgo(vm.createdAt).full}
+              </span>
             </span>
             <StopClick>
               <FollowButton
@@ -121,34 +126,33 @@ export function ReviewCard({
 
           {showAlfajor && (
             <div className="mb-2 flex items-start justify-between gap-3">
-              <h5 className="text-ink text-[18px] font-medium tracking-[-0.018em]">
-                <StopClick>
-                  <Link
-                    href={`/alfajores/${alfajor.id}`}
-                    className="hover:text-curry-deep underline-offset-2 transition-colors hover:underline"
-                  >
-                    {alfajor.nombre}
-                  </Link>
-                </StopClick>{' '}
-                · <em className="text-cinnamon not-italic">{marca.nombre}</em>
+              <h5 className="text-ink text-[15px] font-medium tracking-[-0.018em] md:text-[15px]">
+                {alfajor.nombre} ·{' '}
+                <em className="not-italic" style={{ color: '#b3702a' }}>
+                  {marca.nombre}
+                </em>
               </h5>
             </div>
           )}
 
           {quote && (
-            <p className="text-sienna mb-[10px] text-[14px] leading-[1.5]">
+            <p
+              className="mb-[10px] line-clamp-2 text-[13px] leading-[1.5] md:text-[13.5px]"
+              style={{ color: '#6f5c42' }}
+            >
               “{quote}”
             </p>
           )}
 
           <div
-            className="text-cinnamon flex items-center gap-4"
+            className="flex items-center gap-4"
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '0.6rem',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
               fontWeight: 700,
+              color: '#6f5c42',
             }}
           >
             <StopClick>
@@ -159,32 +163,32 @@ export function ReviewCard({
               />
             </StopClick>
             <span className="inline-flex items-center gap-[5px]">
-              ↳ {commentsCount} comentarios
+              <CommentIcon className="h-3 w-3" />
+              {commentsCount} comentarios
             </span>
           </div>
         </div>
 
         {/* Rating general */}
-        <div className="col-start-2 text-left md:col-start-3 md:text-right">
+        <div className="absolute top-4 right-4 hidden items-baseline gap-1 md:static md:top-auto md:right-auto md:col-start-3 md:flex md:justify-end md:text-right">
           <span
-            className="text-curry-deep"
+            className="text-[19px] md:text-[27px]"
             style={{
               fontFamily: 'var(--font-archivo)',
-              fontSize: 40,
               letterSpacing: '-0.04em',
               lineHeight: 1,
+              color: '#b3702a',
             }}
           >
             {overall.toFixed(1)}
           </span>
           <span
-            className="text-cinnamon block"
+            className="text-cinnamon"
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '0.6rem',
               letterSpacing: '0.22em',
               fontWeight: 700,
-              marginTop: 2,
             }}
           >
             /10

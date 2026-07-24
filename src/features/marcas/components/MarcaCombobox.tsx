@@ -38,7 +38,7 @@ export function MarcaCombobox({
 
   return (
     <div className="relative">
-      <label className="bg-paper-sunken focus-within:border-cinnamon flex h-11 items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] px-3 transition-colors">
+      <label className="flex h-11 items-center gap-2 rounded-[10px] border border-[rgba(74,30,8,0.12)] bg-black/[0.015] px-3 transition-colors focus-within:border-[rgba(74,30,8,0.22)]">
         <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
         <input
           role="combobox"

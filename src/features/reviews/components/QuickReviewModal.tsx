@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
@@ -32,6 +33,7 @@ export function QuickReviewModal({
   const [selected, setSelected] = useState<Alfajor | null>(alfajor ?? null);
   const [wizardStep, setWizardStep] = useState<WizardStep>('comentario');
   const [proposeOpen, setProposeOpen] = useState(false);
+  const reduce = useReducedMotion();
 
   // Al cerrar, vuelve al estado inicial (preselección o picker) para que el
   // próximo open arranque limpio — sin un effect que sincronice `open`.
@@ -72,33 +74,43 @@ export function QuickReviewModal({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="bg-paper-raised text-ink max-w-md border-[rgba(74,30,8,0.22)]">
-          <DialogHeader>
-            <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
-            {/* pr-8: deja aire para la X de cerrar, que no se monte sobre el último paso */}
-            <Stepper
-              steps={steps.map((s) => s.label)}
-              current={current}
-              className="pr-8"
-            />
-            {activeDescription && (
-              <p className="text-sienna text-center text-[13px]">
-                {activeDescription}
-              </p>
-            )}
-          </DialogHeader>
+        <DialogContent className="bg-paper-raised text-ink data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 max-w-md border-[rgba(74,30,8,0.22)] duration-[250ms]">
+          <motion.div
+            initial={reduce ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.3,
+              delay: 0.05,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
+              {/* pr-8: deja aire para la X de cerrar, que no se monte sobre el último paso */}
+              <Stepper
+                steps={steps.map((s) => s.label)}
+                current={current}
+                className="pr-8"
+              />
+              {activeDescription && (
+                <p className="text-sienna mt-1 text-center text-[13px]">
+                  {activeDescription}
+                </p>
+              )}
+            </DialogHeader>
 
-          {selected ? (
-            <ReviewWizardForm
-              alfajor={selected}
-              onBack={alfajor ? undefined : backToPicker}
-              onDone={() => handleOpenChange(false)}
-              step={wizardStep}
-              onStepChange={setWizardStep}
-            />
-          ) : (
-            <AlfajorPicker onPick={setSelected} onPropose={openPropose} />
-          )}
+            {selected ? (
+              <ReviewWizardForm
+                alfajor={selected}
+                onBack={alfajor ? undefined : backToPicker}
+                onDone={() => handleOpenChange(false)}
+                step={wizardStep}
+                onStepChange={setWizardStep}
+              />
+            ) : (
+              <AlfajorPicker onPick={setSelected} onPropose={openPropose} />
+            )}
+          </motion.div>
         </DialogContent>
       </Dialog>
 
@@ -121,7 +133,7 @@ function AlfajorPicker({
 
   return (
     <>
-      <label className="bg-paper-sunken focus-within:border-cinnamon flex h-11 items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] px-3 transition-colors">
+      <label className="mt-3 flex h-11 items-center gap-2 rounded-[10px] border border-[rgba(74,30,8,0.12)] bg-black/[0.015] px-3 transition-colors focus-within:border-[rgba(74,30,8,0.22)]">
         <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
         <input
           type="search"

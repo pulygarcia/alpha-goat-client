@@ -69,7 +69,7 @@ export function UserReviews({
       )}
 
       {items.length > 0 && (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-4">
           {items.map((review, i) => (
             <StaggerItem key={review.id} index={i}>
               <ReviewCard vm={reviewToVM(review)} context="feed" />
@@ -93,7 +93,7 @@ export function UserReviews({
               fontWeight: 700,
             }}
           >
-            {isFetchingNextPage ? 'Cargando...' : 'Cargar más'}
+            {isFetchingNextPage ? 'Cargando...' : 'Ver más'}
           </button>
         </div>
       )}

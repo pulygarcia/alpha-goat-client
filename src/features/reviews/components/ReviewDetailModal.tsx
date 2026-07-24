@@ -9,12 +9,13 @@ import {
 } from '@/shared/components/ui/dialog';
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
+import { CommentIcon } from './CommentIcon';
 import { LikeButton } from './LikeButton';
 import { CommentList } from '@/features/comments/components/CommentList';
 import { CommentForm } from '@/features/comments/components/CommentForm';
 import { useAuth } from '@/shared/providers/AuthProvider';
 import { UserAvatar } from '@/shared/components/UserAvatar';
+import { CountUp } from '@/shared/components/motion/CountUp';
 import { timeAgo } from '@/features/comments/lib/timeAgo';
 import { AXIS_KEYS, AXIS_LABELS } from '../lib/axes';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
@@ -67,7 +68,10 @@ export function ReviewDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-paper-raised text-ink flex max-h-[85vh] max-w-lg flex-col border-[rgba(74,30,8,0.22)]">
+      <DialogContent
+        showClose={false}
+        className="bg-paper-raised text-ink flex max-h-[85vh] max-w-lg flex-col border-[rgba(74,30,8,0.22)] md:max-w-2xl"
+      >
         <DialogHeader className="sr-only">
           <DialogTitle>Reseña de {author.username}</DialogTitle>
           <DialogDescription>
@@ -79,7 +83,7 @@ export function ReviewDetailModal({
           initial={reduce ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="flex min-h-0 flex-1 gap-3 overflow-y-auto pr-1"
+          className="paper-scrollbar flex min-h-0 flex-1 gap-3 overflow-y-auto pr-4"
         >
           {/* Carril del hilo: avatar reseña ─ línea ─ avatar usuario */}
           <div className="flex flex-col items-center">
@@ -132,15 +136,15 @@ export function ReviewDetailModal({
               {/* Puntaje general */}
               <div className="mt-3 flex items-baseline gap-2">
                 <span
-                  className="text-curry-deep"
                   style={{
                     fontFamily: 'var(--font-archivo)',
                     fontSize: 32,
                     letterSpacing: '-0.04em',
                     lineHeight: 1,
+                    color: '#b3702a',
                   }}
                 >
-                  {overall.toFixed(1)}
+                  <CountUp value={overall} decimals={1} durationMs={900} />
                 </span>
                 <span
                   className="text-cinnamon"
@@ -156,22 +160,35 @@ export function ReviewDetailModal({
                 </span>
               </div>
 
-              {/* Los 5 ejes en lista (sin radar) */}
-              <dl className="mt-4 flex flex-col gap-2">
-                {AXIS_KEYS.map((key) => (
-                  <div key={key} className="flex items-center gap-3">
-                    <dt className="text-sienna w-32 shrink-0 text-[13px]">
-                      {AXIS_LABELS[key]}
-                    </dt>
-                    <div className="bg-paper-sunken relative h-1.5 flex-1 overflow-hidden rounded-full">
-                      <div
-                        className="bg-curry-deep absolute inset-y-0 left-0 rounded-full"
-                        style={{ width: `${(axes[key] / 10) * 100}%` }}
+              {/* Los 5 ejes en 2 columnas, mini-card con barra fina debajo,
+                  el número cuenta y la barra crece al abrir el modal. */}
+              <dl className="mt-4 grid grid-cols-2 gap-2.5">
+                {AXIS_KEYS.map((key, i) => (
+                  <div key={key} className="px-1 py-1">
+                    <div className="flex items-baseline justify-between">
+                      <dt className="text-sienna text-[11.5px]">
+                        {AXIS_LABELS[key]}
+                      </dt>
+                      <dd
+                        className="text-[13px] font-semibold tabular-nums"
+                        style={{ color: '#b3702a' }}
+                      >
+                        <CountUp value={axes[key]} decimals={1} />
+                      </dd>
+                    </div>
+                    <div className="bg-paper-emph/40 relative mt-1.5 h-[3px] overflow-hidden rounded-full">
+                      <motion.div
+                        className="absolute inset-y-0 left-0 rounded-full"
+                        style={{ backgroundColor: '#b3702a' }}
+                        initial={reduce ? false : { width: 0 }}
+                        animate={{ width: `${(axes[key] / 10) * 100}%` }}
+                        transition={{
+                          duration: 0.7,
+                          delay: reduce ? 0 : i * 0.06,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
                       />
                     </div>
-                    <dd className="text-ink w-8 shrink-0 text-right text-[13px] font-semibold tabular-nums">
-                      {axes[key].toFixed(1)}
-                    </dd>
                   </div>
                 ))}
               </dl>
@@ -192,7 +209,10 @@ export function ReviewDetailModal({
               )}
 
               {/* Contadores de la reseña — el like es accionable (toggle) */}
-              <div className="text-cinnamon mt-4 flex items-center gap-4 text-[13px] font-semibold">
+              <div
+                className="mt-4 flex items-center gap-4 text-[13px] font-semibold"
+                style={{ color: '#6f5c42' }}
+              >
                 <LikeButton
                   reviewId={vm.id}
                   likes={likes}
@@ -202,7 +222,7 @@ export function ReviewDetailModal({
                   className="inline-flex items-center gap-1.5"
                   aria-label={`${commentsCount} comentarios`}
                 >
-                  <MessageCircle size={15} strokeWidth={2} />
+                  <CommentIcon className="h-[15px] w-[15px]" />
                   {commentsCount}
                 </span>
               </div>

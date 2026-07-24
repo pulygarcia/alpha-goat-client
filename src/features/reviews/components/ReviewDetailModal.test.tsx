@@ -60,13 +60,13 @@ function setup(over: Partial<ReviewCardVM> = {}) {
 }
 
 describe('ReviewDetailModal', () => {
-  it('shows the author and the overall rating', () => {
+  it('shows the author and the overall rating', async () => {
     setup();
     expect(screen.getByText('Pepe')).toBeInTheDocument();
-    expect(screen.getByText('8.5')).toBeInTheDocument();
+    expect(await screen.findByText('8.5')).toBeInTheDocument();
   });
 
-  it('lists the 5 axes with their labels and values', () => {
+  it('lists the 5 axes with their labels and values', async () => {
     setup();
     expect(screen.getByText('Dulzor')).toBeInTheDocument();
     expect(screen.getByText('Cantidad de DDL')).toBeInTheDocument();
@@ -74,7 +74,7 @@ describe('ReviewDetailModal', () => {
     expect(screen.getByText('Tapa / Relleno')).toBeInTheDocument();
     expect(screen.getByText('Textura')).toBeInTheDocument();
     // valor de un eje (cantidadDDL = 9)
-    expect(screen.getByText('9.0')).toBeInTheDocument();
+    expect(await screen.findByText('9.0')).toBeInTheDocument();
   });
 
   it('shows the comentario when present', () => {

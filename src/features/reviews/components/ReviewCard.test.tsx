@@ -45,10 +45,12 @@ describe('ReviewCard', () => {
     expect(screen.getByText(/muy rico/)).toBeInTheDocument();
   });
 
-  it('links the alfajor name in feed context', () => {
+  it('shows the alfajor name as plain text (not a link) in feed context', () => {
     render(<ReviewCard vm={feedVM} context="feed" />);
-    const link = screen.getByRole('link', { name: 'Águila' });
-    expect(link).toHaveAttribute('href', '/alfajores/al1');
+    expect(screen.getAllByText('Águila').length).toBeGreaterThan(0);
+    expect(
+      screen.queryByRole('link', { name: /Águila/ }),
+    ).not.toBeInTheDocument();
   });
 
   it('links the author username to their profile', () => {

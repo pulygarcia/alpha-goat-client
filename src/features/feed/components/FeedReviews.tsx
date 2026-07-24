@@ -8,6 +8,7 @@ import { FeedReviewsSkeleton } from './FeedReviewsSkeleton';
 import { ReviewCard } from '@/features/reviews/components/ReviewCard';
 import { feedItemToVM } from '@/features/reviews/lib/reviewCardVM';
 import { StaggerItem } from '@/shared/components/motion/StaggerItem';
+import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 
 const SORTS: Array<{ value: FeedSort; label: string }> = [
   { value: 'likes', label: 'Más likes' },
@@ -45,34 +46,26 @@ export function FeedReviews() {
 
   return (
     <section className="px-5 py-8 md:px-8 md:py-9">
-      <div className="mb-5 flex flex-col gap-[14px] border-b border-[rgba(74,30,8,0.14)] pb-4">
+      <div className="mb-5 flex flex-col gap-[14px]">
         <h4 className="text-ink text-[24px] font-semibold tracking-[-0.02em]">
           {titleFor(scope)}
         </h4>
-        <div
-          className="flex gap-[6px]"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.62rem',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-          }}
-        >
-          {SORTS.map((s) => (
-            <button
-              key={s.value}
-              type="button"
-              onClick={() => setSort(s.value)}
-              className={
-                sort === s.value
-                  ? 'bg-paper-sunken text-ink rounded-[6px] px-3 py-[7px] font-bold'
-                  : 'text-sienna hover:bg-paper-sunken hover:text-ink rounded-[6px] px-3 py-[7px] font-medium'
-              }
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
+        <Tabs value={sort} onValueChange={(v) => setSort(v as FeedSort)}>
+          <TabsList
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.62rem',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {SORTS.map((s) => (
+              <TabsTrigger key={s.value} value={s.value}>
+                {s.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </div>
 
       {isLoading && <FeedReviewsSkeleton />}
@@ -113,13 +106,15 @@ export function FeedReviews() {
         <p className="text-sienna">Todavía no hay reseñas para mostrar.</p>
       )}
 
-      {pages.map((page) =>
-        page.items.map((item, i) => (
-          <StaggerItem key={item.id} index={i}>
-            <ReviewCard vm={feedItemToVM(item)} context="feed" />
-          </StaggerItem>
-        )),
-      )}
+      <div className="flex flex-col gap-4">
+        {pages.map((page) =>
+          page.items.map((item, i) => (
+            <StaggerItem key={item.id} index={i}>
+              <ReviewCard vm={feedItemToVM(item)} context="feed" />
+            </StaggerItem>
+          )),
+        )}
+      </div>
 
       {hasNextPage && (
         <div className="pt-6 text-center">

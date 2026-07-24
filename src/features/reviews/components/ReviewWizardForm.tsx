@@ -10,7 +10,7 @@ import { reviewSchema, type ReviewFormValues } from '../lib/reviewSchema';
 import { useMyAlfajorReview } from '../hooks/useMyAlfajorReview';
 import { useSubmitReview } from '../hooks/useSubmitReview';
 import { useUploadReviewPhoto } from '../hooks/useUploadReviewPhoto';
-import { RatingSlider } from './RatingSlider';
+import { DotRating } from './DotRating';
 import type { Alfajor } from '@/features/alfajores/types/alfajores.types';
 import type { Review } from '../types/reviews.types';
 
@@ -212,7 +212,7 @@ function WizardInner({
               autoFocus
               {...register('comentario')}
               placeholder="¿Qué te pareció?"
-              className="bg-paper-sunken min-h-[120px] resize-none border-[rgba(74,30,8,0.22)] text-[14px]"
+              className="min-h-[120px] resize-none border-[rgba(74,30,8,0.12)] bg-black/[0.015] text-[14px] transition-colors focus-visible:border-[rgba(74,30,8,0.22)] focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             <span className="text-cinnamon self-end text-[0.72rem] tabular-nums">
               {(watch('comentario') ?? '').length}/280
@@ -252,7 +252,7 @@ function WizardInner({
                 name={axis.name}
                 control={control}
                 render={({ field }) => (
-                  <RatingSlider
+                  <DotRating
                     label={axis.label}
                     value={Number(field.value)}
                     onChange={field.onChange}

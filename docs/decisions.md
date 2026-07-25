@@ -149,6 +149,56 @@ El CTA "Solicitá agregarlo" del `QuickReviewModal` abre un `ProposeAlfajorModal
 
 El diseño aprobado en claude.ai/design (spec `docs/superpowers/specs/2026-07-16-album-page-design.md`) tenía la hoja (`AlbumHoja`) como panel `paper-raised` con sombra profunda + una inicial gigante de la marca como watermark de fondo. Ambos se sacaron durante la ronda de pulido en vivo tras probar el fondo jaspeado de la página: el panel raised + sombra competía visualmente con la textura jaspeada nueva, y el watermark quedaba redundante sobre un fondo que ya tiene "alma" propia. La hoja quedó transparente (`AlbumHoja.tsx`), dejando que el fondo de la página se vea directo.
 
-**Layout de viewport fijo:** `AppHeader` + `main` quedan envueltos en un bloque `h-screen` con `main` `flex-1 overflow-y-auto`, para que el álbum siempre ocupe exactamente el viewport sin importar cuántas figuritas tenga la hoja activa (antes, con pocas figuritas, el `Footer` quedaba asomando porque el `flex-1` dentro de un `min-h-screen` solo reparte espacio *sobrante*, y el contenido del álbum ya casi llenaba el viewport típico). El `Footer` queda como hermano fuera de ese bloque — visible solo si se scrollea la página entera más allá del viewport, a diferencia del resto de las páginas donde el footer cierra el contenido normal. Es consistente solo dentro de esta ruta (sensación de "app" para el álbum), no un patrón a copiar en otras páginas sin la misma justificación. El paginador (`HojaPager`) se ancla al fondo del área visible vía `mt-auto` en `AlbumView`, así su posición no depende de la cantidad de figuritas de la hoja activa.
+**Layout de viewport fijo:** `AppHeader` + `main` quedan envueltos en un bloque `h-screen` con `main` `flex-1 overflow-y-auto`, para que el álbum siempre ocupe exactamente el viewport sin importar cuántas figuritas tenga la hoja activa (antes, con pocas figuritas, el `Footer` quedaba asomando porque el `flex-1` dentro de un `min-h-screen` solo reparte espacio _sobrante_, y el contenido del álbum ya casi llenaba el viewport típico). El `Footer` queda como hermano fuera de ese bloque — visible solo si se scrollea la página entera más allá del viewport, a diferencia del resto de las páginas donde el footer cierra el contenido normal. Es consistente solo dentro de esta ruta (sensación de "app" para el álbum), no un patrón a copiar en otras páginas sin la misma justificación. El paginador (`HojaPager`) se ancla al fondo del área visible vía `mt-auto` en `AlbumView`, así su posición no depende de la cantidad de figuritas de la hoja activa.
 
 **Pendiente en el board:** rediseñar la load bar de completitud (lineal simple hoy) y evaluar un chart tipo medidor en su lugar — ver Backlog.
+
+## Fondos animados: CSS sobre `transform`, no WebGL ni `background-position`
+
+El sidebar del perfil usa un mesh animado hecho con radiales y dos capas que derivan (`sidebar-bg-mesh` en `globals.css`). Se evaluó y descartó calcar el `WebGLLiquid` del hero de `/`.
+
+**Por qué no WebGL:** en la landing el canvas ocupa el viewport, es lo único en pantalla y se ve una vez. En el perfil sería un panel de 300px que compite con contenido real y se monta en cada perfil visitado — un contexto WebGL, un `requestAnimationFrame` corriendo y su propio arnés de error boundary + skeleton excluido de cobertura, para decorar. Peor en mobile, donde el sidebar pasa a full-width y el costo de GPU se nota.
+
+**Por qué `transform` y no `background-position`:** mover la posición de un gradiente obliga a rasterizar el degradé entero en cada frame; `translate3d`/`scale` los resuelve el compositor sin repintar. Es lo que hace que un fondo animado sea gratis en vez de comerse frames — y es la razón por la que no hizo falta subir a WebGL.
+
+**Por qué dos capas y no una:** una sola capa de manchas difusas desplazándose en bloque es imperceptible: no hay bordes contra los cuales medir el movimiento. Lo que se percibe es cómo cambia el solapamiento entre dos capas con recorridos opuestos. Los períodos (13s/17s) no son múltiplos, así que el ciclo combinado tarda en repetirse. El grano queda fijo: moverlo con las manchas hace que la textura "nade".
+
+## Liquid glass: descartado — el efecto necesita un fondo que no tenemos
+
+Se probó `backdrop-filter` (a mano y con el componente `liquid-glass` de ui-layouts) en las review cards y en modales. Se revirtió por completo; no quedó nada en el repo.
+
+**Por qué:** el vidrio no tiene apariencia propia, muestra lo que hay detrás desenfocado. El feed es `--color-paper` liso y las cards `--color-paper-raised`: difuminar un color plano devuelve el mismo color plano, por más blur o transparencia que se le ponga. Lo mismo en modales, donde el `bg-black/80` del overlay del `Dialog` es una capa casi uniforme — de ahí que el primer intento "no se notara" y que bajar la opacidad del overlay fuera parte necesaria del efecto (y que sobre papel crema un velo negro produzca gris barroso, no vidrio).
+
+Hacerlo visible exige darle materia al fondo de la app (mesh o imagen bajo la lista), y eso cambia la identidad "El Diario / papel crema": el vidrio es el idioma de visionOS/iOS, no el de un sistema de imprenta con sellos y figuritas. Sumado al costo de `backdrop-filter` en una lista larga con scroll en mobile, y a que el contraste del texto deja de ser constante para pasar a depender de lo que pase por detrás, no compensa. **Si algún día se retoma, el orden correcto es el fondo primero, las superficies después** — al revés no se puede evaluar.
+
+De paso: el paquete `motion` que arrastra ese registry es el sucesor de `framer-motion`, que ya está instalado. Instalarlo deja las dos librerías en el bundle.
+
+## Recorte del feed en mobile: de render, no de query
+
+Bajo 768px `FeedReviews` muestra 8 reseñas y el resto queda detrás de "Ver más". El `limit` de `useFeedReviews` sigue en 20 para todos.
+
+**Por qué no bajar el `limit` en mobile:** la queryKey no incluye el tamaño de página, así que un límite distinto por viewport duplicaría la entrada de cache (y al rotar el dispositivo se pediría de nuevo); además convertiría un request en tres para la misma cantidad de contenido. El recorte es de render: los datos ya están, "Ver más" no pide nada y recién después el mismo botón pasa a paginar de verdad.
+
+**Un solo botón para las dos cosas:** revelar el recorte y pedir la página siguiente son la misma intención para quien lee ("mostrame más"), así que comparten nombre y estilo. Dos etiquetas distintas para la misma acción era la inconsistencia visible.
+
+**`useMediaQuery` con `useSyncExternalStore`** en vez de `useState` + `useEffect`: evita un primer frame con el valor equivocado y declara explícitamente el snapshot de servidor (`false` = forma de escritorio, se corrige al hidratar).
+
+## Confirmación sólo al dejar de seguir
+
+`FollowButton` abre un `Dialog` de confirmación al tocar "Siguiendo"; "Seguir" dispara la mutación directo.
+
+**Por qué asimétrico:** seguir es barato y reversible, y meterle fricción penaliza la acción que se quiere fomentar. Dejar de seguir suele ser un click accidental sobre el botón de estado. El gate va sólo en la dirección destructiva.
+
+**Por qué `Dialog` y no `AlertDialog`:** el componente semánticamente correcto para un confirm destructivo es `alert-dialog`, pero no está instalado y traerlo suma `@radix-ui/react-alert-dialog`. Ya existía el precedente de `RejectAlfajorDialog` resolviendo lo mismo con `Dialog`.
+
+**Cierra en `onSettled`, no al click:** `useToggleFollow` es optimista con rollback. Cerrar al confirmar dejaría al usuario viendo el modal desaparecer mientras el estado vuelve atrás por un error de red.
+
+## Sugeridos del buscador: pila de avatares, sin `FollowButton`
+
+Los sugeridos (`SuggestedUsersGroup`) son una pila superpuesta con contador `+N` que se despliega en columna al tocarlo.
+
+**Por qué se sacó el `FollowButton` de las tarjetas:** no entra en una baldosa de 80px sin romper la proporción, y competía con el tap que abre el perfil. En los resultados de búsqueda (cuando hay query) sigue estando.
+
+**Por qué no el `avatar` de shadcn:** el que se evaluó es la variante **Base UI** del registry, otra familia de primitivos que la del resto de la app (Radix). Habría dejado dos librerías de primitivos conviviendo para reemplazar algo que `UserAvatar` ya resuelve, incluido el fallback del gato.
+
+**Por qué el username no va bajo cada avatar:** en una pila superpuesta no hay ancho. Colapsado se muestra el del avatar apuntado en una línea al pie, con alto reservado para que no empuje la lista; expandido, cada fila lo lleva al lado. La transición entre ambos estados es una animación de _layout_: los avatares ya montados viajan a su nueva posición en vez de desmontarse y volver a aparecer.

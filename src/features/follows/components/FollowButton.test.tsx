@@ -104,4 +104,68 @@ describe('FollowButton', () => {
     );
     expect(container).toBeEmptyDOMElement();
   });
+
+  describe('confirmación al dejar de seguir', () => {
+    it('no deja de seguir de inmediato: abre el modal', () => {
+      setUser('me');
+      const mutate = setToggle();
+      render(<FollowButton userId="other" isFollowing username="pulyg" />);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiendo' }));
+
+      expect(mutate).not.toHaveBeenCalled();
+      expect(screen.getByText('¿Dejar de seguir a pulyg?')).toBeInTheDocument();
+    });
+
+    it('confirma y recién ahí dispara el toggle', () => {
+      setUser('me');
+      const mutate = setToggle();
+      render(<FollowButton userId="other" isFollowing username="pulyg" />);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiendo' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Dejar de seguir' }));
+
+      expect(mutate).toHaveBeenCalledWith(
+        { userId: 'other', isFollowing: true },
+        expect.anything(),
+      );
+    });
+
+    it('cancelar cierra el modal sin tocar el follow', () => {
+      setUser('me');
+      const mutate = setToggle();
+      render(<FollowButton userId="other" isFollowing username="pulyg" />);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiendo' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
+
+      expect(mutate).not.toHaveBeenCalled();
+      expect(
+        screen.queryByText('¿Dejar de seguir a pulyg?'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('sin username usa el copy genérico', () => {
+      setUser('me');
+      setToggle();
+      render(<FollowButton userId="other" isFollowing />);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Siguiendo' }));
+      expect(screen.getByText('¿Dejar de seguir?')).toBeInTheDocument();
+    });
+
+    it('seguir no pide confirmación', () => {
+      setUser('me');
+      const mutate = setToggle();
+      render(<FollowButton userId="other" isFollowing={false} />);
+
+      fireEvent.click(screen.getByRole('button', { name: 'Seguir' }));
+
+      expect(mutate).toHaveBeenCalledWith({
+        userId: 'other',
+        isFollowing: false,
+      });
+      expect(screen.queryByText(/dejar de seguir/i)).not.toBeInTheDocument();
+    });
+  });
 });

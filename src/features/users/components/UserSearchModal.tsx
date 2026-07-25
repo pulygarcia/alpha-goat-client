@@ -12,6 +12,7 @@ import { UserAvatar } from '@/shared/components/UserAvatar';
 import { FollowButton } from '@/features/follows/components/FollowButton';
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 import { useSuggestedUsers } from '../hooks/useSuggestedUsers';
+import { SuggestedUsersGroup } from './SuggestedUsersGroup';
 import { useUsersSearch } from '../hooks/useUsersSearch';
 
 /**
@@ -46,7 +47,9 @@ export function UserSearchModal({
         if (!next) setText('');
       }}
     >
-      <DialogContent className="top-[20%] max-w-md translate-y-0 gap-3 border-none px-4 pt-4 pb-4 [&>button]:hidden">
+      {/* Misma apertura que el modal de reseña rápida del FAB: zoom + fade a 250ms. */}
+      {/* Misma apertura que el modal de reseña rápida del FAB: zoom + fade a 250ms. */}
+      <DialogContent className="data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 top-[20%] max-w-md translate-y-0 gap-3 border-none px-4 pt-4 pb-4 duration-[250ms] [&>button]:hidden">
         <DialogTitle className="sr-only">Buscar usuarios</DialogTitle>
 
         <label className="bg-paper-sunken focus-within:border-cinnamon flex h-11 items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] px-3 transition-colors">
@@ -61,16 +64,22 @@ export function UserSearchModal({
           />
         </label>
 
-        <ul className="max-h-[50vh] overflow-y-auto">
-          {q.length === 0 && suggested.length > 0 && (
-            <li
+        {/* min-w-0: sin esto el grid item toma `min-width: auto` y el rail con
+            overflow-x se estira al ancho de todas las cards, ensanchando el
+            modal entero y desbordando el buscador. */}
+        {q.length === 0 && suggested.length > 0 && (
+          <section className="min-w-0">
+            <p
               className="text-sienna px-1 pt-1 pb-2 text-[11px] font-semibold tracking-[0.08em] uppercase"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               Sugeridos
-            </li>
-          )}
+            </p>
+            <SuggestedUsersGroup users={suggested} onSelect={goToProfile} />
+          </section>
+        )}
 
+        <ul className="max-h-[50vh] overflow-y-auto">
           {q.length === 0 && suggested.length === 0 && (
             <li className="text-sienna px-1 py-3 text-[13px]">
               Escribí un nombre de usuario para buscar.
@@ -87,28 +96,36 @@ export function UserSearchModal({
             </li>
           )}
 
-          {(q.length === 0 ? suggested : users).map((user) => (
-            <li
-              key={user.id}
-              className="flex items-center gap-3 rounded-[8px] px-1 py-2 transition-colors hover:bg-black/[0.03]"
-            >
-              <button
-                type="button"
-                onClick={() => goToProfile(user.username)}
-                className="flex flex-1 items-center gap-3 text-left"
+          {/* Los sugeridos ya se muestran arriba como carrusel; esta lista
+              queda sólo para los resultados de búsqueda. */}
+          {q.length > 0 &&
+            users.map((user) => (
+              <li
+                key={user.id}
+                className="flex items-center gap-3 rounded-[8px] px-1 py-2 transition-colors hover:bg-black/[0.03]"
               >
-                <UserAvatar
-                  avatarUrl={user.avatarUrl}
+                <button
+                  type="button"
+                  onClick={() => goToProfile(user.username)}
+                  className="flex flex-1 items-center gap-3 text-left"
+                >
+                  <UserAvatar
+                    avatarUrl={user.avatarUrl}
+                    username={user.username}
+                    className="h-9 w-9 shrink-0 rounded-full object-cover"
+                  />
+                  <span className="text-ink text-[14px] font-medium">
+                    {user.username}
+                  </span>
+                </button>
+                <FollowButton
+                  userId={user.id}
+                  isFollowing={user.isFollowing}
                   username={user.username}
-                  className="h-9 w-9 shrink-0 rounded-full object-cover"
+                  avatarUrl={user.avatarUrl}
                 />
-                <span className="text-ink text-[14px] font-medium">
-                  {user.username}
-                </span>
-              </button>
-              <FollowButton userId={user.id} isFollowing={user.isFollowing} />
-            </li>
-          ))}
+              </li>
+            ))}
         </ul>
       </DialogContent>
     </Dialog>

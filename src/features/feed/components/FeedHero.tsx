@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   PolarAngleAxis,
@@ -44,6 +45,7 @@ export function FeedHero() {
     if (!isLoading && !isError && data) {
       content = (
         <CollapsedHero
+          alfajorId={data.alfajor.id}
           alfajorNombre={data.alfajor.nombre}
           ratings={data.ratings}
         />
@@ -90,14 +92,19 @@ export function FeedHero() {
         <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:items-center lg:gap-10">
           <div>
             <h2
-              className="text-ink text-[40px] md:text-[48px] lg:text-[56px]"
+              className="text-[40px] md:text-[48px] lg:text-[56px]"
               style={{
                 fontFamily: 'var(--font-archivo)',
                 letterSpacing: '-0.045em',
                 lineHeight: 0.96,
               }}
             >
-              {alfajor.nombre}
+              <Link
+                href={`/alfajores/${alfajor.id}`}
+                className="text-ink hover:text-curry-deep focus-visible:ring-curry-deep rounded-[4px] underline-offset-[6px] transition-colors hover:underline focus-visible:ring-2 focus-visible:outline-none"
+              >
+                {alfajor.nombre}
+              </Link>
             </h2>
             <p className="text-sienna mt-2 text-[15px]">
               {alfajor.marca.nombre}
@@ -175,9 +182,11 @@ export function FeedHero() {
 }
 
 function CollapsedHero({
+  alfajorId,
   alfajorNombre,
   ratings,
 }: {
+  alfajorId: string;
   alfajorNombre: string;
   ratings: FeedHeroRatings;
 }) {
@@ -204,7 +213,12 @@ function CollapsedHero({
             letterSpacing: '-0.03em',
           }}
         >
-          {alfajorNombre}
+          <Link
+            href={`/alfajores/${alfajorId}`}
+            className="hover:text-curry-deep focus-visible:ring-curry-deep truncate rounded-[4px] underline-offset-4 transition-colors hover:underline focus-visible:ring-2 focus-visible:outline-none"
+          >
+            {alfajorNombre}
+          </Link>
           <span className="text-cinnamon text-[15px] font-semibold">
             {ratings.general.toFixed(1)}
           </span>

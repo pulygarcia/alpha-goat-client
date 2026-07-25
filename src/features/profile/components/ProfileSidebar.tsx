@@ -57,9 +57,9 @@ function CoreRow({
 }
 
 /**
- * Sidebar pintado del perfil (estilo carnet): degradado chocolate con textura
- * de puntos, avatar, handle, botón Editar/Seguir, metadatos y los contadores
- * sociales con count-up. Pensado para la columna izquierda del layout ledger.
+ * Sidebar pintado del perfil (estilo carnet): fondo chocolate, avatar, handle,
+ * botón Editar/Seguir, metadatos y los contadores sociales con count-up.
+ * Pensado para la columna izquierda del layout ledger.
  */
 export function ProfileSidebar({
   profile,
@@ -73,25 +73,15 @@ export function ProfileSidebar({
   const roleLabel = ROLE_LABEL[profile.role];
 
   return (
-    <aside
-      className="text-paper-raised relative overflow-hidden rounded-2xl px-7 py-8"
-      style={{
-        background:
-          'linear-gradient(165deg, #1c0a03 0%, #3a1808 58%, #7a3d10 100%)',
-      }}
-    >
-      {/* textura de puntos tipo carnet */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)',
-          backgroundSize: '17px 17px',
-        }}
-      />
+    <aside className="sidebar-bg-mesh text-paper-raised relative overflow-hidden rounded-2xl px-7 py-8">
+      {/* Segunda mancha del mesh: necesita nodo propio porque un elemento sólo
+          tiene dos pseudo-elementos y los dos ya están usados (grano y mancha
+          A), y las dos manchas deben moverse por separado. */}
+      <div aria-hidden className="sidebar-bg-mesh__b" />
 
-      <div className="relative">
+      {/* `z-20` para quedar por encima del mesh, que vive en un `::after` y al
+          ser el último hijo pintaría sobre el contenido. */}
+      <div className="relative z-20">
         <span
           className="text-curry-bright block"
           style={{
@@ -139,6 +129,8 @@ export function ProfileSidebar({
             <FollowButton
               userId={profile.id}
               isFollowing={profile.isFollowing ?? false}
+              username={profile.username}
+              avatarUrl={profile.avatarUrl}
             />
           )}
           <Link

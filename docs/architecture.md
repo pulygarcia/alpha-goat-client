@@ -510,11 +510,11 @@ test: {
 
 ## Reglas que Claude Code debe seguir
 
-1. **Antes de crear una feature**, leer este archivo y repasar `decisions.md` por restricciones relevantes.
+1. **Antes de crear una feature**, leer este archivo por restricciones relevantes.
 2. **Cada feature en su carpeta** con la estructura definida arriba.
 3. **Server Components por default**, Client Components solo donde haga falta.
 4. **Componentes con lógica → tienen test**. Sin excepciones.
 5. **Nunca llamar a la API directamente desde un componente**: siempre via hook (`useX`) que usa la función de `api/`.
 6. **Imports con alias `@/`**, nunca rutas relativas largas.
-7. **Cuando tomes una decisión de diseño no obvia** (un contrato, un trade-off, un "por qué no la opción evidente"), registrala en `decisions.md`. No es un log de avance — eso lo cubren los commits, los PRs y el board.
+7. **Cuando tomes una decisión de diseño no obvia** (un contrato, un trade-off, un "por qué no la opción evidente"), explicá el porqué en el cuerpo del commit y en la descripción del PR — incluido lo que descartaste y por qué. No hay log de decisiones donde escribirlo.
 8. Si dudás sobre qué es feature vs shared, **preguntá**.

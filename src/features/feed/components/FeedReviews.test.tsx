@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FeedReviews } from './FeedReviews';
@@ -202,7 +202,7 @@ describe('FeedReviews', () => {
     ).toBeInTheDocument();
   });
 
-  it('calls fetchNextPage when "Cargar más" is clicked', () => {
+  it('calls fetchNextPage when "Ver más" is clicked', () => {
     const fetchNextPage = vi.fn();
     mocked.mockReturnValue(
       baseReturn({
@@ -215,7 +215,76 @@ describe('FeedReviews', () => {
     );
     render(<FeedReviews />);
 
-    fireEvent.click(screen.getByText('Cargar más'));
+    fireEvent.click(screen.getByText('Ver más'));
     expect(fetchNextPage).toHaveBeenCalled();
+  });
+
+  describe('en mobile', () => {
+    // jsdom no implementa matchMedia; el hook cae a `false` (escritorio) salvo
+    // que lo stubbeemos como acá.
+    function mockViewport(isMobile: boolean) {
+      vi.stubGlobal(
+        'matchMedia',
+        vi.fn().mockReturnValue({
+          matches: isMobile,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }),
+      );
+    }
+
+    function withItems(count: number, fetchNextPage = vi.fn()) {
+      const items = Array.from({ length: count }, (_, i) =>
+        makeItem(`r${i}`, `Alfajor ${i}`),
+      );
+      mocked.mockReturnValue(
+        baseReturn({
+          data: {
+            pages: [{ items, total: count, page: 1, limit: 20 }],
+          } as never,
+          hasNextPage: true,
+          fetchNextPage,
+        }),
+      );
+    }
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('corta en 8 reseñas y ofrece "Ver más"', () => {
+      mockViewport(true);
+      withItems(12);
+      render(<FeedReviews />);
+
+      expect(screen.getAllByText(/^Alfajor \d+$/)).toHaveLength(8);
+      expect(screen.getByText('Ver más')).toBeInTheDocument();
+    });
+
+    it('"Ver más" revela el resto sin pedir otra página', async () => {
+      const fetchNextPage = vi.fn();
+      mockViewport(true);
+      withItems(12, fetchNextPage);
+      render(<FeedReviews />);
+
+      await userEvent.click(screen.getByText('Ver más'));
+
+      expect(screen.getAllByText(/^Alfajor \d+$/)).toHaveLength(12);
+      expect(fetchNextPage).not.toHaveBeenCalled();
+      // El mismo botón queda, ahora sí paginando de verdad.
+      expect(screen.getByText('Ver más')).toBeInTheDocument();
+    });
+
+    it('no recorta en escritorio: muestra todo y el botón pagina', async () => {
+      const fetchNextPage = vi.fn();
+      mockViewport(false);
+      withItems(12, fetchNextPage);
+      render(<FeedReviews />);
+
+      expect(screen.getAllByText(/^Alfajor \d+$/)).toHaveLength(12);
+
+      // Mismo botón que en mobile, pero acá no hay recorte que revelar:
+      // va directo a pedir la página siguiente.
+      await userEvent.click(screen.getByText('Ver más'));
+      expect(fetchNextPage).toHaveBeenCalled();
+    });
   });
 });

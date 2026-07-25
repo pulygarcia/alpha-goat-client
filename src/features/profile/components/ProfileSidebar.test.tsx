@@ -67,6 +67,14 @@ describe('ProfileSidebar', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('trata un isFollowing ausente como "no lo seguís"', () => {
+    mockCurrentUser('other');
+    const { isFollowing: _omitted, ...withoutFlag } = PROFILE;
+    render(<ProfileSidebar profile={withoutFlag as Profile} />);
+
+    expect(screen.getByTestId('follow-button')).toBeInTheDocument();
+  });
+
   it('renders the edit button on the own profile and calls onEditClick', () => {
     mockCurrentUser('u1');
     const onEditClick = vi.fn();

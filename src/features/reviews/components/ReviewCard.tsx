@@ -120,6 +120,8 @@ export function ReviewCard({
               <FollowButton
                 userId={author.id}
                 isFollowing={author.isFollowing}
+                username={author.username}
+                avatarUrl={author.avatarUrl}
               />
             </StopClick>
           </div>

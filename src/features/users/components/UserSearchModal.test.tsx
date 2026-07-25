@@ -98,7 +98,9 @@ describe('UserSearchModal', () => {
     render(<UserSearchModal open onOpenChange={vi.fn()} />);
 
     expect(screen.getByText('Sugeridos')).toBeInTheDocument();
-    expect(screen.getByText('pulyg')).toBeInTheDocument();
+    // Los sugeridos son una pila de avatares: el username no se pinta como
+    // texto, se identifica por el alt de la imagen (y aparece al apuntarlo).
+    expect(screen.getByAltText('pulyg')).toBeInTheDocument();
   });
 
   it('renders a FollowButton per result', async () => {

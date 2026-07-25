@@ -119,6 +119,40 @@ export function QuickReviewModal({
   );
 }
 
+/**
+ * Miniatura redonda del alfajor en el buscador. Muchos alfajores del catálogo
+ * todavía no tienen foto, así que el fallback no es una imagen genérica (que
+ * haría ver a todos iguales) sino la inicial del nombre sobre un disco: mantiene
+ * la alineación de las filas y distingue una de otra.
+ */
+function AlfajorThumb({
+  nombre,
+  imagenUrl,
+}: {
+  nombre: string;
+  imagenUrl: string | null;
+}) {
+  if (!imagenUrl) {
+    return (
+      <span
+        aria-hidden
+        className="bg-paper-sunken text-cinnamon flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold"
+      >
+        {nombre.charAt(0).toUpperCase()}
+      </span>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={imagenUrl}
+      alt=""
+      className="h-8 w-8 shrink-0 rounded-full object-cover"
+    />
+  );
+}
+
 function AlfajorPicker({
   onPick,
   onPropose,
@@ -162,9 +196,10 @@ function AlfajorPicker({
               <button
                 type="button"
                 onClick={() => onPick(a)}
-                className="hover:bg-paper-sunken flex w-full items-center justify-between gap-3 rounded-[8px] px-3 py-[10px] text-left transition-colors"
+                className="hover:bg-paper-sunken flex w-full items-center gap-3 rounded-[8px] px-3 py-[10px] text-left transition-colors"
               >
-                <span className="text-ink text-[14px] font-medium">
+                <AlfajorThumb nombre={a.nombre} imagenUrl={a.imagenUrl} />
+                <span className="text-ink flex-1 truncate text-[14px] font-medium">
                   {a.nombre}
                 </span>
                 <span

@@ -75,12 +75,11 @@ Full visual language: `docs/design-guidelines.md`.
 
 - **Detailed architecture**: `docs/architecture.md`
 - **Design / UI guidelines**: `docs/design-guidelines.md`
-- **Design decisions log**: `docs/decisions.md` — non-obvious contracts and trade-offs and the _why_ behind them. NOT a progress log (git history + the vault board cover that).
 
 ## How to work with me (Claude Code)
 
-- Before creating a feature, read `docs/architecture.md` and skim `docs/decisions.md` for relevant constraints.
+- Before creating a feature, read `docs/architecture.md` for relevant constraints.
 - **One feature at a time**.
 - **Tests in the same session** as the code they cover.
-- When you make a **non-obvious design decision** (a contract, a trade-off, a "why not the obvious thing"), record it in `docs/decisions.md`. Do **not** log routine "what I did" there — that's what commits, PRs and the board are for.
+- When you make a **non-obvious design decision** (a contract, a trade-off, a "why not the obvious thing"), explain the _why_ in the commit body and the PR description — including what you discarded and why. There is no decisions log to write to.
 - If you are unsure about the domain (axes, vocabulary), ask — don't invent.

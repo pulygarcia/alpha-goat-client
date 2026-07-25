@@ -55,5 +55,4 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 
 - `docs/architecture.md` — arquitectura detallada, ejemplos de feature.
 - `docs/design-guidelines.md` — paleta, tipografía, componentes visuales.
-- `docs/decisions.md` — decisiones de diseño no obvias y el porqué detrás de cada una.
 - `CLAUDE.md` — instrucciones para trabajar con Claude Code.

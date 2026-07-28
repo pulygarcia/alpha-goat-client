@@ -3,23 +3,25 @@
 import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLeft, ImagePlus, X } from 'lucide-react';
+import { ImagePlus, X } from 'lucide-react';
+import { BackButton } from '@/shared/components/BackButton';
 import { Textarea } from '@/shared/components/ui/textarea';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 import { imageFileSchema } from '@/shared/schemas/imageFile.schema';
 import { reviewSchema, type ReviewFormValues } from '../lib/reviewSchema';
 import { useMyAlfajorReview } from '../hooks/useMyAlfajorReview';
 import { useSubmitReview } from '../hooks/useSubmitReview';
 import { useUploadReviewPhoto } from '../hooks/useUploadReviewPhoto';
-import { DotRating } from './DotRating';
+import { ScoreBar } from './ScoreBar';
 import type { Alfajor } from '@/features/alfajores/types/alfajores.types';
 import type { Review } from '../types/reviews.types';
 
+/** Los cinco ejes. El general no está acá: es el bloque protagonista aparte. */
 const AXES: Array<{ name: keyof ReviewFormValues; label: string }> = [
-  { name: 'ratingGeneral', label: 'General' },
   { name: 'dulzor', label: 'Dulzor' },
-  { name: 'cantidadDDL', label: 'DDL' },
+  { name: 'cantidadDDL', label: 'Cant. DDL' },
   { name: 'calidadBano', label: 'Baño' },
-  { name: 'ratioTapaRelleno', label: 'Tapa/Relleno' },
+  { name: 'ratioTapaRelleno', label: 'Tapa / relleno' },
   { name: 'textura', label: 'Textura' },
 ];
 
@@ -52,9 +54,7 @@ export function ReviewWizardForm({
 }) {
   const { data: existing, isLoading } = useMyAlfajorReview(alfajor.id);
 
-  if (isLoading) {
-    return <p className="text-sienna text-[14px]">Cargando tu reseña...</p>;
-  }
+  if (isLoading) return <WizardSkeleton />;
 
   return (
     <WizardInner
@@ -65,6 +65,40 @@ export function ReviewWizardForm({
       step={step}
       onStepChange={onStepChange}
     />
+  );
+}
+
+/**
+ * Espera de `useMyAlfajorReview` (hay que saber si el usuario ya reseñó este
+ * alfajor para precargar el form). Calca el paso 1 con el pie incluido: la
+ * hoja tiene alto fijo, así que si el placeholder no lo llena el botón salta
+ * al llegar los datos.
+ */
+function WizardSkeleton() {
+  return (
+    <div
+      data-testid="wizard-skeleton"
+      className="flex min-h-0 flex-1 flex-col"
+      aria-busy
+    >
+      <div className="min-h-0 flex-1 px-[18px] pt-3">
+        <Skeleton className="h-[22px] w-[190px]" />
+        <Skeleton className="mt-2.5 h-[132px] w-full rounded-[10px]" />
+        <div className="mt-4 flex items-start gap-3">
+          <Skeleton className="h-[88px] w-[88px] flex-none rounded-[10px]" />
+          <div className="flex-1">
+            <Skeleton className="h-3.5 w-[120px]" />
+            <Skeleton className="mt-2 h-3 w-full" />
+            <Skeleton className="mt-1.5 h-3 w-2/3" />
+          </div>
+        </div>
+      </div>
+
+      <div className="border-gris-25 flex flex-none gap-2.5 border-t px-[18px] pt-3.5 pb-5">
+        <Skeleton className="h-12 w-[96px] rounded-[10px]" />
+        <Skeleton className="h-12 flex-1 rounded-[10px]" />
+      </div>
+    </div>
   );
 }
 
@@ -189,110 +223,95 @@ function WizardInner({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-      <p className="text-sienna text-[13px]">
-        Reseñando{' '}
-        <span className="text-ink font-semibold">{alfajor.nombre}</span>
-        {alfajor.marca ? ` · ${alfajor.marca.nombre}` : ''}
-      </p>
-
-      {step === 'comentario' && (
-        <>
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="comentario"
-              className="text-ink text-[14px] font-medium"
+    // El form ocupa el alto de la hoja: el cuerpo scrollea y el pie queda fijo,
+    // así el botón de avanzar siempre está bajo el pulgar.
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex min-h-0 flex-1 flex-col"
+    >
+      <div className="min-h-0 flex-1 overflow-y-auto px-[18px] pt-3">
+        {step === 'comentario' && (
+          <>
+            <h3
+              className="text-ink text-[17px]"
+              style={{
+                fontFamily: 'var(--font-archivo)',
+                letterSpacing: '-0.03em',
+              }}
             >
-              Tu reseña <span className="text-cinnamon">(opcional)</span>
-            </label>
-            <Textarea
-              id="comentario"
-              rows={5}
-              maxLength={280}
-              autoFocus
-              {...register('comentario')}
-              placeholder="¿Qué te pareció?"
-              className="min-h-[120px] resize-none border-[rgba(74,30,8,0.12)] bg-black/[0.015] text-[14px] transition-colors focus-visible:border-[rgba(74,30,8,0.22)] focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
-            <span className="text-cinnamon self-end text-[0.72rem] tabular-nums">
-              {(watch('comentario') ?? '').length}/280
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            {onBack ? (
-              <button
-                type="button"
-                onClick={onBack}
-                className="text-sienna hover:text-ink inline-flex items-center gap-1.5 text-[13px] font-medium"
+              Contá cómo estuvo{' '}
+              <span
+                className="text-gris-300 text-[11px] font-normal"
+                style={{ fontFamily: 'var(--font-inter)' }}
               >
-                <ArrowLeft className="h-4 w-4" strokeWidth={2} />
-                Volver
-              </button>
-            ) : (
-              <span />
-            )}
-            <button
-              type="button"
-              onClick={() => setStep('puntajes')}
-              className="text-paper inline-flex h-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-6 text-[14px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110"
-            >
-              Siguiente
-            </button>
-          </div>
-        </>
-      )}
+                (opcional)
+              </span>
+            </h3>
 
-      {step === 'puntajes' && (
-        <>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {AXES.map((axis) => (
-              <Controller
-                key={axis.name}
-                name={axis.name}
-                control={control}
-                render={({ field }) => (
-                  <DotRating
-                    label={axis.label}
-                    value={Number(field.value)}
-                    onChange={field.onChange}
-                  />
-                )}
+            <div className="bg-gris-25 border-gris-50 focus-within:border-gris-200 mt-2.5 rounded-[10px] border p-3 transition-colors">
+              <Textarea
+                id="comentario"
+                // El título de la sección es un h3, no un <label>: el textarea
+                // necesita su propio nombre accesible.
+                aria-label="Tu reseña"
+                rows={4}
+                maxLength={280}
+                autoFocus
+                {...register('comentario')}
+                placeholder="El baño arranca impecable pero se rinde al tercer mordisco..."
+                className="placeholder:text-gris-300 min-h-[92px] resize-none border-none bg-transparent p-0 text-[14px] leading-[1.5] shadow-none focus-visible:border-none focus-visible:ring-0 focus-visible:ring-offset-0"
               />
-            ))}
-          </div>
-
-          {/* Foto opcional del alfajor (preview local + confirmar al publicar). */}
-          <div className="flex flex-col gap-2">
-            {photoPreview ? (
-              <div className="relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photoPreview}
-                  alt="Vista previa de la foto"
-                  className="max-h-56 w-full rounded-[10px] object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={clearPhoto}
-                  aria-label="Quitar foto"
-                  className="bg-paper/90 text-ink absolute top-2 right-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-[rgba(74,30,8,0.18)] backdrop-blur-sm transition-colors hover:border-[#3a1808]"
-                >
-                  <X className="h-4 w-4" strokeWidth={2} />
-                </button>
-              </div>
-            ) : (
-              <label
-                htmlFor="review-photo"
-                className="hover:border-cinnamon flex cursor-pointer items-center gap-3 rounded-[10px] border border-dashed border-[rgba(74,30,8,0.28)] px-4 py-3 transition-colors"
+              <div
+                className="text-gris-300 flex justify-end text-[10.5px] tabular-nums"
+                style={{ fontFamily: 'var(--font-mono)' }}
               >
-                <ImagePlus className="text-cinnamon h-5 w-5" strokeWidth={2} />
-                <span className="text-sienna text-[13px]">
-                  Subí una foto del alfajor{' '}
-                  <span className="text-cinnamon">(opcional)</span>
-                </span>
-              </label>
-            )}
+                {(watch('comentario') ?? '').length} / 280
+              </div>
+            </div>
+
+            {/* Foto opcional: preview local, se sube después de publicar. */}
+            <div className="mt-4 flex items-start gap-3">
+              {photoPreview ? (
+                <div className="relative h-[88px] w-[88px] flex-none">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={photoPreview}
+                    alt="Vista previa de la foto"
+                    className="h-full w-full rounded-[10px] object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={clearPhoto}
+                    aria-label="Quitar foto"
+                    className="bg-blanco-tibio/90 text-ink border-gris-50 absolute -top-2 -right-2 inline-flex h-7 w-7 items-center justify-center rounded-full border backdrop-blur-sm"
+                  >
+                    <X className="h-3.5 w-3.5" strokeWidth={2} />
+                  </button>
+                </div>
+              ) : (
+                <label
+                  htmlFor="review-photo"
+                  className="border-gris-100 bg-gris-25 hover:border-gris-200 flex h-[88px] w-[88px] flex-none cursor-pointer items-center justify-center rounded-[10px] border border-dashed transition-colors"
+                >
+                  <ImagePlus
+                    className="text-gris-300 h-6 w-6"
+                    strokeWidth={2}
+                  />
+                </label>
+              )}
+
+              <div className="min-w-0 flex-1">
+                <p className="text-ink text-[13px] font-semibold">
+                  Foto del alfajor
+                </p>
+                <p className="text-gris-300 mt-1 text-[11.5px] leading-[1.45]">
+                  Opcional. La mordida cuenta más que el envoltorio.
+                </p>
+                {photoError && (
+                  <p className="text-error mt-1 text-[11.5px]">{photoError}</p>
+                )}
+              </div>
+            </div>
             <input
               ref={photoInputRef}
               id="review-photo"
@@ -302,36 +321,106 @@ function WizardInner({
               className="sr-only"
               onChange={onPickPhoto}
             />
-            {photoError && (
-              <p className="text-error text-[13px]">{photoError}</p>
-            )}
-          </div>
+          </>
+        )}
 
-          {isError && (
-            <p className="text-error text-[13px]">
-              No pudimos guardar la reseña. Probá de nuevo.
+        {step === 'puntajes' && (
+          <>
+            <Controller
+              name="ratingGeneral"
+              control={control}
+              render={({ field }) => (
+                <ScoreBar
+                  variant="hero"
+                  label="Puntaje general"
+                  value={Number(field.value)}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+
+            <p
+              className="text-gris-300 py-3 text-[10px] tracking-[0.22em] uppercase"
+              style={{ fontFamily: 'var(--font-mono)' }}
+            >
+              Los cinco ejes
             </p>
-          )}
 
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => setStep('comentario')}
-              className="text-sienna hover:text-ink inline-flex items-center gap-1.5 text-[13px] font-medium"
-            >
-              <ArrowLeft className="h-4 w-4" strokeWidth={2} />
-              Atrás
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="text-paper inline-flex h-11 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-6 text-[14px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60"
-            >
-              {isPending ? 'Guardando...' : isEdit ? 'Guardar' : 'Publicar'}
-            </button>
-          </div>
-        </>
-      )}
+            <div className="flex flex-col gap-2 pb-2">
+              {AXES.map((axis) => (
+                <Controller
+                  key={axis.name}
+                  name={axis.name}
+                  control={control}
+                  render={({ field }) => (
+                    <ScoreBar
+                      label={axis.label}
+                      value={Number(field.value)}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              ))}
+            </div>
+
+            {isError && (
+              <div className="border-cinnamon mt-1 mb-2 rounded-[10px] border-l-[3px] bg-[#fdf4ea] px-3.5 py-3">
+                <p className="text-ink text-[13px] font-semibold">
+                  No pudimos guardar la reseña
+                </p>
+                <p className="text-gris-400 mt-1 text-[11.5px] leading-[1.45]">
+                  Tus puntajes siguen acá. Probá de nuevo.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      <div className="border-gris-25 flex flex-none gap-2.5 border-t px-[18px] pt-3.5 pb-5">
+        {step === 'comentario' ? (
+          onBack ? (
+            <BackButton onClick={onBack}>Volver</BackButton>
+          ) : (
+            <span />
+          )
+        ) : (
+          <BackButton onClick={() => setStep('comentario')}>Atrás</BackButton>
+        )}
+
+        {/* `key` distinta en cada rama: sin ella React reusa el mismo nodo y le
+            cambia `type` de "button" a "submit" en el mismo click que avanza de
+            paso. El navegador evalúa la acción por defecto después de correr los
+            handlers, ve un submit y publica la reseña sin pasar por los
+            puntajes. Con keys distintas el nodo se reemplaza y no queda submit
+            que disparar. (jsdom no lo reproduce: React flushea en otro momento
+            bajo `act`, así que el test de abajo no alcanza para cubrirlo.) */}
+        {step === 'comentario' ? (
+          <button
+            key="next"
+            type="button"
+            onClick={() => setStep('puntajes')}
+            className="text-paper h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110"
+          >
+            Siguiente
+          </button>
+        ) : (
+          <button
+            key="submit"
+            type="submit"
+            disabled={isPending}
+            className="text-paper h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60"
+          >
+            {isPending
+              ? 'Publicando...'
+              : isEdit
+                ? 'Guardar cambios'
+                : isError
+                  ? 'Reintentar'
+                  : 'Publicar reseña'}
+          </button>
+        )}
+      </div>
     </form>
   );
 }

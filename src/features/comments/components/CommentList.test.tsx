@@ -38,6 +38,7 @@ function baseReturn(over: Partial<ReturnType<typeof useReviewComments>> = {}) {
     data: undefined,
     isLoading: false,
     isError: false,
+    refetch: vi.fn(),
     fetchNextPage: vi.fn(),
     hasNextPage: false,
     isFetchingNextPage: false,
@@ -54,10 +55,13 @@ describe('CommentList', () => {
     expect(screen.getByTestId('comments-skeleton')).toBeInTheDocument();
   });
 
-  it('shows an error message on failure', () => {
-    mocked.mockReturnValue(baseReturn({ isError: true }));
+  it('shows an error message on failure and retries on demand', () => {
+    const refetch = vi.fn();
+    mocked.mockReturnValue(baseReturn({ isError: true, refetch }));
     render(<CommentList reviewId="r1" />);
     expect(screen.getByText(/no pudimos cargar/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
+    expect(refetch).toHaveBeenCalled();
   });
 
   it('shows the empty state when there are no comments', () => {
@@ -165,7 +169,7 @@ describe('CommentList', () => {
     expect(screen.getByText('Usuario')).toBeInTheDocument();
   });
 
-  it('calls fetchNextPage when "Cargar más" is clicked', () => {
+  it('calls fetchNextPage when "Cargar más comentarios" is clicked', () => {
     const fetchNextPage = vi.fn();
     mocked.mockReturnValue(
       baseReturn({
@@ -184,7 +188,7 @@ describe('CommentList', () => {
       }),
     );
     render(<CommentList reviewId="r1" />);
-    fireEvent.click(screen.getByText('Cargar más'));
+    fireEvent.click(screen.getByText('Cargar más comentarios'));
     expect(fetchNextPage).toHaveBeenCalled();
   });
 });

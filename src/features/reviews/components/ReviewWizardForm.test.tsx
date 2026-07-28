@@ -67,6 +67,11 @@ function mockUpload(mutate = vi.fn()) {
   return mutate;
 }
 
+/** El paso 1 (reseña + foto) avanza al de puntajes. */
+function goToRatings() {
+  fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
+}
+
 function pickPhoto(file: File) {
   const input = screen.getByLabelText(/foto de la reseña/i);
   fireEvent.change(input, { target: { files: [file] } });
@@ -80,11 +85,21 @@ describe('ReviewWizardForm', () => {
     mockUpload();
   });
 
-  it('starts on the comment step', () => {
+  it('shows a skeleton while the existing review loads', () => {
+    myReview.mockReturnValue({ data: undefined, isLoading: true } as never);
+    mockSubmit();
+    render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
+
+    expect(screen.getByTestId('wizard-skeleton')).toBeInTheDocument();
+    expect(screen.queryByLabelText(/tu reseña/i)).not.toBeInTheDocument();
+  });
+
+  it('starts on the comment step, with the photo picker alongside it', () => {
     mockMyReview(null);
     mockSubmit();
     render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
     expect(screen.getByLabelText(/tu reseña/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/foto de la reseña/i)).toBeInTheDocument();
   });
 
   it('advances to the ratings step and submits a create payload', async () => {
@@ -92,8 +107,10 @@ describe('ReviewWizardForm', () => {
     const mutate = mockSubmit();
     render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
-    expect(screen.getByText('General')).toBeInTheDocument();
+    goToRatings();
+    expect(
+      screen.getByRole('slider', { name: /puntaje general/i }),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /publicar/i }));
     await waitFor(() => expect(mutate).toHaveBeenCalled());
@@ -103,12 +120,47 @@ describe('ReviewWizardForm', () => {
     });
   });
 
+  it('does not submit when advancing from the comment step', () => {
+    mockMyReview(null);
+    const mutate = mockSubmit();
+    const onDone = vi.fn();
+    render(<ReviewWizardForm alfajor={ALFAJOR} onDone={onDone} />);
+
+    fireEvent.change(screen.getByLabelText(/tu reseña/i), {
+      target: { value: 'estaba bueno' },
+    });
+    goToRatings();
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(onDone).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole('slider', { name: /puntaje general/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows the five axes next to the general score', () => {
+    mockMyReview(null);
+    mockSubmit();
+    render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
+
+    goToRatings();
+    for (const label of [
+      /dulzor/i,
+      /cant\. ddl/i,
+      /baño/i,
+      /tapa \/ relleno/i,
+      /textura/i,
+    ]) {
+      expect(screen.getByRole('slider', { name: label })).toBeInTheDocument();
+    }
+  });
+
   it('submits an edit payload prefilled from the existing review', async () => {
     mockMyReview(MINE);
     const mutate = mockSubmit();
     render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
+    goToRatings();
     fireEvent.click(screen.getByRole('button', { name: /guardar/i }));
 
     await waitFor(() => expect(mutate).toHaveBeenCalled());
@@ -123,12 +175,11 @@ describe('ReviewWizardForm', () => {
     mockMyReview(null);
     mockSubmitSuccess({ id: 'r1' });
     const upload = mockUpload();
-    const onDone = vi.fn();
-    render(<ReviewWizardForm alfajor={ALFAJOR} onDone={onDone} />);
+    render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
     const file = new File(['x'], 'foto.png', { type: 'image/png' });
     pickPhoto(file);
+    goToRatings();
     fireEvent.click(screen.getByRole('button', { name: /publicar/i }));
 
     await waitFor(() => expect(upload).toHaveBeenCalled());
@@ -142,7 +193,7 @@ describe('ReviewWizardForm', () => {
     const onDone = vi.fn();
     render(<ReviewWizardForm alfajor={ALFAJOR} onDone={onDone} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
+    goToRatings();
     fireEvent.click(screen.getByRole('button', { name: /publicar/i }));
 
     await waitFor(() => expect(onDone).toHaveBeenCalled());
@@ -155,12 +206,11 @@ describe('ReviewWizardForm', () => {
     const upload = mockUpload();
     render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
     const bad = new File(['x'], 'doc.pdf', { type: 'application/pdf' });
     pickPhoto(bad);
-
     expect(screen.getByText(/formato no válido/i)).toBeInTheDocument();
 
+    goToRatings();
     fireEvent.click(screen.getByRole('button', { name: /publicar/i }));
     await waitFor(() =>
       expect(
@@ -175,13 +225,12 @@ describe('ReviewWizardForm', () => {
     mockSubmit();
     render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
     pickPhoto(new File(['x'], 'foto.png', { type: 'image/png' }));
     expect(screen.getByAltText(/vista previa/i)).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /quitar foto/i }));
     expect(screen.queryByAltText(/vista previa/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/subí una foto del alfajor/i)).toBeInTheDocument();
+    expect(screen.getByText(/foto del alfajor/i)).toBeInTheDocument();
   });
 
   it('ignores an empty file selection', () => {
@@ -189,10 +238,19 @@ describe('ReviewWizardForm', () => {
     mockSubmit();
     render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
     const input = screen.getByLabelText(/foto de la reseña/i);
     fireEvent.change(input, { target: { files: [] } });
 
     expect(screen.queryByAltText(/vista previa/i)).not.toBeInTheDocument();
+  });
+
+  it('goes back from the ratings step to the comment step', () => {
+    mockMyReview(null);
+    mockSubmit();
+    render(<ReviewWizardForm alfajor={ALFAJOR} onDone={vi.fn()} />);
+
+    goToRatings();
+    fireEvent.click(screen.getByRole('button', { name: /atrás/i }));
+    expect(screen.getByLabelText(/tu reseña/i)).toBeInTheDocument();
   });
 });

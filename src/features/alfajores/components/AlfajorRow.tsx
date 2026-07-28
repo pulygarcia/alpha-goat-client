@@ -1,11 +1,19 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Cookie } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import type { Alfajor } from '../types/alfajores.types';
 
-/** Barrita horizontal compacta del catálogo: foto chica + nombre/marca. Sin tipo. */
+/**
+ * Barrita horizontal compacta del catálogo: foto chica + nombre/marca y, a la
+ * derecha, el puntaje con su barrita. Sin tipo.
+ */
 export function AlfajorRow({ alfajor }: { alfajor: Alfajor }) {
-  const { id, nombre, imagenUrl, marca } = alfajor;
+  const { id, nombre, imagenUrl, marca, avgRating } = alfajor;
+  const rated = avgRating != null;
+  const reduce = useReducedMotion();
 
   return (
     <Link
@@ -13,7 +21,7 @@ export function AlfajorRow({ alfajor }: { alfajor: Alfajor }) {
       style={{ boxShadow: '0 0.5px 0 0 rgba(74,30,8,0.14)' }}
       className="group -mx-2 flex items-center gap-3 rounded-[10px] px-2 py-2.5 transition-colors hover:bg-black/[0.03]"
     >
-      <div className="bg-paper-sunken relative h-11 w-11 flex-none overflow-hidden rounded-[9px]">
+      <div className="bg-gris-25 relative h-11 w-11 flex-none overflow-hidden rounded-[9px]">
         {imagenUrl ? (
           <Image
             src={imagenUrl}
@@ -37,6 +45,33 @@ export function AlfajorRow({ alfajor }: { alfajor: Alfajor }) {
           {marca?.nombre ?? 'Marca desconocida'}
           {marca?.provincia ? ` · ${marca.provincia}` : ''}
         </p>
+      </div>
+
+      <div className="flex flex-none flex-col items-end gap-1.5">
+        <span
+          className="text-[17px] leading-none tabular-nums"
+          style={{
+            fontFamily: 'var(--font-archivo)',
+            letterSpacing: '-0.03em',
+            color: rated ? 'var(--color-ink)' : 'var(--color-gris-100)',
+          }}
+        >
+          {rated ? avgRating.toFixed(1) : '—'}
+        </span>
+        <span
+          className="bg-gris-50 block h-[3px] w-11 overflow-hidden rounded-full"
+          aria-hidden
+        >
+          {rated && (
+            <motion.i
+              data-testid={`row-score-fill-${id}`}
+              className="bg-cinnamon block h-full rounded-full"
+              initial={reduce ? false : { width: 0 }}
+              animate={{ width: `${avgRating * 10}%` }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            />
+          )}
+        </span>
       </div>
     </Link>
   );

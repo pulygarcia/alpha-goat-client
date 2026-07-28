@@ -18,6 +18,11 @@ vi.mock('./AlfajorRow', () => ({
   ),
 }));
 
+vi.mock('./ProposeAlfajorModal', () => ({
+  ProposeAlfajorModal: ({ open }: { open: boolean }) =>
+    open ? <div>propose-modal</div> : null,
+}));
+
 const mocked = vi.mocked(useAlfajores);
 
 function makeItem(id: string, nombre: string): Alfajor {
@@ -94,6 +99,49 @@ describe('AlfajoresCatalog', () => {
     });
 
     expect(mocked).toHaveBeenLastCalledWith({ q: 'jorg' });
+  });
+
+  it('shows how many alfajores are registered', () => {
+    mocked.mockReturnValue(
+      baseReturn({
+        data: {
+          pages: [
+            {
+              items: [makeItem('1', 'Jorgito')],
+              total: 42,
+              page: 1,
+              limit: 24,
+            },
+          ],
+        } as never,
+      }),
+    );
+    render(<AlfajoresCatalog />);
+    expect(screen.getByText('42')).toBeInTheDocument();
+    expect(screen.getByText(/alfajores registrados/i)).toBeInTheDocument();
+  });
+
+  it('counts results instead of the whole catalog while searching', () => {
+    mocked.mockReturnValue(
+      baseReturn({ data: pages([makeItem('1', 'Jorgito')]) as never }),
+    );
+    render(<AlfajoresCatalog />);
+
+    fireEvent.change(screen.getByRole('searchbox'), {
+      target: { value: 'jorg' },
+    });
+
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText(/^resultado$/i)).toBeInTheDocument();
+    expect(screen.queryByText(/registrados/i)).toBeNull();
+  });
+
+  it('opens the propose modal from the header CTA', () => {
+    mocked.mockReturnValue(baseReturn({ data: pages([]) as never }));
+    render(<AlfajoresCatalog />);
+
+    fireEvent.click(screen.getByRole('button', { name: /falta alguno/i }));
+    expect(screen.getByText('propose-modal')).toBeInTheDocument();
   });
 
   it('calls fetchNextPage when "Cargar más" is clicked', () => {

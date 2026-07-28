@@ -29,7 +29,7 @@ export function CommunityDomeGallery() {
 
   if (usersQuery.isLoading || alfajoresQuery.isLoading) {
     return (
-      <div className="text-paper flex h-full w-full items-center justify-center text-sm">
+      <div className="text-gris-400 flex h-full w-full items-center justify-center text-sm">
         Cargando…
       </div>
     );
@@ -65,7 +65,9 @@ export function CommunityDomeGallery() {
       minRadius={420}
       maxRadius={780}
       imageBorderRadius="10px"
-      overlayBlurColor="#fbf5e5"
+      // Tiene que ser el fondo exacto de la página: el overlay difumina los
+      // bordes de la cúpula contra ella, y un tono distinto deja un halo.
+      overlayBlurColor="#fbf8f3"
       segments={38}
       autoRotate
       autoRotateSpeed={3}

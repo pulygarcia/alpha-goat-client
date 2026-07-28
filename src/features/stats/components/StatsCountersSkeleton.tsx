@@ -7,8 +7,8 @@ export function StatsCountersSkeleton() {
     >
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="flex flex-col items-center gap-2">
-          <div className="bg-paper-sunken h-8 w-16 rounded" />
-          <div className="bg-paper-sunken h-2 w-20 rounded" />
+          <div className="bg-gris-50 h-8 w-16 rounded" />
+          <div className="bg-gris-50 h-2 w-20 rounded" />
         </div>
       ))}
     </div>

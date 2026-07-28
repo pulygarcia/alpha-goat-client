@@ -39,7 +39,7 @@ export function StatCounter({
       <div className="text-cinnamon mt-1.5 flex items-center justify-center gap-1 sm:mt-2">
         <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" strokeWidth={2} />
         <span
-          className="text-sienna text-[0.5rem] whitespace-nowrap sm:text-[0.62rem]"
+          className="text-gris-400 text-[0.5rem] whitespace-nowrap sm:text-[0.62rem]"
           style={{
             fontFamily: 'var(--font-mono)',
             letterSpacing: '0.14em',

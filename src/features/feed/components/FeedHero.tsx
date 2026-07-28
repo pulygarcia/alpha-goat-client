@@ -55,13 +55,13 @@ export function FeedHero() {
     content = <FeedHeroSkeleton />;
   } else if (isError) {
     content = (
-      <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
+      <div className="text-gris-400 border-gris-50 border-b px-8 py-9">
         No pudimos contactar al servidor. Probá recargar.
       </div>
     );
   } else if (!data) {
     content = (
-      <div className="text-sienna border-b border-[rgba(74,30,8,0.14)] px-8 py-9">
+      <div className="text-gris-400 border-gris-50 border-b px-8 py-9">
         Todavía no hay reseñas. Sé el primero en reseñar un alfajor.
       </div>
     );
@@ -75,7 +75,7 @@ export function FeedHero() {
         : `${deltaSign} ${Math.abs(stats.deltaPct).toFixed(0)}% vs sem. anterior`;
 
     content = (
-      <section className="border-b border-[rgba(74,30,8,0.14)] px-5 py-8 md:px-8 md:py-9">
+      <section className="border-gris-50 border-b px-5 py-8 md:px-8 md:py-9">
         <p
           className="text-curry-deep"
           style={{
@@ -106,7 +106,7 @@ export function FeedHero() {
                 {alfajor.nombre}
               </Link>
             </h2>
-            <p className="text-sienna mt-2 text-[15px]">
+            <p className="text-gris-400 mt-2 text-[15px]">
               {alfajor.marca.nombre}
               {alfajor.marca.provincia
                 ? ` · ${alfajor.marca.provincia}`
@@ -139,14 +139,14 @@ export function FeedHero() {
               minHeight={0}
             >
               <RadarChart data={toRadarData(ratings)} outerRadius="78%">
-                <PolarGrid stroke="rgba(74,30,8,0.18)" />
+                <PolarGrid stroke="var(--color-gris-50)" />
                 <PolarAngleAxis
                   dataKey="axis"
                   tick={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: 10,
                     letterSpacing: '0.18em',
-                    fill: 'rgba(44,18,9,0.7)',
+                    fill: 'var(--color-gris-400)',
                   }}
                 />
                 <PolarRadiusAxis
@@ -191,7 +191,7 @@ function CollapsedHero({
   ratings: FeedHeroRatings;
 }) {
   return (
-    <div className="border-b border-[rgba(74,30,8,0.14)] px-5 py-6 md:px-8 md:py-7">
+    <div className="border-gris-50 border-b px-5 py-6 md:px-8 md:py-7">
       <p
         className="text-curry-deep"
         style={{
@@ -278,7 +278,7 @@ function Stat({
         {value}
       </p>
       {hint && (
-        <p className="text-sienna mt-1 text-[10px] md:text-[11px]">{hint}</p>
+        <p className="text-gris-400 mt-1 text-[10px] md:text-[11px]">{hint}</p>
       )}
     </div>
   );

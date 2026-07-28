@@ -5,7 +5,7 @@ import { Footer } from '@/shared/components/layout/Footer';
 // Ranking global público: no requiere sesión.
 export default function RankingPage() {
   return (
-    <div className="bg-paper text-ink flex min-h-screen flex-col">
+    <div className="bg-blanco-tibio text-ink flex min-h-screen flex-col">
       <AppHeader />
       <div className="flex-1">
         <RankingList />

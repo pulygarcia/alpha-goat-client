@@ -3,8 +3,12 @@
 import { Toaster as SonnerToaster } from 'sonner';
 
 /**
- * Toaster compartido: posición top-center, estilos atados a los tokens cream
- * del design system vía CSS vars de Sonner.
+ * Toaster compartido: posición top-center, estilos atados a los tokens del
+ * design system vía CSS vars de Sonner.
+ *
+ * Superficie invertida (oscura sobre la app clara) y no una card blanca más:
+ * el toast tiene que despegarse de un fondo que ahora es casi blanco, y un
+ * borde gris no alcanza para eso.
  */
 export function Toaster() {
   return (
@@ -13,9 +17,10 @@ export function Toaster() {
       richColors
       toastOptions={{
         style: {
-          background: 'var(--color-bg)',
-          color: 'var(--color-curry)',
-          border: '1px solid var(--color-cinnamon)',
+          background: 'var(--color-gris-600)',
+          color: 'var(--color-blanco-tibio)',
+          border: '1px solid var(--color-negro)',
+          boxShadow: '0 18px 40px -18px rgba(28,25,22,0.55)',
         },
       }}
     />

@@ -24,13 +24,16 @@ import {
 
 type Section = 'profile' | 'password';
 
+// Mismos campos que el modal de proponer alfajor: fondo gris-25, borde gris-50
+// que se afirma al foco. La app tiene un solo tipo de campo.
 const inputClass =
-  'w-full rounded-[10px] border border-[rgba(74,30,8,0.18)] bg-paper px-3 py-2 text-[14px] text-ink outline-none focus:border-[#3a1808]';
-const labelClass = 'text-cinnamon mb-1 block text-[12px] font-semibold';
-const errorClass = 'text-sienna mt-1 text-[12px]';
+  'bg-gris-25 border-gris-50 focus:border-gris-200 text-ink w-full rounded-[10px] border px-3 py-2 text-[14px] outline-none transition-colors';
+const labelClass =
+  'text-gris-300 mb-1.5 block text-[10px] tracking-[0.16em] uppercase';
+const errorClass = 'text-error mt-1.5 text-[11.5px]';
 // Chocolate casi negro; el hover apenas levanta el brillo (un toque cálido, sin saturar).
 const submitClass =
-  'text-paper mt-2 inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#3a1808] to-[#1c0a03] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-125 disabled:opacity-60';
+  'text-blanco-tibio mt-2 inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#3a1808] to-[#1c0a03] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-125 disabled:opacity-60';
 
 function TabButton({
   active,
@@ -48,8 +51,8 @@ function TabButton({
       className={
         'pb-2 text-[13px] font-semibold transition-colors ' +
         (active
-          ? 'text-ink border-b-2 border-[#3a1808]'
-          : 'text-cinnamon hover:text-ink border-b-2 border-transparent')
+          ? 'text-ink border-ink border-b-2'
+          : 'text-gris-400 hover:text-ink border-b-2 border-transparent')
       }
     >
       {children}
@@ -116,13 +119,13 @@ function AvatarSection({
       <UserAvatar
         avatarUrl={shownUrl}
         username={username}
-        className="h-16 w-16 rounded-full border border-[rgba(74,30,8,0.18)] object-cover"
+        className="border-gris-50 h-16 w-16 rounded-full border object-cover"
       />
 
       <div className="flex flex-col gap-2">
         <label
           htmlFor="avatar-file"
-          className="text-ink bg-paper inline-flex h-9 w-fit cursor-pointer items-center rounded-[10px] border border-[rgba(74,30,8,0.18)] px-3 text-[13px] font-semibold transition-colors hover:border-[#3a1808]"
+          className="text-ink bg-gris-25 border-gris-50 hover:border-gris-200 inline-flex h-9 w-fit cursor-pointer items-center rounded-[10px] border px-3 text-[13px] font-semibold transition-colors"
         >
           Cambiar foto
         </label>
@@ -151,7 +154,7 @@ function AvatarSection({
               type="button"
               onClick={clearPreview}
               disabled={upload.isPending}
-              className="text-cinnamon hover:text-ink h-10 px-2 text-[13px] font-semibold transition-colors"
+              className="text-gris-400 hover:text-ink h-10 px-2 text-[13px] font-semibold transition-colors"
             >
               Cancelar
             </button>
@@ -286,7 +289,7 @@ export function EditProfileModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-paper-raised text-ink max-w-[440px] border-0">
+      <DialogContent className="bg-blanco-tibio text-ink max-w-[440px] border-0">
         {/* Apertura con un leve fade + subida. */}
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 12 }}
@@ -297,7 +300,7 @@ export function EditProfileModal({
             <DialogTitle>Editar perfil</DialogTitle>
           </DialogHeader>
 
-          <div className="mt-4 mb-5 flex gap-5 border-b border-[rgba(74,30,8,0.14)]">
+          <div className="border-gris-50 mt-4 mb-5 flex gap-5 border-b">
             <TabButton
               active={section === 'profile'}
               onClick={() => setSection('profile')}

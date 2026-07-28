@@ -9,10 +9,10 @@ function RankRow({ item, pos }: { item: RankingItem; pos: number }) {
   return (
     <Link
       href={`/alfajores/${item.id}`}
-      className="grid grid-cols-[44px_1fr_auto] items-center gap-4 border-b border-dashed border-[rgba(74,30,8,0.22)] py-4 transition-colors hover:bg-[rgba(74,30,8,0.04)]"
+      className="border-gris-50 hover:bg-gris-25 grid grid-cols-[44px_1fr_auto] items-center gap-4 border-b border-dashed py-4 transition-colors"
     >
       <div
-        className={pos <= 3 ? 'text-curry-deep' : 'text-sienna'}
+        className={pos <= 3 ? 'text-curry-deep' : 'text-gris-400'}
         style={{
           fontFamily: 'var(--font-archivo)',
           fontSize: 28,
@@ -27,7 +27,7 @@ function RankRow({ item, pos }: { item: RankingItem; pos: number }) {
           {item.nombre}
         </div>
         <div
-          className="text-sienna mt-[3px]"
+          className="text-gris-400 mt-[3px]"
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: '0.62rem',
@@ -47,7 +47,7 @@ function RankRow({ item, pos }: { item: RankingItem; pos: number }) {
         >
           {item.score.toFixed(1)}
         </div>
-        <div className="text-sienna mt-[2px] text-[11px]">
+        <div className="text-gris-400 mt-[2px] text-[11px]">
           {item.reviewsCount} reseñas
         </div>
       </div>
@@ -63,12 +63,12 @@ function RankingSkeleton() {
           key={i}
           className="grid grid-cols-[44px_1fr_auto] items-center gap-4 py-4"
         >
-          <div className="bg-paper-sunken h-7 w-9 rounded" />
+          <div className="bg-gris-50 h-7 w-9 rounded" />
           <div>
-            <div className="bg-paper-sunken h-4 w-40 rounded" />
-            <div className="bg-paper-sunken mt-2 h-2 w-20 rounded" />
+            <div className="bg-gris-50 h-4 w-40 rounded" />
+            <div className="bg-gris-50 mt-2 h-2 w-20 rounded" />
           </div>
-          <div className="bg-paper-sunken h-5 w-10 rounded" />
+          <div className="bg-gris-50 h-5 w-10 rounded" />
         </div>
       ))}
     </div>
@@ -107,7 +107,7 @@ export function RankingList() {
         <h1 className="text-ink mt-1 text-[40px] leading-none tracking-[-0.03em] md:text-[52px]">
           Ranking
         </h1>
-        <p className="text-sienna mt-3 max-w-[44ch] text-[14px] leading-relaxed">
+        <p className="text-gris-400 mt-3 max-w-[44ch] text-[14px] leading-relaxed">
           Los alfajores mejor puntuados de todos los tiempos, por promedio de
           reseñas. Entran a partir de 5 reseñas.
         </p>
@@ -116,13 +116,13 @@ export function RankingList() {
       {isLoading && <RankingSkeleton />}
 
       {isError && (
-        <p className="text-sienna text-[14px]">
+        <p className="text-gris-400 text-[14px]">
           No pudimos cargar el ranking. Probá recargar.
         </p>
       )}
 
       {isEmpty && (
-        <p className="text-sienna text-[14px]">
+        <p className="text-gris-400 text-[14px]">
           Todavía no hay alfajores con suficientes reseñas para armar el
           ranking.
         </p>

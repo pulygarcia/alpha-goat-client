@@ -60,7 +60,7 @@ export function ReviewCard({
             setOpen(true);
           }
         }}
-        className="bg-paper-raised relative grid cursor-pointer grid-cols-[64px_1fr] items-start gap-4 rounded-2xl border border-[rgba(90,60,25,0.13)] p-4 transition-colors outline-none hover:bg-[color-mix(in_srgb,var(--color-paper-raised),black_2.5%)] focus-visible:ring-2 focus-visible:ring-[rgba(74,30,8,0.35)] md:grid-cols-[96px_1fr_64px] md:gap-6 md:p-5"
+        className="bg-blanco border-gris-50 hover:bg-gris-25 focus-visible:ring-gris-300 relative grid cursor-pointer grid-cols-[64px_1fr] items-start gap-4 rounded-2xl border p-4 transition-colors outline-none focus-visible:ring-2 md:grid-cols-[96px_1fr_64px] md:gap-6 md:p-5"
       >
         {/* Foto: solo en el feed (en el detalle es el mismo alfajor de la página).
             Prioridad: foto de la reseña → imagen del alfajor → placeholder de tipo. */}
@@ -73,7 +73,7 @@ export function ReviewCard({
               className="aspect-square w-full rounded-[10px] object-cover"
             />
           ) : (
-            <div className="bg-paper-sunken text-cinnamon flex aspect-square w-full items-center justify-center rounded-[10px] text-[0.55rem] tracking-[0.18em] uppercase">
+            <div className="bg-gris-25 text-gris-300 flex aspect-square w-full items-center justify-center rounded-[10px] text-[0.55rem] tracking-[0.18em] uppercase">
               {alfajor?.tipo}
             </div>
           )
@@ -108,7 +108,7 @@ export function ReviewCard({
                 letterSpacing: '0.16em',
                 textTransform: 'uppercase',
                 fontWeight: 500,
-                color: '#6f5c42',
+                color: 'var(--color-gris-400)',
               }}
             >
               <span className="md:hidden">{timeAgo(vm.createdAt).compact}</span>
@@ -130,7 +130,10 @@ export function ReviewCard({
             <div className="mb-2 flex items-start justify-between gap-3">
               <h5 className="text-ink text-[15px] font-medium tracking-[-0.018em] md:text-[15px]">
                 {alfajor.nombre} ·{' '}
-                <em className="not-italic" style={{ color: '#b3702a' }}>
+                <em
+                  className="not-italic"
+                  style={{ color: 'var(--color-cinnamon)' }}
+                >
                   {marca.nombre}
                 </em>
               </h5>
@@ -140,7 +143,7 @@ export function ReviewCard({
           {quote && (
             <p
               className="mb-[10px] line-clamp-2 text-[13px] leading-[1.5] md:text-[13.5px]"
-              style={{ color: '#6f5c42' }}
+              style={{ color: 'var(--color-gris-400)' }}
             >
               “{quote}”
             </p>
@@ -154,7 +157,7 @@ export function ReviewCard({
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
               fontWeight: 700,
-              color: '#6f5c42',
+              color: 'var(--color-gris-400)',
             }}
           >
             <StopClick>
@@ -179,13 +182,13 @@ export function ReviewCard({
               fontFamily: 'var(--font-archivo)',
               letterSpacing: '-0.04em',
               lineHeight: 1,
-              color: '#b3702a',
+              color: 'var(--color-cinnamon)',
             }}
           >
             {overall.toFixed(1)}
           </span>
           <span
-            className="text-cinnamon"
+            className="text-gris-300"
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '0.6rem',

@@ -74,7 +74,7 @@ export function AlfajoresCatalog() {
 
           <div className="flex shrink-0 flex-col items-end gap-2 pt-1 text-right">
             {total != null && (
-              <p className="text-sienna text-[12px] md:text-[13px]">
+              <p className="text-gris-400 text-[12px] md:text-[13px]">
                 <span
                   className="text-ink text-[15px] md:text-[17px]"
                   style={{ fontFamily: 'var(--font-archivo)' }}
@@ -87,34 +87,36 @@ export function AlfajoresCatalog() {
             <button
               type="button"
               onClick={() => setProposeOpen(true)}
-              className="text-sienna hover:text-ink text-[12px] underline decoration-[rgba(74,30,8,0.3)] underline-offset-4 transition-colors hover:decoration-current md:text-[13px]"
+              className="text-gris-400 hover:text-ink decoration-gris-100 text-[12px] underline underline-offset-4 transition-colors hover:decoration-current md:text-[13px]"
             >
               ¿Falta alguno? Proponelo
             </button>
           </div>
         </header>
 
-        <label className="mb-7 flex h-11 w-full max-w-[420px] items-center gap-2 rounded-[10px] border border-[rgba(74,30,8,0.12)] bg-black/[0.015] px-3 transition-colors focus-within:border-[rgba(74,30,8,0.22)]">
-          <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
+        {/* Mismo campo que el buscador del QuickReviewModal y el combobox de
+            marca: la app tiene un solo buscador, dibujado igual en todos lados. */}
+        <label className="bg-gris-25 border-gris-50 focus-within:border-gris-200 mb-7 flex h-12 w-full max-w-[420px] items-center gap-2.5 rounded-[10px] border px-3 transition-colors">
+          <Search className="text-gris-300 h-4 w-4" strokeWidth={2} />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar alfajor por nombre"
-            className="text-ink h-full flex-1 bg-transparent text-[14px] placeholder:text-[rgba(44,18,9,0.55)] focus:outline-none"
+            className="text-ink placeholder:text-gris-300 h-full flex-1 bg-transparent text-[14px] focus:outline-none"
           />
         </label>
 
         {isLoading && <AlfajorRowsSkeleton />}
 
         {isError && (
-          <p className="text-sienna text-[14px]">
+          <p className="text-gris-400 text-[14px]">
             No pudimos cargar el catálogo. Probá recargar.
           </p>
         )}
 
         {isEmpty && (
-          <p className="text-sienna text-[14px]">
+          <p className="text-gris-400 text-[14px]">
             {q
               ? `No encontramos alfajores para “${q}”.`
               : 'No encontramos alfajores por ahora.'}

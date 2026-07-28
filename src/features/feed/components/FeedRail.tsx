@@ -6,7 +6,10 @@ import { RecommendedForYou } from '@/features/recommendations/components/Recomme
 
 export function FeedRail() {
   return (
-    <aside className="bg-paper-raised border-t border-[rgba(74,30,8,0.14)] px-5 py-8 sm:px-7 lg:border-t-0 lg:py-9">
+    // El rail va un escalón más claro que la página (blanco sobre blanco
+    // tibio), que es la relación que tenía con el papel: se despega sin
+    // necesidad de un borde propio en desktop.
+    <aside className="bg-blanco border-gris-50 border-t px-5 py-8 sm:px-7 lg:border-t-0 lg:py-9">
       <WeeklyRanking />
       <WorstRatedCard />
       <RecommendedForYou />

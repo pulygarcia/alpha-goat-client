@@ -61,7 +61,7 @@ export function AlfajorScoreBlock({
       <button
         type="button"
         onClick={onReview}
-        className="text-paper ml-auto inline-flex h-11 cursor-pointer items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[18px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110"
+        className="text-blanco-tibio ml-auto inline-flex h-11 cursor-pointer items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[18px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110"
       >
         <Plus className="h-4 w-4" strokeWidth={2.4} />
         Reseñar

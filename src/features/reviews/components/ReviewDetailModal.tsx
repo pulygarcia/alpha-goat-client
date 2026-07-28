@@ -86,7 +86,7 @@ export function ReviewDetailModal({
       <DialogContent
         showClose={false}
         style={{ ...PALETTE, background: 'var(--rd-panel)' }}
-        className="top-auto bottom-0 left-1/2 flex h-[min(620px,92vh)] max-h-[92vh] w-[min(620px,100vw)] max-w-none translate-y-0 flex-col gap-0 overflow-hidden rounded-t-[20px] rounded-b-none border-0 p-0 shadow-[0_50px_90px_-35px_rgba(43,20,8,0.65)] sm:rounded-b-none"
+        className="top-auto bottom-0 left-1/2 flex h-[min(620px,92vh)] max-h-[92vh] w-[min(620px,100vw)] max-w-none translate-y-0 flex-col gap-0 overflow-hidden rounded-t-[20px] rounded-b-none border-0 p-0 shadow-[0_50px_90px_-35px_rgba(28,25,22,0.45)] sm:rounded-b-none"
       >
         <DialogHeader className="sr-only">
           <DialogTitle>Reseña de {author.username}</DialogTitle>
@@ -180,7 +180,7 @@ export function ReviewDetailModal({
                 >
                   @{author.username}
                 </Link>
-                <span style={{ color: '#c9c1b6' }}>·</span>
+                <span style={{ color: 'var(--rd-faint-2)' }}>·</span>
                 <span>{timeAgo(vm.createdAt)}</span>
               </div>
             </div>
@@ -213,7 +213,7 @@ export function ReviewDetailModal({
               className="mt-4 inline-flex items-center gap-2 rounded-full py-1.5 pr-3 pl-1.5 no-underline"
               style={{ background: 'var(--rd-chip)' }}
             >
-              <span className="block h-6 w-6 shrink-0 overflow-hidden rounded-full bg-[linear-gradient(135deg,#8a6a4a,#c99a63)]">
+              <span className="bg-gris-100 block h-6 w-6 shrink-0 overflow-hidden rounded-full">
                 {alfajor.imagenUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -318,7 +318,7 @@ export function ReviewDetailModal({
           <div className="mt-9 flex items-center gap-3.5">
             <div
               className="h-px flex-1"
-              style={{ background: '#eee7dd' }}
+              style={{ background: 'var(--color-gris-50)' }}
               aria-hidden
             />
             <span
@@ -332,7 +332,7 @@ export function ReviewDetailModal({
             </span>
             <div
               className="h-px flex-1"
-              style={{ background: '#eee7dd' }}
+              style={{ background: 'var(--color-gris-50)' }}
               aria-hidden
             />
           </div>

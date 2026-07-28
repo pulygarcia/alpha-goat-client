@@ -108,7 +108,10 @@ export function AlfajorReviewCard({ vm }: { vm: ReviewCardVM }) {
         ) : (
           <div
             className="text-[11px] tracking-[0.1em] uppercase"
-            style={{ fontFamily: 'var(--font-mono)', color: '#c0b9b0' }}
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--ap-faint-2)',
+            }}
           >
             Cató sin dejar comentario
           </div>

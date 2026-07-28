@@ -21,7 +21,7 @@ export function StatsPage() {
       {isLoading && <StatsCountersSkeleton />}
 
       {isError && (
-        <p className="text-sienna text-center text-[14px]">
+        <p className="text-gris-400 text-center text-[14px]">
           No pudimos cargar las estadísticas. Probá recargar.
         </p>
       )}
@@ -51,8 +51,7 @@ export function StatsPage() {
             ].map((stat, i) => (
               <div
                 key={stat.label}
-                className={`px-2 sm:px-8 md:px-12 ${i > 0 ? 'border-l' : ''}`}
-                style={{ borderColor: 'rgba(74,30,8,0.16)' }}
+                className={`border-gris-50 px-2 sm:px-8 md:px-12 ${i > 0 ? 'border-l' : ''}`}
               >
                 <StatCounter
                   label={stat.label}

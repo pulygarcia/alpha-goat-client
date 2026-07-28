@@ -45,7 +45,7 @@ export function ProfileAvatarModal({
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-paper-raised flex max-w-md items-center justify-center border-[rgba(74,30,8,0.22)] p-4">
+        <DialogContent className="bg-blanco-tibio border-gris-50 flex max-w-md items-center justify-center p-4">
           <DialogHeader className="sr-only">
             <DialogTitle>Foto de {username}</DialogTitle>
             <DialogDescription>Imagen de perfil ampliada.</DialogDescription>

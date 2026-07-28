@@ -83,11 +83,11 @@ export function AppHeader() {
   const menu = menuMotion(!!reduceMotion);
 
   return (
-    <div className="bg-paper-raised relative flex items-center gap-3 border-b border-[rgba(74,30,8,0.22)] px-4 py-4 sm:gap-[18px] sm:px-6">
+    <div className="bg-blanco border-gris-50 relative flex items-center gap-3 border-b px-4 py-4 sm:gap-[18px] sm:px-6">
       <Link
         href="/feed"
         aria-label="AlphaGoat"
-        className="flex items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-[18px] transition-opacity hover:opacity-80"
+        className="border-gris-50 flex items-center gap-[10px] border-r pr-[18px] transition-opacity hover:opacity-80"
       >
         <Image
           src="/alphagoat-logo.png"
@@ -113,7 +113,7 @@ export function AppHeader() {
       <Sheet>
         <SheetTrigger
           aria-label="Abrir menú de navegación"
-          className="text-sienna hover:bg-paper-sunken hover:text-ink flex h-9 w-9 items-center justify-center rounded-lg transition-colors lg:hidden"
+          className="text-gris-400 hover:bg-gris-25 hover:text-ink flex h-9 w-9 items-center justify-center rounded-lg transition-colors lg:hidden"
         >
           <Menu className="h-5 w-5" strokeWidth={2} />
         </SheetTrigger>
@@ -139,8 +139,8 @@ export function AppHeader() {
                       href={item.href}
                       className={`block rounded-[8px] px-3 py-[10px] text-[15px] font-medium transition-colors ${
                         isActive
-                          ? 'bg-paper-sunken text-ink'
-                          : 'text-sienna hover:bg-paper-sunken hover:text-ink'
+                          ? 'bg-gris-25 text-ink'
+                          : 'text-gris-400 hover:bg-gris-25 hover:text-ink'
                       }`}
                     >
                       {item.label}
@@ -165,8 +165,8 @@ export function AppHeader() {
               href={item.href}
               className={`relative rounded-lg px-[11px] py-2 text-[14.5px] font-medium whitespace-nowrap transition-colors ${
                 isActive
-                  ? 'bg-paper-sunken text-ink'
-                  : 'text-sienna hover:bg-paper-sunken hover:text-ink'
+                  ? 'bg-gris-25 text-ink'
+                  : 'text-gris-400 hover:bg-gris-25 hover:text-ink'
               }`}
             >
               {item.label}
@@ -192,7 +192,7 @@ export function AppHeader() {
         type="button"
         aria-label="Buscar usuario"
         onClick={() => requireAuth(() => setSearchOpen(true))}
-        className="text-sienna hover:bg-paper-sunken hover:text-ink flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-colors"
+        className="text-gris-400 hover:bg-gris-25 hover:text-ink flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-colors"
       >
         <Search className="h-[18px] w-[18px]" strokeWidth={2} />
       </button>
@@ -202,7 +202,7 @@ export function AppHeader() {
       <button
         type="button"
         onClick={() => requireAuth(() => setQuickOpen(true))}
-        className="text-paper hidden h-10 items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110 sm:inline-flex"
+        className="text-blanco-tibio hidden h-10 items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110 sm:inline-flex"
       >
         <Plus className="h-4 w-4" strokeWidth={2.4} />
         Reseñar
@@ -218,7 +218,7 @@ export function AppHeader() {
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             aria-label="Menú de usuario"
-            className="border-sienna from-cinnamon to-curry text-sienna flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"
+            className="border-gris-100 from-gris-25 to-gris-100 text-gris-400 flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border-[1.5px] bg-gradient-to-br text-[13px] font-bold transition-[filter] hover:brightness-110"
           >
             <UserAvatar
               avatarUrl={user?.avatarUrl ?? null}
@@ -229,20 +229,20 @@ export function AppHeader() {
           <DropdownMenuContent
             align="end"
             sideOffset={10}
-            className="bg-paper-raised text-ink min-w-[224px] rounded-[12px] border-[rgba(74,30,8,0.22)] p-1.5 shadow-[0_18px_40px_-18px_rgba(44,18,9,0.5)]"
+            className="bg-blanco text-ink border-gris-50 min-w-[224px] rounded-[12px] p-1.5 shadow-[0_18px_40px_-18px_rgba(28,25,22,0.35)]"
           >
             <DropdownMenuLabel className="px-[10px] py-2">
               <span className="block text-[14px] leading-tight font-semibold">
                 {user?.username}
               </span>
-              <span className="mt-0.5 block text-[12.5px] font-normal text-[rgba(44,18,9,0.62)]">
+              <span className="text-gris-400 mt-0.5 block text-[12.5px] font-normal">
                 {user?.email}
               </span>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-[rgba(74,30,8,0.14)]" />
+            <DropdownMenuSeparator className="bg-gris-50" />
             <DropdownMenuItem
               asChild
-              className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+              className="focus:bg-gris-25 focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
             >
               <Link href={`/u/${user?.username}`}>
                 <User className="h-4 w-4" strokeWidth={2} />
@@ -251,7 +251,7 @@ export function AppHeader() {
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+              className="focus:bg-gris-25 focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
             >
               <Link href={`/u/${user?.username}/album`}>
                 <Sticker className="h-4 w-4" strokeWidth={2} />
@@ -261,7 +261,7 @@ export function AppHeader() {
             {user?.role === 'ADMIN' && (
               <DropdownMenuItem
                 asChild
-                className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+                className="focus:bg-gris-25 focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
               >
                 <Link href="/admin">
                   <ShieldCheck className="h-4 w-4" strokeWidth={2} />
@@ -271,7 +271,7 @@ export function AppHeader() {
             )}
             <DropdownMenuItem
               onSelect={logout}
-              className="focus:bg-paper-sunken focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
+              className="focus:bg-gris-25 focus:text-ink cursor-pointer rounded-[8px] px-[10px] py-2 text-[14px] font-medium"
             >
               <LogOut className="h-4 w-4" strokeWidth={2} />
               Cerrar sesión
@@ -281,7 +281,7 @@ export function AppHeader() {
       ) : (
         <Link
           href="/login?next=/feed"
-          className="text-paper inline-flex h-9 flex-shrink-0 items-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110"
+          className="text-blanco-tibio inline-flex h-9 flex-shrink-0 items-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110"
         >
           Entrar
         </Link>

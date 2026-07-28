@@ -17,7 +17,7 @@ type Metric = {
 
 function Num({ metric }: { metric: Metric }) {
   return (
-    <Card className="bg-paper-raised rounded-xl border-[rgba(74,30,8,0.12)] p-[18px] shadow-none">
+    <Card className="bg-blanco border-gris-50 rounded-xl p-[18px] shadow-none">
       <span
         className="text-curry-deep block"
         style={{

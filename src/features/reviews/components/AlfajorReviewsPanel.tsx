@@ -10,26 +10,26 @@ function SkeletonRow({ opacity }: { opacity: number }) {
       <div className="flex items-center gap-3">
         <div
           className="h-9 w-9 rounded-full"
-          style={{ background: '#eeebe6' }}
+          style={{ background: 'var(--color-gris-50)' }}
         />
         <div className="flex flex-col gap-[6px]">
           <div
             className="h-3 w-[110px] rounded-[2px]"
-            style={{ background: '#eeebe6' }}
+            style={{ background: 'var(--color-gris-50)' }}
           />
           <div
             className="h-[10px] w-[70px] rounded-[2px]"
-            style={{ background: '#f3f1ed' }}
+            style={{ background: 'var(--color-gris-25)' }}
           />
         </div>
       </div>
       <div
         className="h-[13px] rounded-[2px]"
-        style={{ background: '#f1efeb' }}
+        style={{ background: 'var(--color-gris-25)' }}
       />
       <div
         className="h-[13px] w-[82%] rounded-[2px]"
-        style={{ background: '#f1efeb' }}
+        style={{ background: 'var(--color-gris-25)' }}
       />
     </div>
   );
@@ -99,7 +99,10 @@ export function AlfajorReviewsPanel({
       {isError && (
         <div
           className="mt-[26px] flex flex-col items-start gap-[10px] rounded-[6px] p-[26px]"
-          style={{ border: '1px solid #e6d3c2', background: '#fbf6f1' }}
+          style={{
+            border: '1px solid var(--ap-border)',
+            background: 'var(--ap-inert)',
+          }}
         >
           <span
             className="text-[10px] tracking-[0.16em] uppercase"

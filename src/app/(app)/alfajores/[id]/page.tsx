@@ -11,7 +11,7 @@ export default async function AlfajorDetailPage({
   const { id } = await params;
 
   return (
-    <div className="bg-paper text-ink flex min-h-screen flex-col">
+    <div className="bg-blanco-tibio text-ink flex min-h-screen flex-col">
       <AppHeader />
       <div className="flex-1">
         <AlfajorDetail id={id} />

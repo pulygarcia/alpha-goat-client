@@ -47,10 +47,10 @@ export function RejectAlfajorDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-paper-raised text-ink border-[rgba(74,30,8,0.22)] sm:max-w-[440px]">
+      <DialogContent className="bg-blanco text-ink border-gris-50 sm:max-w-[440px]">
         <DialogHeader>
           <DialogTitle>Rechazar “{alfajorNombre}”</DialogTitle>
-          <DialogDescription className="text-sienna">
+          <DialogDescription className="text-gris-400">
             El motivo queda registrado junto al alfajor rechazado.
           </DialogDescription>
         </DialogHeader>
@@ -65,7 +65,7 @@ export function RejectAlfajorDialog({
             maxLength={500}
             placeholder="Ej: duplicado de un alfajor ya cargado"
             aria-label="Motivo del rechazo"
-            className="bg-paper text-ink placeholder:text-sienna/60 w-full resize-none rounded-[10px] border border-[rgba(74,30,8,0.22)] px-3 py-2 text-[14px] outline-none focus:border-[rgba(74,30,8,0.45)]"
+            className="bg-blanco-tibio text-ink placeholder:text-gris-300 border-gris-50 focus:border-gris-200 w-full resize-none rounded-[10px] border px-3 py-2 text-[14px] outline-none"
           />
           {errors.rejectionReason && (
             <p role="alert" className="text-[13px] text-red-700">
@@ -75,7 +75,7 @@ export function RejectAlfajorDialog({
           <button
             type="submit"
             disabled={isPending}
-            className="text-paper inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-4 text-[13px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            className="text-blanco-tibio inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-4 text-[13px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? 'Rechazando…' : 'Confirmar rechazo'}
           </button>

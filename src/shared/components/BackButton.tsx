@@ -25,7 +25,7 @@ export function BackButton({
   onClick,
 }: BackButtonProps) {
   const classes = cn(
-    'text-sienna hover:text-ink inline-flex items-center gap-1.5 rounded-[8px] border border-[rgba(74,30,8,0.14)] px-3 py-1.5 text-[11px] tracking-[0.05em] uppercase transition-colors hover:bg-black/[0.03]',
+    'text-gris-400 hover:text-ink inline-flex items-center gap-1.5 rounded-[8px] border border-gris-50 px-3 py-1.5 text-[11px] tracking-[0.05em] uppercase transition-colors hover:bg-black/[0.03]',
     className,
   );
   const content = (

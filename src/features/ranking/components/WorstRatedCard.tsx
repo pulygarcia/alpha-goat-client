@@ -41,7 +41,7 @@ export function WorstRatedCard() {
           {data.score.toFixed(1)}
         </div>
 
-        <div className="bg-paper-sunken relative h-11 w-11 overflow-hidden rounded-[10px] border border-[rgba(74,30,8,0.22)]">
+        <div className="bg-gris-25 border-gris-50 relative h-11 w-11 overflow-hidden rounded-[10px] border">
           {data.imagenUrl && (
             <Image
               src={data.imagenUrl}

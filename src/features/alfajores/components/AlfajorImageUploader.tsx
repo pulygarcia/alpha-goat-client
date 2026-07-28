@@ -8,12 +8,12 @@ import { imageFileSchema } from '@/shared/schemas/imageFile.schema';
 import { useUploadAlfajorImage } from '../hooks/useUploadAlfajorImage';
 
 const SLOT_CLASS =
-  'bg-paper-sunken relative aspect-square w-full overflow-hidden rounded-[16px] border border-[rgba(74,30,8,0.14)]';
+  'bg-gris-25 border-gris-50 relative aspect-square w-full overflow-hidden rounded-[16px] border';
 
 function Placeholder({ label }: { label: string }) {
   return (
     <div
-      className="text-cinnamon flex h-full w-full items-center justify-center text-[0.7rem] tracking-[0.24em] uppercase"
+      className="text-gris-300 flex h-full w-full items-center justify-center text-[0.7rem] tracking-[0.24em] uppercase"
       style={{ fontFamily: 'var(--font-mono)' }}
     >
       {label}
@@ -113,7 +113,7 @@ export function AlfajorImageUploader({
           <>
             <label
               htmlFor="alfajor-image-file"
-              className="text-ink bg-paper/90 absolute right-2 bottom-2 inline-flex h-7 cursor-pointer items-center gap-1 rounded-[8px] border border-[rgba(74,30,8,0.18)] px-2 text-[11px] font-semibold backdrop-blur-sm transition-colors hover:border-[#3a1808] md:right-3 md:bottom-3 md:h-9 md:gap-1.5 md:rounded-[10px] md:px-3 md:text-[13px]"
+              className="text-ink bg-blanco-tibio/90 border-gris-50 hover:border-gris-200 absolute right-2 bottom-2 inline-flex h-7 cursor-pointer items-center gap-1 rounded-[8px] border px-2 text-[11px] font-semibold backdrop-blur-sm transition-colors md:right-3 md:bottom-3 md:h-9 md:gap-1.5 md:rounded-[10px] md:px-3 md:text-[13px]"
             >
               <ImagePlus className="h-3 w-3 md:h-4 md:w-4" strokeWidth={2} />
               Cambiar foto
@@ -132,7 +132,7 @@ export function AlfajorImageUploader({
       </div>
 
       {isAdmin && error && (
-        <p className="text-sienna mt-2 text-[12px]">{error}</p>
+        <p className="text-error mt-2 text-[12px]">{error}</p>
       )}
 
       {isAdmin && file && (
@@ -141,7 +141,7 @@ export function AlfajorImageUploader({
             type="button"
             onClick={onSave}
             disabled={upload.isPending}
-            className="text-paper inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#3a1808] to-[#1c0a03] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-125 disabled:opacity-60"
+            className="text-blanco-tibio inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#3a1808] to-[#1c0a03] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-125 disabled:opacity-60"
           >
             {upload.isPending ? 'Subiendo...' : 'Guardar foto'}
           </button>
@@ -149,7 +149,7 @@ export function AlfajorImageUploader({
             type="button"
             onClick={clearPreview}
             disabled={upload.isPending}
-            className="text-cinnamon hover:text-ink h-10 px-2 text-[13px] font-semibold transition-colors"
+            className="text-gris-400 hover:text-ink h-10 px-2 text-[13px] font-semibold transition-colors"
           >
             Cancelar
           </button>

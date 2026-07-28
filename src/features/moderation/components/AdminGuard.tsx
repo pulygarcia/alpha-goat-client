@@ -17,10 +17,10 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
         className="mx-auto max-w-4xl px-4 py-10"
         data-testid="admin-guard-skeleton"
       >
-        <div className="bg-paper-sunken h-8 w-56 animate-pulse rounded-lg" />
+        <div className="bg-gris-25 h-8 w-56 animate-pulse rounded-lg" />
         <div className="mt-6 space-y-4">
-          <div className="bg-paper-sunken h-28 animate-pulse rounded-[14px]" />
-          <div className="bg-paper-sunken h-28 animate-pulse rounded-[14px]" />
+          <div className="bg-gris-25 h-28 animate-pulse rounded-[14px]" />
+          <div className="bg-gris-25 h-28 animate-pulse rounded-[14px]" />
         </div>
       </div>
     );

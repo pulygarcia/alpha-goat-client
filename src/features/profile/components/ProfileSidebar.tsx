@@ -73,7 +73,7 @@ export function ProfileSidebar({
   const roleLabel = ROLE_LABEL[profile.role];
 
   return (
-    <aside className="sidebar-bg-mesh text-paper-raised relative overflow-hidden rounded-2xl px-7 py-8">
+    <aside className="sidebar-bg-mesh text-blanco-tibio relative overflow-hidden rounded-2xl px-7 py-8">
       {/* Segunda mancha del mesh: necesita nodo propio porque un elemento sólo
           tiene dos pseudo-elementos y los dos ya están usados (grano y mancha
           A), y las dos manchas deben moverse por separado. */}
@@ -121,7 +121,7 @@ export function ProfileSidebar({
             <button
               type="button"
               onClick={onEditClick}
-              className="text-paper-raised w-full rounded-[10px] border border-[rgba(255,255,255,0.32)] bg-[rgba(255,255,255,0.08)] py-[9px] text-[12.5px] font-semibold transition-colors hover:bg-[rgba(255,255,255,0.16)]"
+              className="text-blanco-tibio w-full rounded-[10px] border border-[rgba(255,255,255,0.32)] bg-[rgba(255,255,255,0.08)] py-[9px] text-[12.5px] font-semibold transition-colors hover:bg-[rgba(255,255,255,0.16)]"
             >
               Editar perfil
             </button>

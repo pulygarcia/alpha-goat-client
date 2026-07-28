@@ -1,9 +1,12 @@
 import { cn } from '@/shared/lib/utils';
 
 /**
- * Placeholder de carga: bloque con pulso sobre el papel hundido. Decorativo
- * (`aria-hidden`), composable vía `className`. Reemplaza los bloques
- * `bg-paper-sunken animate-pulse` inline repartidos por el rail.
+ * Placeholder de carga: bloque con pulso. Decorativo (`aria-hidden`),
+ * composable vía `className`. Reemplaza los bloques `animate-pulse` inline
+ * repartidos por el rail.
+ *
+ * `gris-50` y no `gris-25`: el skeleton tiene que leerse sobre el blanco tibio
+ * de la app, y `gris-25` es el mismo escalón que usan los campos de fondo.
  */
 export function Skeleton({
   className,
@@ -12,7 +15,7 @@ export function Skeleton({
   return (
     <div
       aria-hidden
-      className={cn('bg-paper-sunken animate-pulse rounded', className)}
+      className={cn('bg-gris-50 animate-pulse rounded', className)}
       {...props}
     />
   );

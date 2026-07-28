@@ -25,28 +25,36 @@
   --color-reward: #5a9a4a;
   --color-error: #c4452a;
 
-  /* Tokens semánticos de shadcn mapeados a la paleta cream, para que los
-     primitivos (slider, textarea, dialog, etc.) rendericen on-brand sin tocar
-     el componente. Hoy nada del repo usa estos nombres, así que es aditivo. */
-  --color-background: #f9efd9;
-  --color-foreground: #2c1209;
-  --color-primary: #d68715;
-  --color-primary-foreground: #f5ead0;
-  --color-secondary: #efe0b6;
-  --color-secondary-foreground: #2c1209;
-  --color-muted: #efe0b6;
-  --color-muted-foreground: #5a2208;
-  --color-accent: #efe0b6;
-  --color-accent-foreground: #2c1209;
-  --color-popover: #f9efd9;
-  --color-popover-foreground: #2c1209;
-  --color-card: #f9efd9;
-  --color-card-foreground: #2c1209;
-  --color-border: #d9b569;
-  --color-input: #d9b569;
-  --color-ring: #f4a02b;
-  --color-destructive: #c4452a;
-  --color-destructive-foreground: #f5ead0;
+  /* Tokens semánticos de shadcn. Son el punto de apalancamiento del design
+     system: card, dialog, dropdown-menu, scroll-area, textarea y sonner los
+     leen por nombre, así que mover estas 20 líneas mueve los seis primitivos
+     (y todo lo que los monte) sin editar un solo componente.
+     Apuntan a la rampa, nunca a hexadecimales propios: cuando traían los suyos
+     (crema #f9efd9, borde #d9b569) los primitivos quedaban a unos puntos de la
+     escala y nunca encima. Las pantallas de marketing/auth siguen en crema y
+     no se ven afectadas: `AlfajorReviews` pisa con scope los tres tokens que
+     el marquee usa. */
+  --color-background: var(--color-blanco-tibio);
+  --color-foreground: var(--color-ink);
+  --color-primary: var(--color-cinnamon);
+  --color-primary-foreground: var(--color-blanco-tibio);
+  --color-secondary: var(--color-gris-25);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted: var(--color-gris-25);
+  --color-muted-foreground: var(--color-gris-400);
+  --color-accent: var(--color-gris-25);
+  --color-accent-foreground: var(--color-ink);
+  --color-popover: var(--color-blanco-tibio);
+  --color-popover-foreground: var(--color-ink);
+  --color-card: var(--color-blanco-tibio);
+  --color-card-foreground: var(--color-ink);
+  --color-border: var(--color-gris-50);
+  --color-input: var(--color-gris-50);
+  /* gris-300 y no gris-200 (el borde de foco de los campos): el anillo se
+     dibuja separado del control por el offset y necesita más contraste. */
+  --color-ring: var(--color-gris-300);
+  --color-destructive: var(--color-error);
+  --color-destructive-foreground: var(--color-blanco-tibio);
 
   /* Rampa de neutrales cálidos del design system de Claude Design
      (_ds/alphagoat/styles.css). Es la única escala de grises válida: las

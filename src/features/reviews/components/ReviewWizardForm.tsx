@@ -364,7 +364,7 @@ function WizardInner({
             </div>
 
             {isError && (
-              <div className="border-cinnamon mt-1 mb-2 rounded-[10px] border-l-[3px] bg-[#fdf4ea] px-3.5 py-3">
+              <div className="border-cinnamon bg-gris-25 mt-1 mb-2 rounded-[10px] border-l-[3px] px-3.5 py-3">
                 <p className="text-ink text-[13px] font-semibold">
                   No pudimos guardar la reseña
                 </p>
@@ -400,7 +400,7 @@ function WizardInner({
             key="next"
             type="button"
             onClick={() => setStep('puntajes')}
-            className="text-paper h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110"
+            className="text-blanco-tibio h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110"
           >
             Siguiente
           </button>
@@ -409,7 +409,7 @@ function WizardInner({
             key="submit"
             type="submit"
             disabled={isPending}
-            className="text-paper h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60"
+            className="text-blanco-tibio h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60"
           >
             {isPending
               ? 'Publicando...'

@@ -94,10 +94,9 @@ export function ScoreBar({
       }`}
     >
       <motion.span
-        // El relleno del hero es la crema del design system (--ag-crema-oscura,
-        // que en el proyecto ya vive como paper-sunken): contra el chocolate es
-        // el único de la escala que no se apaga.
-        className={`absolute inset-y-0 left-0 rounded-full ${hero ? 'bg-paper-sunken' : 'bg-deep'}`}
+        // El relleno del hero es gris-25 y no un gris más oscuro: contra el
+        // chocolate del bloque es el único escalón de la rampa que no se apaga.
+        className={`absolute inset-y-0 left-0 rounded-full ${hero ? 'bg-gris-25' : 'bg-gris-500'}`}
         animate={{ width: `${(value / 10) * 100}%` }}
         transition={{ type: 'spring', stiffness: 520, damping: 40 }}
       />

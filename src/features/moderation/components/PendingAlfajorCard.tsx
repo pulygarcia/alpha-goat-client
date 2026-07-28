@@ -17,8 +17,8 @@ export function PendingAlfajorCard({ alfajor }: { alfajor: Alfajor }) {
   const moderate = useModerateAlfajor();
 
   return (
-    <article className="bg-paper-raised flex items-center gap-4 rounded-[14px] border border-[rgba(74,30,8,0.14)] p-4">
-      <div className="bg-paper-sunken relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-[10px]">
+    <article className="bg-blanco border-gris-50 flex items-center gap-4 rounded-[14px] border p-4">
+      <div className="bg-gris-25 relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-[10px]">
         {alfajor.imagenUrl ? (
           <Image
             src={alfajor.imagenUrl}
@@ -29,7 +29,7 @@ export function PendingAlfajorCard({ alfajor }: { alfajor: Alfajor }) {
           />
         ) : (
           <div
-            className="text-cinnamon flex h-full w-full items-center justify-center text-center text-[0.5rem] leading-tight tracking-[0.14em] uppercase"
+            className="text-gris-300 flex h-full w-full items-center justify-center text-center text-[0.5rem] leading-tight tracking-[0.14em] uppercase"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
             {tipoLabel(alfajor.tipo)}
@@ -41,13 +41,13 @@ export function PendingAlfajorCard({ alfajor }: { alfajor: Alfajor }) {
         <h3 className="text-ink truncate text-[15px] leading-tight font-semibold">
           {alfajor.nombre}
         </h3>
-        <p className="text-sienna truncate text-[12.5px]">
+        <p className="text-gris-400 truncate text-[12.5px]">
           {alfajor.marca?.nombre ?? 'Marca desconocida'}
           {alfajor.marca?.provincia ? ` · ${alfajor.marca.provincia}` : ''}
           {' · '}
           {tipoLabel(alfajor.tipo)}
         </p>
-        <p className="text-sienna/70 text-[12px]">
+        <p className="text-gris-300 text-[12px]">
           Propuesto el{' '}
           {new Date(alfajor.createdAt).toLocaleDateString('es-AR', {
             day: 'numeric',
@@ -62,7 +62,7 @@ export function PendingAlfajorCard({ alfajor }: { alfajor: Alfajor }) {
           type="button"
           disabled={moderate.isPending}
           onClick={() => moderate.mutate({ id: alfajor.id, action: 'approve' })}
-          className="text-paper inline-flex h-9 items-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-3 text-[12.5px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          className="text-blanco-tibio inline-flex h-9 items-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-3 text-[12.5px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
         >
           Aprobar
         </button>
@@ -70,7 +70,7 @@ export function PendingAlfajorCard({ alfajor }: { alfajor: Alfajor }) {
           type="button"
           disabled={moderate.isPending}
           onClick={() => setRejectOpen(true)}
-          className="text-sienna hover:bg-paper-sunken hover:text-ink inline-flex h-9 items-center rounded-[10px] border border-[rgba(74,30,8,0.22)] px-3 text-[12.5px] font-semibold tracking-[0.04em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+          className="text-gris-400 hover:bg-gris-25 hover:text-ink border-gris-50 inline-flex h-9 items-center rounded-[10px] border px-3 text-[12.5px] font-semibold tracking-[0.04em] uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-60"
         >
           Rechazar
         </button>

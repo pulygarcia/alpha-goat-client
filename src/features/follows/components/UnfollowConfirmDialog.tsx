@@ -34,14 +34,14 @@ export function UnfollowConfirmDialog({
 }: UnfollowConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-paper-raised text-ink data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-[rgba(74,30,8,0.22)] duration-[250ms] sm:max-w-[400px]">
+      <DialogContent className="bg-blanco text-ink data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 border-gris-50 duration-[250ms] sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-[19px] tracking-[-0.02em]">
             {username && (
               <UserAvatar
                 avatarUrl={avatarUrl ?? null}
                 username={username}
-                className="border-paper-emph h-10 w-10 shrink-0 rounded-full border object-cover"
+                className="border-gris-50 h-10 w-10 shrink-0 rounded-full border object-cover"
               />
             )}
             <span>
@@ -50,7 +50,7 @@ export function UnfollowConfirmDialog({
                 : '¿Dejar de seguir?'}
             </span>
           </DialogTitle>
-          <DialogDescription className="text-sienna text-[13.5px]">
+          <DialogDescription className="text-gris-400 text-[13.5px]">
             Sus reseñas van a dejar de aparecerte en el feed de “Siguiendo”.
             Podés volver a seguirlo cuando quieras.
           </DialogDescription>
@@ -60,7 +60,7 @@ export function UnfollowConfirmDialog({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="text-sienna hover:bg-paper-sunken rounded-full border border-[rgba(74,30,8,0.22)] px-4 py-2 text-[13px] font-semibold transition-colors"
+            className="text-gris-400 hover:bg-gris-25 border-gris-50 rounded-full border px-4 py-2 text-[13px] font-semibold transition-colors"
           >
             Cancelar
           </button>
@@ -68,7 +68,7 @@ export function UnfollowConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="bg-error rounded-full px-4 py-2 text-[13px] font-semibold text-[#fff8ec] transition-opacity hover:opacity-90 disabled:opacity-60"
+            className="bg-error text-blanco-tibio rounded-full px-4 py-2 text-[13px] font-semibold transition-opacity hover:opacity-90 disabled:opacity-60"
           >
             {isPending ? 'Saliendo...' : 'Dejar de seguir'}
           </button>

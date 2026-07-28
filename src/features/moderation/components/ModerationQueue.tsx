@@ -25,15 +25,15 @@ export function ModerationQueue() {
 
       {isLoading && (
         <div className="mt-6 space-y-4" data-testid="moderation-skeleton">
-          <div className="bg-paper-sunken h-24 animate-pulse rounded-[14px]" />
-          <div className="bg-paper-sunken h-24 animate-pulse rounded-[14px]" />
-          <div className="bg-paper-sunken h-24 animate-pulse rounded-[14px]" />
+          <div className="bg-gris-25 h-24 animate-pulse rounded-[14px]" />
+          <div className="bg-gris-25 h-24 animate-pulse rounded-[14px]" />
+          <div className="bg-gris-25 h-24 animate-pulse rounded-[14px]" />
         </div>
       )}
 
       {isError && (
         <div className="mt-6">
-          <p className="text-sienna text-[14px]">
+          <p className="text-gris-400 text-[14px]">
             No pudimos cargar la cola de moderación.
           </p>
           <button
@@ -47,7 +47,7 @@ export function ModerationQueue() {
       )}
 
       {data && data.items.length === 0 && (
-        <p className="text-sienna mt-6 text-[14px]">
+        <p className="text-gris-400 mt-6 text-[14px]">
           No hay alfajores pendientes de moderación.
         </p>
       )}
@@ -66,18 +66,18 @@ export function ModerationQueue() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="text-sienna hover:text-ink text-[14px] font-semibold disabled:cursor-not-allowed disabled:opacity-40"
+                className="text-gris-400 hover:text-ink text-[14px] font-semibold disabled:cursor-not-allowed disabled:opacity-40"
               >
                 ← Anterior
               </button>
-              <span className="text-sienna text-[13px]">
+              <span className="text-gris-400 text-[13px]">
                 Página {page} de {totalPages}
               </span>
               <button
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="text-sienna hover:text-ink text-[14px] font-semibold disabled:cursor-not-allowed disabled:opacity-40"
+                className="text-gris-400 hover:text-ink text-[14px] font-semibold disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Siguiente →
               </button>

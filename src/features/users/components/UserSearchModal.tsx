@@ -48,19 +48,18 @@ export function UserSearchModal({
       }}
     >
       {/* Misma apertura que el modal de reseña rápida del FAB: zoom + fade a 250ms. */}
-      {/* Misma apertura que el modal de reseña rápida del FAB: zoom + fade a 250ms. */}
-      <DialogContent className="data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 top-[20%] max-w-md translate-y-0 gap-3 border-none px-4 pt-4 pb-4 duration-[250ms] [&>button]:hidden">
+      <DialogContent className="bg-blanco-tibio border-gris-50 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 top-[20%] max-w-md translate-y-0 gap-3 px-4 pt-4 pb-4 duration-[250ms] [&>button]:hidden">
         <DialogTitle className="sr-only">Buscar usuarios</DialogTitle>
 
-        <label className="bg-paper-sunken focus-within:border-cinnamon flex h-11 items-center gap-2 rounded-[10px] border-[1.5px] border-[rgba(74,30,8,0.22)] px-3 transition-colors">
-          <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
+        <label className="bg-gris-25 border-gris-50 focus-within:border-gris-200 flex h-11 items-center gap-2 rounded-[10px] border px-3 transition-colors">
+          <Search className="text-gris-300 h-4 w-4" strokeWidth={2} />
           <input
             autoFocus
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Buscá por nombre de usuario"
-            className="text-ink h-full flex-1 bg-transparent text-[14px] placeholder:text-[rgba(44,18,9,0.55)] focus:outline-none"
+            className="text-ink placeholder:text-gris-300 h-full flex-1 bg-transparent text-[14px] focus:outline-none"
           />
         </label>
 
@@ -70,7 +69,7 @@ export function UserSearchModal({
         {q.length === 0 && suggested.length > 0 && (
           <section className="min-w-0">
             <p
-              className="text-sienna px-1 pt-1 pb-2 text-[11px] font-semibold tracking-[0.08em] uppercase"
+              className="text-gris-300 px-1 pt-1 pb-2 text-[11px] font-semibold tracking-[0.08em] uppercase"
               style={{ fontFamily: 'var(--font-mono)' }}
             >
               Sugeridos
@@ -81,17 +80,17 @@ export function UserSearchModal({
 
         <ul className="max-h-[50vh] overflow-y-auto">
           {q.length === 0 && suggested.length === 0 && (
-            <li className="text-sienna px-1 py-3 text-[13px]">
+            <li className="text-gris-400 px-1 py-3 text-[13px]">
               Escribí un nombre de usuario para buscar.
             </li>
           )}
 
           {q.length > 0 && isLoading && (
-            <li className="text-sienna px-1 py-3 text-[13px]">Buscando...</li>
+            <li className="text-gris-400 px-1 py-3 text-[13px]">Buscando...</li>
           )}
 
           {q.length > 0 && !isLoading && users.length === 0 && (
-            <li className="text-sienna px-1 py-3 text-[13px]">
+            <li className="text-gris-400 px-1 py-3 text-[13px]">
               No encontramos “{q}”.
             </li>
           )}
@@ -102,7 +101,7 @@ export function UserSearchModal({
             users.map((user) => (
               <li
                 key={user.id}
-                className="flex items-center gap-3 rounded-[8px] px-1 py-2 transition-colors hover:bg-black/[0.03]"
+                className="hover:bg-gris-25 flex items-center gap-3 rounded-[8px] px-1 py-2 transition-colors"
               >
                 <button
                   type="button"

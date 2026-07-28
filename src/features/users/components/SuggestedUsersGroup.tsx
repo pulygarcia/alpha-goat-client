@@ -82,8 +82,8 @@ export function SuggestedUsersGroup({
             // cada fila arranca en el margen y gana el username al lado.
             className={
               expanded
-                ? 'hover:bg-paper-sunken focus-visible:ring-curry-deep flex w-full items-center gap-3 rounded-full px-1 py-1 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none'
-                : 'ring-paper-raised focus-visible:ring-curry-deep -ml-2.5 rounded-full ring-2 transition-transform first:ml-0 hover:z-10 hover:-translate-y-[3px] focus-visible:z-10 focus-visible:-translate-y-[3px] focus-visible:outline-none'
+                ? 'hover:bg-gris-25 focus-visible:ring-gris-200 flex w-full items-center gap-3 rounded-full px-1 py-1 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none'
+                : 'ring-blanco-tibio focus-visible:ring-gris-200 -ml-2.5 rounded-full ring-2 transition-transform first:ml-0 hover:z-10 hover:-translate-y-[3px] focus-visible:z-10 focus-visible:-translate-y-[3px] focus-visible:outline-none'
             }
             // Apilado entra escalonado; expandido sólo necesita la transición
             // de layout (si no, los avatares ya montados re-animarían).
@@ -128,7 +128,7 @@ export function SuggestedUsersGroup({
             layout={!reduce}
             onClick={() => setExpanded(true)}
             aria-label={`Ver los ${rest} sugeridos restantes`}
-            className="bg-paper-sunken text-sienna ring-paper-raised hover:bg-paper-field focus-visible:ring-curry-deep -ml-2.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold ring-2 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="bg-gris-25 text-gris-500 ring-blanco-tibio hover:bg-gris-50 focus-visible:ring-gris-200 -ml-2.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold ring-2 transition-colors focus-visible:ring-2 focus-visible:outline-none"
             {...(reduce ? {} : entrance(shown.length))}
           >
             +{rest}
@@ -139,7 +139,7 @@ export function SuggestedUsersGroup({
       {/* Apilado: el username del avatar apuntado (alto reservado para que no
           empuje la lista). Expandido: sobra, cada fila ya lo muestra. */}
       {!expanded && (
-        <p className="text-sienna mt-2 h-4 truncate text-[11px]">
+        <p className="text-gris-400 mt-2 h-4 truncate text-[11px]">
           {active ?? ''}
         </p>
       )}

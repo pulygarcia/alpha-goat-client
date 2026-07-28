@@ -38,8 +38,8 @@ export function MarcaCombobox({
 
   return (
     <div className="relative">
-      <label className="flex h-11 items-center gap-2 rounded-[10px] border border-[rgba(74,30,8,0.12)] bg-black/[0.015] px-3 transition-colors focus-within:border-[rgba(74,30,8,0.22)]">
-        <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
+      <label className="bg-gris-25 border-gris-50 focus-within:border-gris-200 flex h-12 items-center gap-2.5 rounded-[10px] border px-3 transition-colors">
+        <Search className="text-gris-300 h-4 w-4" strokeWidth={2} />
         <input
           role="combobox"
           aria-expanded={showList}
@@ -49,7 +49,7 @@ export function MarcaCombobox({
           value={value ? value.nombre : text}
           onChange={(e) => handleType(e.target.value)}
           placeholder="Buscar marca por nombre"
-          className="text-ink h-full flex-1 bg-transparent text-[14px] placeholder:text-[rgba(44,18,9,0.55)] focus:outline-none"
+          className="text-ink placeholder:text-gris-300 h-full flex-1 bg-transparent text-[14px] focus:outline-none"
         />
       </label>
 
@@ -57,14 +57,14 @@ export function MarcaCombobox({
         <ul
           id={listId}
           role="listbox"
-          className="bg-paper-raised absolute z-10 mt-1 max-h-[40vh] w-full overflow-y-auto rounded-[10px] border border-[rgba(74,30,8,0.18)] py-1 shadow-[0_18px_36px_-22px_rgba(44,18,9,0.5)]"
+          className="bg-blanco-tibio border-gris-50 absolute z-10 mt-1 max-h-[40vh] w-full overflow-y-auto rounded-[10px] border py-1 shadow-[0_18px_36px_-22px_rgba(44,18,9,0.5)]"
         >
           {isLoading && (
-            <li className="text-sienna px-3 py-2 text-[13px]">Buscando...</li>
+            <li className="text-gris-400 px-3 py-2 text-[13px]">Buscando...</li>
           )}
 
           {!isLoading && marcas.length === 0 && (
-            <li className="text-sienna px-3 py-2 text-[13px]">
+            <li className="text-gris-400 px-3 py-2 text-[13px]">
               No encontramos “{q}”.
             </li>
           )}
@@ -76,11 +76,14 @@ export function MarcaCombobox({
                 role="option"
                 aria-selected={false}
                 onClick={() => pick(m)}
-                className="hover:bg-paper-sunken flex w-full items-center justify-between gap-3 px-3 py-2 text-left transition-colors"
+                className="hover:bg-gris-25 flex w-full items-center justify-between gap-3 px-3 py-2 text-left transition-colors"
               >
                 <span className="text-ink text-[14px]">{m.nombre}</span>
                 {m.provincia && (
-                  <span className="text-cinnamon shrink-0 text-[12px]">
+                  <span
+                    className="text-gris-300 shrink-0 text-[10px] tracking-[0.14em] uppercase"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
                     {m.provincia}
                   </span>
                 )}

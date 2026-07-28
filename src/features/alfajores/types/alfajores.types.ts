@@ -12,6 +12,19 @@ export interface AlfajorMarca {
   logoUrl: string | null;
 }
 
+/**
+ * Promedio por eje del alfajor. Campo aditivo pendiente en el back (ver spec
+ * 2026-07-27): mientras no lo mande, llega `undefined` y el bloque de barras
+ * renderiza su estado apagado, indistinguible de un alfajor sin reseñas.
+ */
+export interface AlfajorAvgEjes {
+  dulzor: number;
+  cantidadDDL: number;
+  calidadBano: number;
+  ratioTapaRelleno: number;
+  textura: number;
+}
+
 /** Alfajor del catálogo público (`GET /alfajores`, `GET /alfajores/:id`). */
 export interface Alfajor {
   id: string;
@@ -21,6 +34,10 @@ export interface Alfajor {
   tipo: AlfajorTipo;
   descripcion: string | null;
   imagenUrl: string | null;
+  /** Promedio general 0-10 (`GET /alfajores/:id`); null sin reseñas. */
+  avgRating?: number | null;
+  /** Promedio de los 5 ejes; ausente hasta que el back lo implemente. */
+  avgEjes?: AlfajorAvgEjes | null;
   status: AlfajorStatus;
   /** Motivo del rechazo (moderación); null salvo status REJECTED. Opcional: solo lo consume el panel admin. */
   rejectionReason?: string | null;

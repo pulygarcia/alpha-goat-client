@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/shared/components/ui/dialog';
-import { Stepper } from '@/shared/components/ui/stepper';
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 import { useAlfajores } from '@/features/alfajores/hooks/useAlfajores';
 import { ProposeAlfajorModal } from '@/features/alfajores/components/ProposeAlfajorModal';
@@ -50,20 +50,13 @@ export function QuickReviewModal({
     setWizardStep('comentario');
   }
 
-  // Pasos del wizard: si el alfajor viene preseleccionado (desde el detalle) se
-  // saltea el de elegir → 2 pasos; si no, 3. El stepper es solo indicador.
-  const RESENA = { label: 'Reseña', description: 'Contanos qué te pareció.' };
-  const PUNTAJES = { label: 'Puntajes', description: 'Puntuá los 6 ejes.' };
+  // Pasos: si el alfajor viene preseleccionado (desde su ficha) se saltea el de
+  // elegir → 2 pasos; si no, 3. La barra segmentada es solo indicador.
   const steps = alfajor
-    ? [RESENA, PUNTAJES]
-    : [
-        { label: 'Alfajor', description: 'Buscá el que probaste.' },
-        RESENA,
-        PUNTAJES,
-      ];
+    ? [{ label: 'Reseña' }, { label: 'Puntajes' }]
+    : [{ label: 'Alfajor' }, { label: 'Reseña' }, { label: 'Puntajes' }];
   const wizardIndex = wizardStep === 'comentario' ? 0 : 1;
   const current = selected ? wizardIndex + (alfajor ? 0 : 1) : 0;
-  const activeDescription = steps[current]?.description;
 
   // Abrir "proponer" cierra el modal de reseña para no apilar Dialogs.
   function openPropose() {
@@ -74,8 +67,78 @@ export function QuickReviewModal({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="bg-paper-raised text-ink data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 max-w-md border-[rgba(74,30,8,0.22)] duration-[250ms]">
+        {/* Hoja anclada abajo con alto fijo: los tres pasos miden lo mismo, así
+            el diálogo no se sacude al avanzar. Sobreescribe el centrado del
+            primitivo en vez de forkearlo (Radix conserva foco y escape). */}
+        <DialogContent
+          showClose={false}
+          className="bg-blanco-tibio text-ink border-gris-50 top-auto bottom-0 left-1/2 flex h-[min(560px,92vh)] w-[min(520px,100vw)] max-w-none translate-y-0 flex-col gap-0 overflow-hidden rounded-t-[18px] rounded-b-none p-0 duration-[250ms] sm:rounded-b-none"
+        >
+          <DialogHeader className="flex-none space-y-0 px-[18px] pt-2.5">
+            <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
+
+            <div className="flex items-center gap-3">
+              <span
+                className="text-gris-300 flex-none text-[10px] tracking-[0.2em] uppercase"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
+                Paso {current + 1} / {steps.length}
+              </span>
+              <div className="flex flex-1 gap-1" aria-hidden>
+                {steps.map((s, i) => (
+                  <span
+                    key={s.label}
+                    className={`h-[3px] flex-1 rounded-full transition-colors ${
+                      i <= current ? 'bg-ink' : 'bg-gris-50'
+                    }`}
+                  />
+                ))}
+              </div>
+              <DialogClose
+                aria-label="Cerrar"
+                className="text-gris-300 hover:text-ink flex h-7 w-7 flex-none items-center justify-center rounded-full transition-colors"
+              >
+                <X className="h-4 w-4" strokeWidth={2} />
+              </DialogClose>
+            </div>
+
+            {selected && (
+              // Chip del alfajor elegido: el contexto viaja con el usuario a
+              // través de los pasos, que es lo que el paso 1 dejó de mostrar.
+              <div className="bg-gris-25 mt-3 flex items-center gap-2.5 rounded-[10px] p-2">
+                <AlfajorThumb
+                  nombre={selected.nombre}
+                  imagenUrl={selected.imagenUrl}
+                />
+                <div className="min-w-0">
+                  <p className="text-ink truncate text-[13px] font-semibold">
+                    {selected.nombre}
+                  </p>
+                  {selected.marca && (
+                    <p
+                      className="text-cinnamon truncate text-[9.5px] tracking-[0.16em] uppercase"
+                      style={{ fontFamily: 'var(--font-mono)' }}
+                    >
+                      {selected.marca.nombre}
+                    </p>
+                  )}
+                </div>
+                {!alfajor && (
+                  <button
+                    type="button"
+                    onClick={backToPicker}
+                    className="text-gris-400 hover:text-ink ml-auto flex-none text-[10px] tracking-[0.14em] uppercase underline decoration-[color:var(--color-gris-100)] underline-offset-4 transition-colors"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    Cambiar
+                  </button>
+                )}
+              </div>
+            )}
+          </DialogHeader>
+
           <motion.div
+            className="flex min-h-0 flex-1 flex-col"
             initial={reduce ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -84,21 +147,6 @@ export function QuickReviewModal({
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            <DialogHeader>
-              <DialogTitle className="sr-only">Reseñar un alfajor</DialogTitle>
-              {/* pr-8: deja aire para la X de cerrar, que no se monte sobre el último paso */}
-              <Stepper
-                steps={steps.map((s) => s.label)}
-                current={current}
-                className="pr-8"
-              />
-              {activeDescription && (
-                <p className="text-sienna mt-1 text-center text-[13px]">
-                  {activeDescription}
-                </p>
-              )}
-            </DialogHeader>
-
             {selected ? (
               <ReviewWizardForm
                 alfajor={selected}
@@ -136,7 +184,8 @@ function AlfajorThumb({
     return (
       <span
         aria-hidden
-        className="bg-paper-sunken text-cinnamon flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold"
+        className="bg-gris-50 text-deep flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[13px]"
+        style={{ fontFamily: 'var(--font-archivo)' }}
       >
         {nombre.charAt(0).toUpperCase()}
       </span>
@@ -167,26 +216,37 @@ function AlfajorPicker({
 
   return (
     <>
-      <label className="mt-3 flex h-11 items-center gap-2 rounded-[10px] border border-[rgba(74,30,8,0.12)] bg-black/[0.015] px-3 transition-colors focus-within:border-[rgba(74,30,8,0.22)]">
-        <Search className="text-cinnamon h-4 w-4" strokeWidth={2} />
-        <input
-          type="search"
-          autoFocus
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar alfajor por nombre"
-          className="text-ink h-full flex-1 bg-transparent text-[14px] placeholder:text-[rgba(44,18,9,0.55)] focus:outline-none"
-        />
-      </label>
+      <div className="flex-none px-[18px] pt-3.5 pb-3">
+        <h3
+          className="text-ink mb-3 text-[18px]"
+          style={{
+            fontFamily: 'var(--font-archivo)',
+            letterSpacing: '-0.03em',
+          }}
+        >
+          ¿Qué probaste?
+        </h3>
+        <label className="bg-gris-25 border-gris-50 focus-within:border-gris-200 flex h-12 items-center gap-2.5 rounded-[10px] border px-3 transition-colors">
+          <Search className="text-gris-300 h-4 w-4" strokeWidth={2} />
+          <input
+            type="search"
+            autoFocus
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscá por nombre"
+            className="text-ink placeholder:text-gris-300 h-full flex-1 bg-transparent text-[14px] focus:outline-none"
+          />
+        </label>
+      </div>
 
-      <div className="-mr-1 max-h-[44vh] overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 overflow-y-auto px-[18px]">
         {isLoading && (
-          <p className="text-sienna px-1 py-3 text-[13px]">Buscando...</p>
+          <p className="text-gris-400 py-3 text-[13px]">Buscando...</p>
         )}
 
         {!isLoading && items.length === 0 && q && (
-          <p className="text-sienna px-1 py-3 text-[13px]">
-            No encontramos “{q}”.
+          <p className="text-gris-400 py-3 text-[13px] leading-[1.5]">
+            Ningún alfajor coincide con <b className="text-ink">“{q}”</b>.
           </p>
         )}
 
@@ -196,20 +256,15 @@ function AlfajorPicker({
               <button
                 type="button"
                 onClick={() => onPick(a)}
-                className="hover:bg-paper-sunken flex w-full items-center gap-3 rounded-[8px] px-3 py-[10px] text-left transition-colors"
+                className="border-gris-25 hover:bg-gris-25 flex min-h-[56px] w-full items-center gap-3 rounded-[10px] border-t px-1 py-2.5 text-left transition-colors"
               >
                 <AlfajorThumb nombre={a.nombre} imagenUrl={a.imagenUrl} />
-                <span className="text-ink flex-1 truncate text-[14px] font-medium">
+                <span className="text-ink flex-1 truncate text-[14px] font-medium tracking-[-0.01em]">
                   {a.nombre}
                 </span>
                 <span
-                  className="text-cinnamon shrink-0"
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.6rem',
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                  }}
+                  className="text-gris-300 shrink-0 text-[10px] tracking-[0.14em] uppercase"
+                  style={{ fontFamily: 'var(--font-mono)' }}
                 >
                   {a.marca?.nombre ?? ''}
                 </span>
@@ -219,12 +274,12 @@ function AlfajorPicker({
         </ul>
       </div>
 
-      <p className="text-sienna border-t border-[rgba(74,30,8,0.14)] pt-3 text-[13px]">
+      <p className="border-gris-25 text-gris-400 flex-none border-t px-[18px] pt-3.5 pb-5 text-center text-[13px]">
         ¿No lo encontrás?{' '}
         <button
           type="button"
           onClick={onPropose}
-          className="text-curry-deep font-semibold underline-offset-2 hover:underline"
+          className="text-cinnamon hover:text-ink font-semibold underline underline-offset-4 transition-colors"
         >
           Solicitá agregarlo
         </button>

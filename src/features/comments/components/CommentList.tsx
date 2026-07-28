@@ -9,16 +9,33 @@ import { CommentLikeButton } from './CommentLikeButton';
 
 /**
  * Listado de comentarios de una reseña (público, paginado). Maneja los estados
- * loading / error / vacío y un "cargar más" para las páginas siguientes.
+ * loading / error / vacío y un "cargar más" para las páginas siguientes. Los
+ * colores salen de las variables `--rd-*` que define el modal que lo monta.
  */
 const STAGGER_STEP = 0.045; // s entre cada comentario
 const STAGGER_MAX_DELAY = 0.32; // tope: tandas largas no esperan eternamente
+
+function SkeletonRow({ width }: { width: string }) {
+  return (
+    <div className="flex gap-3 pb-4">
+      <div className="h-8 w-8 shrink-0 animate-pulse rounded-full bg-[var(--color-gris-50)]" />
+      <div className="flex flex-1 flex-col gap-[7px] pt-1">
+        <div className="h-2.5 w-[90px] animate-pulse rounded-full bg-[var(--color-gris-50)]" />
+        <div
+          className="h-2.5 animate-pulse rounded-full bg-[var(--color-gris-25)]"
+          style={{ width }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function CommentList({ reviewId }: { reviewId: string }) {
   const {
     data,
     isLoading,
     isError,
+    refetch,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -27,18 +44,40 @@ export function CommentList({ reviewId }: { reviewId: string }) {
 
   if (isLoading) {
     return (
-      <div data-testid="comments-skeleton" className="flex flex-col gap-3">
-        <div className="bg-paper-sunken h-12 w-full animate-pulse rounded-[10px]" />
-        <div className="bg-paper-sunken h-12 w-full animate-pulse rounded-[10px]" />
+      <div data-testid="comments-skeleton" className="py-4">
+        <SkeletonRow width="100%" />
+        <SkeletonRow width="80%" />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <p className="text-cinnamon text-[14px]">
-        No pudimos cargar los comentarios.
-      </p>
+      <div className="px-4 py-6 text-center">
+        <p
+          className="text-[15px] font-semibold"
+          style={{ color: 'var(--rd-ink)' }}
+        >
+          No pudimos cargar los comentarios
+        </p>
+        <p
+          className="mt-1.5 mb-3.5 text-[13px] leading-[1.5]"
+          style={{ color: 'var(--rd-faint)' }}
+        >
+          Puede ser la conexión. Probá de nuevo.
+        </p>
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="cursor-pointer rounded-full border px-[18px] py-2 text-[13px] transition-colors"
+          style={{
+            color: 'var(--rd-accent)',
+            borderColor: 'rgba(184,96,21,.35)',
+          }}
+        >
+          Reintentar
+        </button>
+      </div>
     );
   }
 
@@ -46,14 +85,25 @@ export function CommentList({ reviewId }: { reviewId: string }) {
 
   if (items.length === 0) {
     return (
-      <p className="text-ink/55 text-[14px]">
-        Todavía no hay comentarios. Sé el primero.
-      </p>
+      <div className="px-4 py-7 text-center">
+        <p
+          className="text-[15px] font-semibold"
+          style={{ color: 'var(--rd-ink)' }}
+        >
+          Silencio total
+        </p>
+        <p
+          className="mt-1.5 text-[13px] leading-[1.5]"
+          style={{ color: 'var(--rd-faint)' }}
+        >
+          Todavía no hay comentarios. Sé el primero.
+        </p>
+      </div>
     );
   }
 
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col">
       {items.map((c, i) => {
         const username = c.author?.username ?? 'Usuario';
         return (
@@ -66,51 +116,72 @@ export function CommentList({ reviewId }: { reviewId: string }) {
               delay: Math.min(i * STAGGER_STEP, STAGGER_MAX_DELAY),
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="flex items-center gap-[10px]"
+            className="flex gap-3 border-b py-4"
+            style={{ borderColor: 'var(--rd-hair-2)' }}
           >
             <UserAvatar
               avatarUrl={c.author?.avatarUrl ?? null}
               username={username}
-              className="h-[26px] w-[26px] shrink-0 rounded-full object-cover"
+              className="h-8 w-8 shrink-0 rounded-full object-cover"
             />
             <div className="min-w-0 flex-1">
-              {c.author?.username ? (
-                <Link
-                  href={`/u/${c.author.username}`}
-                  className="text-ink hover:text-curry-deep text-[13px] font-semibold underline-offset-2 transition-colors hover:underline"
+              <div className="flex items-baseline gap-2">
+                {c.author?.username ? (
+                  <Link
+                    href={`/u/${c.author.username}`}
+                    className="text-[12.5px] font-semibold underline-offset-2 transition-colors hover:underline md:text-[13.5px]"
+                    style={{ color: 'var(--rd-ink)' }}
+                  >
+                    {username}
+                  </Link>
+                ) : (
+                  <span
+                    className="text-[12.5px] font-semibold md:text-[13.5px]"
+                    style={{ color: 'var(--rd-ink)' }}
+                  >
+                    {username}
+                  </span>
+                )}
+                <span
+                  className="text-[11px] md:text-[12px]"
+                  style={{ color: 'var(--rd-faint)' }}
                 >
-                  {username}
-                </Link>
-              ) : (
-                <span className="text-ink text-[13px] font-semibold">
-                  {username}
+                  {timeAgo(c.createdAt)}
                 </span>
-              )}
-              <span className="text-cinnamon ml-1.5 text-[0.72rem]">
-                · {timeAgo(c.createdAt)}
-              </span>
-              <p className="text-sienna text-[14px] leading-[1.5]">
+              </div>
+              <p
+                className="mt-1 text-[13.5px] leading-[1.55] md:text-[14.5px]"
+                style={{ color: 'var(--rd-ink-2)' }}
+              >
                 {c.contenido}
               </p>
             </div>
-            <CommentLikeButton
-              commentId={c.id}
-              likesCount={c.likesCount}
-              isLiked={c.isLiked}
-            />
+            <div className="self-start pt-0.5">
+              <CommentLikeButton
+                commentId={c.id}
+                likesCount={c.likesCount}
+                isLiked={c.isLiked}
+              />
+            </div>
           </motion.li>
         );
       })}
 
       {hasNextPage && (
-        <button
-          type="button"
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
-          className="text-cinnamon hover:text-curry-deep self-start text-[0.7rem] font-bold tracking-[0.16em] uppercase transition-colors disabled:opacity-60"
-        >
-          {isFetchingNextPage ? 'Cargando…' : 'Cargar más'}
-        </button>
+        <div className="mt-5 flex justify-center">
+          <button
+            type="button"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="cursor-pointer rounded-full border px-5 py-2.5 text-[13px] transition-colors disabled:opacity-60"
+            style={{
+              color: 'var(--rd-muted)',
+              borderColor: 'var(--color-gris-50)',
+            }}
+          >
+            {isFetchingNextPage ? 'Cargando…' : 'Cargar más comentarios'}
+          </button>
+        </div>
       )}
     </ul>
   );

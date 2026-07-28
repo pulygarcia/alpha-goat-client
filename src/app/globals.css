@@ -3,7 +3,7 @@
 
 @theme {
   --color-bg: #6e2f11;
-  --color-bg-deep: #4f1f08;
+  --color-bg-deep: #4a1e08;
   --color-bg-ink: #2c1209;
   --color-field-bg: #3b1a0a;
   --color-curry: #f4a02b;
@@ -12,7 +12,7 @@
   --color-cinnamon: #b86015;
   --color-sienna: #5a2208;
 
-  /* Cream paper palette — used by the post-login feed ("El Diario").
+  /* Cream paper palette — used by the post-login feed.
      Coexists with the dark curry palette used in marketing/auth. */
   --color-paper: #fbf5e5;
   --color-paper-raised: #fffaf0;
@@ -20,7 +20,7 @@
   --color-paper-field: #e7d3a0;
   --color-paper-emph: #d9b569;
   --color-ink: #2c1209;
-  --color-deep: #4f1f08;
+  --color-deep: #4a1e08;
   --color-curry-deep: #d68715;
   --color-reward: #5a9a4a;
   --color-error: #c4452a;
@@ -47,6 +47,22 @@
   --color-ring: #f4a02b;
   --color-destructive: #c4452a;
   --color-destructive-foreground: #f5ead0;
+
+  /* Rampa de neutrales cálidos del design system de Claude Design
+     (_ds/alphagoat/styles.css). Es la única escala de grises válida: las
+     paletas con scope de las páginas blancas (--ap-*, --rd-*) apuntan acá en
+     vez de traer hexadecimales propios, que es lo que las hacía divergir. */
+  --color-blanco: #ffffff;
+  --color-blanco-tibio: #fbf8f3;
+  --color-gris-25: #f2efe9;
+  --color-gris-50: #e5e1d8;
+  --color-gris-100: #d3cec3;
+  --color-gris-200: #b8b2a5;
+  --color-gris-300: #999284;
+  --color-gris-400: #777063;
+  --color-gris-500: #565049;
+  --color-gris-600: #3b3630;
+  --color-negro: #1c1916;
 
   --font-archivo: var(--font-archivo);
   --font-inter: var(--font-inter);

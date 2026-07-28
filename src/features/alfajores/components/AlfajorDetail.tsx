@@ -1,17 +1,35 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
-import { AlfajorReviews } from '@/features/reviews/components/AlfajorReviews';
+import { BackButton } from '@/shared/components/BackButton';
+import { AlfajorReviewsPanel } from '@/features/reviews/components/AlfajorReviewsPanel';
 import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
+import { useAlfajorReviews } from '@/features/reviews/hooks/useAlfajorReviews';
 import { useAlfajor } from '../hooks/useAlfajor';
 import { AlfajorDetailSkeleton } from './AlfajorDetailSkeleton';
-import { AlfajorImageUploader } from './AlfajorImageUploader';
+import { AlfajorEjesAverage } from './AlfajorEjesAverage';
+import { AlfajorIdCard } from './AlfajorIdCard';
+import { AlfajorScoreBlock } from './AlfajorScoreBlock';
 
-function tipoLabel(tipo: string) {
-  return tipo.charAt(0) + tipo.slice(1).toLowerCase();
-}
+/**
+ * Paleta propia de esta página (mockup AlfajorPage): un hueso cálido casi
+ * blanco, en vez del papel crema del resto de la app. Va con scope en el
+ * contenedor, no como tokens globales, para que no se filtre a
+ * feed/ranking/perfil.
+ */
+const PALETTE = {
+  '--ap-bg': 'var(--color-blanco-tibio)',
+  '--ap-ink': 'var(--color-ink)',
+  '--ap-ink-2': 'var(--color-gris-600)',
+  '--ap-muted': 'var(--color-gris-500)',
+  '--ap-faint': 'var(--color-gris-400)',
+  '--ap-faint-2': 'var(--color-gris-300)',
+  '--ap-accent': 'var(--color-cinnamon)',
+  '--ap-accent-dark': 'var(--color-gris-600)',
+  '--ap-hairline': 'var(--color-gris-25)',
+  '--ap-border': 'var(--color-gris-50)',
+  '--ap-inert': 'var(--color-gris-25)',
+} as React.CSSProperties;
 
 function statusOf(error: unknown): number | undefined {
   return (error as { response?: { status?: number } } | null)?.response?.status;
@@ -19,78 +37,80 @@ function statusOf(error: unknown): number | undefined {
 
 export function AlfajorDetail({ id }: { id: string }) {
   const { data, isLoading, isError, error } = useAlfajor(id);
+  // Misma query key que usa el panel de reseñas: el conteo sale del cache
+  // compartido, sin un request extra ni un campo nuevo en el back.
+  const reviews = useAlfajorReviews(id);
   const [reviewOpen, setReviewOpen] = useState(false);
 
+  const reviewsCount = reviews.data?.pages[0]?.total ?? 0;
+
   return (
-    <main className="mx-auto max-w-[1080px] px-5 py-8 md:px-8 md:py-10">
-      <Link
-        href="/alfajores"
-        className="text-sienna hover:text-ink mb-7 inline-flex items-center gap-1.5 text-[13px] font-medium transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" strokeWidth={2} />
-        Volver al catálogo
-      </Link>
+    // El fondo va en un wrapper a ancho completo: el `main` sigue centrado en
+    // 1280, pero el color llega hasta los bordes en vez de dejar una franja
+    // del curry oscuro del layout a los costados.
+    <main
+      className="min-h-screen w-full px-[18px] pt-4 pb-10 md:px-6 lg:px-10 lg:pt-10 lg:pb-16"
+      style={{ ...PALETTE, background: 'var(--ap-bg)', color: 'var(--ap-ink)' }}
+    >
+      <div className="mx-auto max-w-[1280px]">
+        <BackButton
+          href="/alfajores"
+          className="hover:bg-gris-25 mb-6"
+          style={{ color: 'var(--ap-muted)', borderColor: 'var(--ap-border)' }}
+        >
+          Volver al catálogo
+        </BackButton>
 
-      {isLoading && <AlfajorDetailSkeleton />}
+        {isLoading && <AlfajorDetailSkeleton />}
 
-      {isError && statusOf(error) === 404 && (
-        <p className="text-sienna text-[14px]">
-          No encontramos este alfajor. Puede que no exista o todavía no esté
-          aprobado.
-        </p>
-      )}
+        {isError && statusOf(error) === 404 && (
+          <p className="text-[14px]" style={{ color: 'var(--ap-muted)' }}>
+            No encontramos este alfajor. Puede que no exista o todavía no esté
+            aprobado.
+          </p>
+        )}
 
-      {isError && statusOf(error) !== 404 && (
-        <p className="text-sienna text-[14px]">
-          No pudimos cargar el alfajor. Probá recargar.
-        </p>
-      )}
+        {isError && statusOf(error) !== 404 && (
+          <p className="text-[14px]" style={{ color: 'var(--ap-muted)' }}>
+            No pudimos cargar el alfajor. Probá recargar.
+          </p>
+        )}
 
-      {data && (
-        <>
-          <article className="flex flex-col items-center gap-6 text-center md:grid md:grid-cols-[minmax(0,420px)_1fr] md:items-start md:gap-8 md:text-left">
-            <AlfajorImageUploader
-              alfajorId={data.id}
-              imagenUrl={data.imagenUrl}
-              nombre={data.nombre}
-              placeholder={tipoLabel(data.tipo)}
-            />
+        {data && (
+          <>
+            <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-[400px_1fr] lg:gap-14">
+              <aside className="flex flex-col gap-[22px] self-start lg:sticky lg:top-6">
+                <AlfajorIdCard alfajor={data} />
+                <AlfajorScoreBlock
+                  avgRating={data.avgRating}
+                  reviewsCount={reviewsCount}
+                  onReview={() => setReviewOpen(true)}
+                />
+                <AlfajorEjesAverage avgEjes={data.avgEjes} />
+                {data.descripcion && (
+                  <p
+                    className="text-[14px] leading-[1.65]"
+                    style={{ color: 'var(--ap-muted)', textWrap: 'pretty' }}
+                  >
+                    {data.descripcion}
+                  </p>
+                )}
+              </aside>
 
-            <div className="w-full md:pt-1">
-              <h1 className="text-ink text-[26px] leading-[1.08] tracking-[-0.02em] md:text-[48px] md:leading-[1.02] md:tracking-[-0.03em]">
-                {data.nombre}
-              </h1>
-
-              <p className="text-sienna mt-2 text-[13.5px] md:mt-3 md:text-[15px]">
-                {data.marca?.nombre ?? 'Marca desconocida'}
-                {data.marca?.provincia ? ` · ${data.marca.provincia}` : ''}
-              </p>
-
-              {data.descripcion && (
-                <p className="text-ink/80 mx-auto mt-5 max-w-[560px] text-[14px] leading-relaxed md:mx-0 md:mt-6 md:text-[15px]">
-                  {data.descripcion}
-                </p>
-              )}
-
-              <button
-                type="button"
-                onClick={() => setReviewOpen(true)}
-                className="text-paper mt-6 inline-flex h-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-110 md:mt-7 md:h-11 md:px-6 md:text-[14px]"
-              >
-                Reseñar
-              </button>
+              <AlfajorReviewsPanel
+                alfajorId={data.id}
+                onReview={() => setReviewOpen(true)}
+              />
             </div>
-          </article>
 
-          <AlfajorReviews alfajorId={data.id} />
-
-          <QuickReviewModal
-            open={reviewOpen}
-            onOpenChange={setReviewOpen}
-            alfajor={data}
-          />
-        </>
-      )}
+            <QuickReviewModal
+              open={reviewOpen}
+              onOpenChange={setReviewOpen}
+              alfajor={data}
+            />
+          </>
+        )}
+      </div>
     </main>
   );
 }

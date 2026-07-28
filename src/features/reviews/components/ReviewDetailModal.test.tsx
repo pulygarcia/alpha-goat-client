@@ -63,18 +63,32 @@ describe('ReviewDetailModal', () => {
   it('shows the author and the overall rating', async () => {
     setup();
     expect(screen.getByText('Pepe')).toBeInTheDocument();
-    expect(await screen.findByText('8.5')).toBeInTheDocument();
+    // El puntaje va dos veces: en la barra de contexto y en el encabezado.
+    expect((await screen.findAllByText('8.5')).length).toBeGreaterThanOrEqual(
+      1,
+    );
   });
 
-  it('lists the 5 axes with their labels and values', async () => {
+  it('lists the 5 axes with their labels and values', () => {
     setup();
+    expect(screen.getByTestId('axes-breakdown')).toBeInTheDocument();
     expect(screen.getByText('Dulzor')).toBeInTheDocument();
     expect(screen.getByText('Cantidad de DDL')).toBeInTheDocument();
     expect(screen.getByText('Calidad del baño')).toBeInTheDocument();
     expect(screen.getByText('Tapa / Relleno')).toBeInTheDocument();
     expect(screen.getByText('Textura')).toBeInTheDocument();
-    // valor de un eje (cantidadDDL = 9)
-    expect(await screen.findByText('9.0')).toBeInTheDocument();
+
+    expect(screen.getByTestId('axis-value-dulzor')).toHaveTextContent('7.0');
+    expect(screen.getByTestId('axis-value-cantidadDDL')).toHaveTextContent(
+      '9.0',
+    );
+    expect(screen.getByTestId('axis-value-calidadBano')).toHaveTextContent(
+      '8.0',
+    );
+    expect(screen.getByTestId('axis-value-ratioTapaRelleno')).toHaveTextContent(
+      '6.0',
+    );
+    expect(screen.getByTestId('axis-value-textura')).toHaveTextContent('8.0');
   });
 
   it('shows the comentario when present', () => {
@@ -92,10 +106,10 @@ describe('ReviewDetailModal', () => {
     setup({
       author: { ...vm.author, avatarUrl: 'pepe.png' },
     });
-    expect(screen.getByRole('img', { name: 'pepe' })).toHaveAttribute(
-      'src',
-      'pepe.png',
-    );
+    // Aparece en la barra de contexto y en el encabezado.
+    for (const img of screen.getAllByRole('img', { name: 'pepe' })) {
+      expect(img).toHaveAttribute('src', 'pepe.png');
+    }
   });
 
   it('links the author name and avatar to their profile', () => {
@@ -121,8 +135,11 @@ describe('ReviewDetailModal', () => {
       },
       marca: { nombre: 'Jorgito', provincia: 'Córdoba' },
     });
-    const link = screen.getByRole('link', { name: /jorgito/i });
-    expect(link).toHaveAttribute('href', '/alfajores/al9');
+    const links = screen
+      .getAllByRole('link')
+      .filter((el) => el.getAttribute('href') === '/alfajores/al9');
+    expect(links.length).toBeGreaterThanOrEqual(1);
+    expect(links[0]).toHaveTextContent(/jorgito/i);
   });
 
   it('omits the alfajor line when not present (alfajor detail)', () => {

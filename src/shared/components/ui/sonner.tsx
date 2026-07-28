@@ -3,8 +3,8 @@
 import { Toaster as SonnerToaster } from 'sonner';
 
 /**
- * Toaster compartido ("El Diario"): posición top-center, estilos atados a los
- * tokens cream del design system vía CSS vars de Sonner.
+ * Toaster compartido: posición top-center, estilos atados a los tokens cream
+ * del design system vía CSS vars de Sonner.
  */
 export function Toaster() {
   return (

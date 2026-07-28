@@ -32,11 +32,19 @@ export function AlfajorImageUploader({
   imagenUrl,
   nombre,
   placeholder,
+  className,
+  slotClassName,
+  imageFit = 'cover',
 }: {
   alfajorId: string;
   imagenUrl: string | null;
   nombre: string;
   placeholder: string;
+  /** Reemplaza el ancho por defecto del wrapper. */
+  className?: string;
+  /** Reemplaza el slot cuadrado por defecto (la ficha del detalle usa 433/500). */
+  slotClassName?: string;
+  imageFit?: 'cover' | 'contain';
 }) {
   const { data: user } = useCurrentUser();
   const isAdmin = user?.role === 'ADMIN';
@@ -84,15 +92,17 @@ export function AlfajorImageUploader({
   }
 
   return (
-    <div className="w-full max-w-[220px] md:max-w-none">
-      <div className={SLOT_CLASS}>
+    <div className={className ?? 'w-full max-w-[220px] md:max-w-none'}>
+      <div className={slotClassName ?? SLOT_CLASS}>
         {shownUrl ? (
           <Image
             src={shownUrl}
             alt={nombre}
             fill
             sizes="(max-width: 768px) 220px, 420px"
-            className="object-cover"
+            className={
+              imageFit === 'contain' ? 'object-contain' : 'object-cover'
+            }
             unoptimized={!!previewUrl}
           />
         ) : (

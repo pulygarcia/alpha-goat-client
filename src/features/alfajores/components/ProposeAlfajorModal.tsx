@@ -32,7 +32,7 @@ const labelClass =
   'text-gris-300 mb-1.5 block text-[10px] tracking-[0.16em] uppercase';
 const errorClass = 'text-error mt-1.5 text-[11.5px]';
 const primaryClass =
-  'text-paper h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60';
+  'text-blanco-tibio h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60';
 
 /** "CHOCOLATE" → "Chocolate". */
 function tipoLabel(tipo: string) {
@@ -185,7 +185,7 @@ export function ProposeAlfajorModal({
                 <div className="bg-gris-25 flex items-start gap-3 rounded-[10px] p-3">
                   <span
                     aria-hidden
-                    className="bg-cinnamon text-paper flex h-7 w-7 flex-none items-center justify-center rounded-full"
+                    className="bg-cinnamon text-blanco-tibio flex h-7 w-7 flex-none items-center justify-center rounded-full"
                   >
                     <Check className="h-4 w-4" strokeWidth={2.5} />
                   </span>

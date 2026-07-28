@@ -18,7 +18,7 @@ export function AlfajorRow({ alfajor }: { alfajor: Alfajor }) {
   return (
     <Link
       href={`/alfajores/${id}`}
-      style={{ boxShadow: '0 0.5px 0 0 rgba(74,30,8,0.14)' }}
+      style={{ boxShadow: '0 0.5px 0 0 var(--color-gris-50)' }}
       className="group -mx-2 flex items-center gap-3 rounded-[10px] px-2 py-2.5 transition-colors hover:bg-black/[0.03]"
     >
       <div className="bg-gris-25 relative h-11 w-11 flex-none overflow-hidden rounded-[9px]">
@@ -41,7 +41,7 @@ export function AlfajorRow({ alfajor }: { alfajor: Alfajor }) {
         <h3 className="text-ink group-hover:text-curry-deep truncate text-[14px] font-semibold tracking-[-0.01em] transition-colors">
           {nombre}
         </h3>
-        <p className="text-sienna truncate text-[12.5px]">
+        <p className="text-gris-400 truncate text-[12.5px]">
           {marca?.nombre ?? 'Marca desconocida'}
           {marca?.provincia ? ` · ${marca.provincia}` : ''}
         </p>

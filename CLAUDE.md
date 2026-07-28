@@ -59,7 +59,17 @@ npm run format
 ### Git
 
 - Conventional commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`, `style:`).
-- Small, atomic commits. Main branch: `main`. Features on `feat/<short-name>`.
+- Main branch: `main`. Features on `feat/<short-name>`.
+- **One commit per meaningful unit of work** — a feature, a screen, a shared
+  component — not per iteration. Tweaking a colour, renaming a label or moving
+  a paragraph is not a commit: it folds into the commit for the thing it
+  belongs to. A branch that touches four screens ends with about four commits,
+  not forty.
+- Group by area, not by chronology. When several rounds of feedback land on the
+  same screen, they are one commit describing the final state.
+- The body carries the _why_: the trade-off, what was discarded and the reason.
+  That is worth writing once per unit, and unreadable spread over twenty
+  micro-commits.
 
 ## Design system
 

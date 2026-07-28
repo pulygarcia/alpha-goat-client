@@ -35,7 +35,7 @@ function PodiumCol({ item, pos }: { item: WeeklyRankingItem; pos: number }) {
       <div className="text-ink text-[12.5px] leading-tight font-semibold">
         {item.nombre}
       </div>
-      <div className="text-sienna mt-[2px]" style={MONO_META}>
+      <div className="text-gris-400 mt-[2px]" style={MONO_META}>
         {item.marca.nombre}
       </div>
       <div
@@ -51,7 +51,7 @@ function PodiumCol({ item, pos }: { item: WeeklyRankingItem; pos: number }) {
         {TREND_LABEL[item.trend]}
       </div>
       <div
-        className="bg-paper-sunken mt-2 flex items-start justify-center rounded-t-[6px] border border-b-0 border-[rgba(74,30,8,0.22)] pt-1"
+        className="bg-gris-25 border-gris-50 mt-2 flex items-start justify-center rounded-t-[6px] border border-b-0 pt-1"
         style={{ height: PODIUM_HEIGHT[pos] }}
       >
         <span
@@ -67,9 +67,9 @@ function PodiumCol({ item, pos }: { item: WeeklyRankingItem; pos: number }) {
 
 function RankRow({ item, pos }: { item: WeeklyRankingItem; pos: number }) {
   return (
-    <div className="grid grid-cols-[32px_1fr_auto] items-center gap-3 border-b border-dashed border-[rgba(74,30,8,0.22)] py-[11px]">
+    <div className="border-gris-50 grid grid-cols-[32px_1fr_auto] items-center gap-3 border-b border-dashed py-[11px]">
       <div
-        className="text-sienna"
+        className="text-gris-400"
         style={{
           fontFamily: 'var(--font-archivo)',
           fontSize: 22,
@@ -80,7 +80,7 @@ function RankRow({ item, pos }: { item: WeeklyRankingItem; pos: number }) {
       </div>
       <div>
         <div className="text-ink text-[13.5px] font-medium">{item.nombre}</div>
-        <div className="text-sienna mt-[2px]" style={MONO_META}>
+        <div className="text-gris-400 mt-[2px]" style={MONO_META}>
           {item.marca.nombre}
         </div>
       </div>
@@ -127,25 +127,25 @@ export function WeeklyRanking() {
               key={i}
               className="grid grid-cols-[32px_1fr_auto] items-center gap-3 py-[11px]"
             >
-              <div className="bg-paper-sunken h-6 w-7 rounded" />
+              <div className="bg-gris-50 h-6 w-7 rounded" />
               <div>
-                <div className="bg-paper-sunken h-3 w-28 rounded" />
-                <div className="bg-paper-sunken mt-2 h-2 w-16 rounded" />
+                <div className="bg-gris-50 h-3 w-28 rounded" />
+                <div className="bg-gris-50 mt-2 h-2 w-16 rounded" />
               </div>
-              <div className="bg-paper-sunken h-3 w-8 rounded" />
+              <div className="bg-gris-50 h-3 w-8 rounded" />
             </div>
           ))}
         </div>
       )}
 
       {isError && (
-        <p className="text-sienna text-[13px] leading-relaxed">
+        <p className="text-gris-400 text-[13px] leading-relaxed">
           No pudimos cargar el ranking semanal.
         </p>
       )}
 
       {data && data.length === 0 && (
-        <p className="text-sienna text-[13px] leading-relaxed">
+        <p className="text-gris-400 text-[13px] leading-relaxed">
           Todavía no hay suficientes reseñas esta semana.
         </p>
       )}
@@ -153,7 +153,7 @@ export function WeeklyRanking() {
       {data && data.length > 0 && (
         <>
           {/* Podio: 2 - 1 - 3; con menos de 3 items degrada al orden natural. */}
-          <div className="flex items-end gap-2 border-b border-dashed border-[rgba(74,30,8,0.22)]">
+          <div className="border-gris-50 flex items-end gap-2 border-b border-dashed">
             {(data.length >= 3
               ? ([data[1], data[0], data[2]] as const).map((item) => ({
                   item,

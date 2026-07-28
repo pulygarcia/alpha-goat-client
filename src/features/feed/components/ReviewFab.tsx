@@ -81,7 +81,7 @@ export function ReviewFab() {
             right: EDGE_GAP,
             bottom: '2rem',
           }}
-          className="bg-paper-raised pointer-events-auto absolute flex touch-none items-center justify-center overflow-hidden rounded-full border border-[rgba(74,30,8,0.18)] p-[7px] shadow-[0_12px_30px_-8px_rgba(44,18,9,0.55)] active:cursor-grabbing"
+          className="bg-blanco-tibio border-gris-50 pointer-events-auto absolute flex touch-none items-center justify-center overflow-hidden rounded-full border p-[7px] shadow-[0_12px_30px_-8px_rgba(28,25,22,0.4)] active:cursor-grabbing"
         >
           <span
             aria-hidden

@@ -11,12 +11,12 @@ import { Footer } from '@/shared/components/layout/Footer';
 // El gate vive en las acciones (like, seguir, comentar) vía useRequireAuth, no en la página.
 export default function FeedPage() {
   return (
-    <main className="bg-paper text-ink min-h-screen">
+    <main className="bg-blanco-tibio text-ink min-h-screen">
       <AppHeader />
       <FeedSubnav />
 
       <section className="mx-auto grid max-w-[1280px] grid-cols-1 lg:grid-cols-[1fr_320px]">
-        <div className="lg:border-r lg:border-[rgba(74,30,8,0.14)]">
+        <div className="lg:border-gris-50 lg:border-r">
           <FeedHero />
           <FeedReviews />
         </div>

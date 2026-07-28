@@ -56,7 +56,7 @@ function MoreButton({
       type="button"
       onClick={onClick}
       disabled={loading}
-      className="text-sienna hover:bg-paper-sunken hover:border-cinnamon focus-visible:ring-cinnamon inline-flex items-center gap-2 rounded-full border border-[rgba(74,30,8,0.22)] px-5 py-2 transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50"
+      className="text-gris-400 border-gris-50 hover:bg-gris-25 hover:border-gris-200 hover:text-ink focus-visible:ring-ring inline-flex items-center gap-2 rounded-full border px-5 py-2 transition-colors focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50"
       style={MORE_BUTTON}
     >
       {loading ? 'Cargando...' : 'Ver más'}
@@ -126,7 +126,7 @@ export function FeedReviews() {
       {isLoading && <FeedReviewsSkeleton />}
 
       {isError && (
-        <p className="text-sienna">
+        <p className="text-gris-400">
           No pudimos contactar al servidor. Probá recargar.
         </p>
       )}
@@ -136,7 +136,7 @@ export function FeedReviews() {
           <p className="text-ink text-[17px] font-semibold">
             Tu feed de seguidos está vacío
           </p>
-          <p className="text-sienna mt-2 max-w-[420px] text-[14px] leading-relaxed">
+          <p className="text-gris-400 mt-2 max-w-[420px] text-[14px] leading-relaxed">
             Todavía no seguís a nadie. Explorá el feed general y seguí a quienes
             reseñan los alfajores que te interesan.
           </p>
@@ -158,7 +158,7 @@ export function FeedReviews() {
       )}
 
       {isEmpty && scope !== 'following' && (
-        <p className="text-sienna">Todavía no hay reseñas para mostrar.</p>
+        <p className="text-gris-400">Todavía no hay reseñas para mostrar.</p>
       )}
 
       <div className="flex flex-col gap-4">

@@ -24,11 +24,11 @@ function MarcaCard({ marca }: { marca: FeaturedMarca }) {
         <img
           src={marca.logoUrl}
           alt={marca.nombre}
-          className="h-11 w-11 rounded-[10px] border border-[rgba(74,30,8,0.22)] object-cover"
+          className="border-gris-50 h-11 w-11 rounded-[10px] border object-cover"
         />
       ) : (
         <div
-          className="bg-paper-sunken text-cinnamon flex h-11 w-11 items-center justify-center rounded-[10px] border border-[rgba(74,30,8,0.22)]"
+          className="bg-gris-25 text-cinnamon border-gris-50 flex h-11 w-11 items-center justify-center rounded-[10px] border"
           style={{
             fontFamily: 'var(--font-archivo)',
             fontSize: 18,
@@ -74,10 +74,10 @@ export function FeaturedMarcas() {
               key={i}
               className="grid grid-cols-[44px_1fr] items-center gap-3 py-3"
             >
-              <div className="bg-paper-sunken h-11 w-11 rounded-[10px]" />
+              <div className="bg-gris-50 h-11 w-11 rounded-[10px]" />
               <div>
-                <div className="bg-paper-sunken h-3 w-24 rounded" />
-                <div className="bg-paper-sunken mt-2 h-2 w-32 rounded" />
+                <div className="bg-gris-50 h-3 w-24 rounded" />
+                <div className="bg-gris-50 mt-2 h-2 w-32 rounded" />
               </div>
             </div>
           ))}
@@ -85,13 +85,13 @@ export function FeaturedMarcas() {
       )}
 
       {isError && (
-        <p className="text-sienna text-[13px] leading-relaxed">
+        <p className="text-gris-400 text-[13px] leading-relaxed">
           No pudimos cargar las marcas en foco.
         </p>
       )}
 
       {data && data.length === 0 && (
-        <p className="text-sienna text-[13px] leading-relaxed">
+        <p className="text-gris-400 text-[13px] leading-relaxed">
           Todavía no hay marcas en foco.
         </p>
       )}

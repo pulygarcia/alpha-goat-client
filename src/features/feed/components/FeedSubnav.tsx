@@ -30,9 +30,9 @@ export function FeedSubnav() {
   const requireAuth = useRequireAuth();
 
   return (
-    <div className="bg-paper flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-[rgba(74,30,8,0.14)] px-5 py-4 md:px-7">
+    <div className="bg-blanco-tibio border-gris-50 flex flex-wrap items-center gap-x-6 gap-y-3 border-b px-5 py-4 md:px-7">
       <div
-        className="text-sienna hidden items-center gap-[10px] border-r border-[rgba(74,30,8,0.14)] pr-5 font-bold whitespace-nowrap md:flex"
+        className="text-gris-400 border-gris-50 hidden items-center gap-[10px] border-r pr-5 font-bold whitespace-nowrap md:flex"
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.62rem',
@@ -53,7 +53,7 @@ export function FeedSubnav() {
             onClick={() => toggleScope(chip.id)}
           />
         ))}
-        <span className="mx-[6px] h-[18px] w-px bg-[rgba(74,30,8,0.14)]" />
+        <span className="bg-gris-50 mx-[6px] h-[18px] w-px" />
         <Chip
           label={SCOPE_CHIPS[0].label}
           isActive={scope === SCOPE_CHIPS[0].id}
@@ -63,7 +63,7 @@ export function FeedSubnav() {
       </div>
 
       <div
-        className="ml-auto hidden items-center gap-[14px] text-[rgba(44,18,9,0.62)] md:flex"
+        className="text-gris-400 ml-auto hidden items-center gap-[14px] md:flex"
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.62rem',
@@ -99,8 +99,8 @@ function Chip({
       onClick={onClick}
       className={`rounded-full border px-[14px] py-[7px] text-[13px] font-medium whitespace-nowrap transition-colors ${
         isActive
-          ? 'border-ink bg-ink text-paper'
-          : 'text-sienna hover:bg-paper-sunken border-transparent'
+          ? 'border-ink bg-ink text-blanco-tibio'
+          : 'text-gris-400 hover:bg-gris-25 hover:text-ink border-transparent'
       }`}
     >
       {label}

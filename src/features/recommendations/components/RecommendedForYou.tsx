@@ -14,10 +14,10 @@ const MONO_META = {
 
 function RecRow({ item }: { item: RecommendationItem }) {
   return (
-    <div className="grid grid-cols-[1fr_auto] items-center gap-3 border-b border-dashed border-[rgba(74,30,8,0.22)] py-[11px]">
+    <div className="border-gris-50 grid grid-cols-[1fr_auto] items-center gap-3 border-b border-dashed py-[11px]">
       <div>
         <div className="text-ink text-[13.5px] font-medium">{item.nombre}</div>
-        <div className="text-sienna mt-[2px]" style={MONO_META}>
+        <div className="text-gris-400 mt-[2px]" style={MONO_META}>
           {item.marca.nombre}
         </div>
       </div>
@@ -30,7 +30,7 @@ function RecRow({ item }: { item: RecommendationItem }) {
           >
             {Math.round(item.matchPct)}%
           </div>
-          <div className="text-sienna mt-[2px]" style={MONO_META}>
+          <div className="text-gris-400 mt-[2px]" style={MONO_META}>
             afinidad
           </div>
         </div>
@@ -69,23 +69,23 @@ export function RecommendedForYou() {
               className="grid grid-cols-[1fr_auto] items-center gap-3 py-[11px]"
             >
               <div>
-                <div className="bg-paper-sunken h-3 w-28 rounded" />
-                <div className="bg-paper-sunken mt-2 h-2 w-16 rounded" />
+                <div className="bg-gris-50 h-3 w-28 rounded" />
+                <div className="bg-gris-50 mt-2 h-2 w-16 rounded" />
               </div>
-              <div className="bg-paper-sunken h-3 w-8 rounded" />
+              <div className="bg-gris-50 h-3 w-8 rounded" />
             </div>
           ))}
         </div>
       )}
 
       {isError && (
-        <p className="text-sienna text-[13px] leading-relaxed">
+        <p className="text-gris-400 text-[13px] leading-relaxed">
           No pudimos cargar tus recomendaciones.
         </p>
       )}
 
       {data && data.length === 0 && (
-        <p className="text-sienna text-[13px] leading-relaxed">
+        <p className="text-gris-400 text-[13px] leading-relaxed">
           Reseñá algunos alfajores y te recomendamos según tu gusto.
         </p>
       )}

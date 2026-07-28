@@ -44,13 +44,13 @@ export function ProfileView({ username }: { username: string }) {
       )}
 
       {isError && statusOf(error) === 404 && (
-        <p className="text-sienna text-[14px]">
+        <p className="text-gris-400 text-[14px]">
           No encontramos a este usuario.
         </p>
       )}
 
       {isError && statusOf(error) !== 404 && (
-        <p className="text-sienna text-[14px]">
+        <p className="text-gris-400 text-[14px]">
           No pudimos cargar el perfil. Probá recargar.
         </p>
       )}
@@ -64,7 +64,7 @@ export function ProfileView({ username }: { username: string }) {
 
           <div className="flex flex-col gap-8">
             <ContributionStats profile={profile} />
-            <div className="border-t border-[rgba(74,30,8,0.12)] pt-6">
+            <div className="border-gris-50 border-t pt-6">
               <UserReviews userId={profile.id} username={profile.username} />
             </div>
           </div>

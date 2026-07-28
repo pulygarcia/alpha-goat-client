@@ -41,7 +41,7 @@ export function UserReviews({
           {[0, 1].map((i) => (
             <div
               key={i}
-              className="bg-paper-raised rounded-lg border border-[rgba(74,30,8,0.14)] p-6"
+              className="bg-blanco border-gris-50 rounded-lg border p-6"
             >
               <div className="flex items-center gap-3">
                 <Skeleton className="h-9 w-9 rounded-full" />
@@ -57,13 +57,13 @@ export function UserReviews({
       )}
 
       {isError && (
-        <p className="text-sienna text-[14px]">
+        <p className="text-gris-400 text-[14px]">
           No pudimos cargar las reseñas. Probá recargar.
         </p>
       )}
 
       {isEmpty && (
-        <p className="text-sienna text-[14px]">
+        <p className="text-gris-400 text-[14px]">
           {username} todavía no escribió ninguna reseña.
         </p>
       )}

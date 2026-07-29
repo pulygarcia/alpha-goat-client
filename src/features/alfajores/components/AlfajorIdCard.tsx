@@ -16,7 +16,6 @@ export function AlfajorIdCard({ alfajor }: { alfajor: Alfajor }) {
         alfajorId={alfajor.id}
         imagenUrl={alfajor.imagenUrl}
         nombre={alfajor.nombre}
-        placeholder={tipoLabel(alfajor.tipo)}
         imageFit="contain"
         className="w-[104px] shrink-0 md:w-[200px] lg:w-full lg:max-w-[340px]"
         slotClassName="relative h-[104px] w-full overflow-hidden rounded-[6px] md:aspect-[433/500] md:h-auto"

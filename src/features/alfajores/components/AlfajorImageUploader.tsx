@@ -5,21 +5,11 @@ import { useEffect, useRef, useState } from 'react';
 import { ImagePlus } from 'lucide-react';
 import { useCurrentUser } from '@/features/auth/hooks/useCurrentUser';
 import { imageFileSchema } from '@/shared/schemas/imageFile.schema';
+import { NoPhoto } from '@/shared/components/media/NoPhoto';
 import { useUploadAlfajorImage } from '../hooks/useUploadAlfajorImage';
 
 const SLOT_CLASS =
   'bg-gris-25 border-gris-50 relative aspect-square w-full overflow-hidden rounded-[16px] border';
-
-function Placeholder({ label }: { label: string }) {
-  return (
-    <div
-      className="text-gris-300 flex h-full w-full items-center justify-center text-[0.7rem] tracking-[0.24em] uppercase"
-      style={{ fontFamily: 'var(--font-mono)' }}
-    >
-      {label}
-    </div>
-  );
-}
 
 /**
  * Slot de imagen del alfajor con control de subida superpuesto. El control solo
@@ -31,7 +21,6 @@ export function AlfajorImageUploader({
   alfajorId,
   imagenUrl,
   nombre,
-  placeholder,
   className,
   slotClassName,
   imageFit = 'cover',
@@ -39,7 +28,6 @@ export function AlfajorImageUploader({
   alfajorId: string;
   imagenUrl: string | null;
   nombre: string;
-  placeholder: string;
   /** Reemplaza el ancho por defecto del wrapper. */
   className?: string;
   /** Reemplaza el slot cuadrado por defecto (la ficha del detalle usa 433/500). */
@@ -106,7 +94,7 @@ export function AlfajorImageUploader({
             unoptimized={!!previewUrl}
           />
         ) : (
-          <Placeholder label={placeholder} />
+          <NoPhoto />
         )}
 
         {isAdmin && (

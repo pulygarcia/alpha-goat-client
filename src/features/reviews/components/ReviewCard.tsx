@@ -7,6 +7,7 @@ import { CommentIcon } from './CommentIcon';
 import { LikeButton } from './LikeButton';
 import { ReviewDetailModal } from './ReviewDetailModal';
 import { UserAvatar } from '@/shared/components/UserAvatar';
+import { NoPhoto } from '@/shared/components/media/NoPhoto';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
 
 /** "hace X min/h/d" a partir de un ISO string, con una variante corta para mobile ("20d"). */
@@ -63,7 +64,7 @@ export function ReviewCard({
         className="bg-blanco border-gris-50 hover:bg-gris-25 focus-visible:ring-gris-300 relative grid cursor-pointer grid-cols-[64px_1fr] items-start gap-4 rounded-2xl border p-4 transition-colors outline-none focus-visible:ring-2 md:grid-cols-[96px_1fr_64px] md:gap-6 md:p-5"
       >
         {/* Foto: solo en el feed (en el detalle es el mismo alfajor de la página).
-            Prioridad: foto de la reseña → imagen del alfajor → placeholder de tipo. */}
+            Prioridad: foto de la reseña → imagen del alfajor → "Sin foto". */}
         {context === 'feed' ? (
           photoUrl || alfajor?.imagenUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -73,9 +74,7 @@ export function ReviewCard({
               className="aspect-square w-full rounded-[10px] object-cover"
             />
           ) : (
-            <div className="bg-gris-25 text-gris-300 flex aspect-square w-full items-center justify-center rounded-[10px] text-[0.55rem] tracking-[0.18em] uppercase">
-              {alfajor?.tipo}
-            </div>
+            <NoPhoto size="sm" className="aspect-square rounded-[10px]" />
           )
         ) : (
           <UserAvatar

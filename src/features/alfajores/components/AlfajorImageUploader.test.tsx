@@ -31,7 +31,6 @@ function renderUploader() {
       alfajorId="a1"
       imagenUrl={null}
       nombre="Jorgito"
-      placeholder="Negro"
     />,
   );
 }

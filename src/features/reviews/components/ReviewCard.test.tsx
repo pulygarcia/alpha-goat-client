@@ -112,7 +112,7 @@ describe('ReviewCard', () => {
     );
   });
 
-  it('shows the tipo placeholder only when neither photo nor alfajor image exist', () => {
+  it('shows the "sin foto" placeholder only when neither photo nor alfajor image exist', () => {
     render(
       <ReviewCard
         vm={{
@@ -124,7 +124,7 @@ describe('ReviewCard', () => {
       />,
     );
     expect(screen.queryByRole('img', { name: 'Águila' })).toBeNull();
-    expect(screen.getByText('CHOCOLATE')).toBeInTheDocument();
+    expect(screen.getByText('Sin foto')).toBeInTheDocument();
   });
 
   it('renders the author avatar image when present', () => {

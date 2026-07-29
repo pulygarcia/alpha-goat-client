@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import type { Alfajor } from '@/features/alfajores/types/alfajores.types';
+import { NoPhoto } from '@/shared/components/media/NoPhoto';
 import { useModerateAlfajor } from '../hooks/useModerateAlfajor';
 import { RejectAlfajorDialog } from './RejectAlfajorDialog';
 
@@ -28,12 +29,7 @@ export function PendingAlfajorCard({ alfajor }: { alfajor: Alfajor }) {
             className="object-cover"
           />
         ) : (
-          <div
-            className="text-gris-300 flex h-full w-full items-center justify-center text-center text-[0.5rem] leading-tight tracking-[0.14em] uppercase"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            {tipoLabel(alfajor.tipo)}
-          </div>
+          <NoPhoto size="sm" />
         )}
       </div>
 

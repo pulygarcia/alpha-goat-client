@@ -1,42 +1,14 @@
 'use client';
 
 import { useAuthStore } from '@/features/auth/store/auth.store';
+import { Skeleton } from '@/shared/components/ui/skeleton';
+import { RailLead, RailTailRow } from '@/shared/components/rail/RailLead';
+import { RailSection } from '@/shared/components/rail/RailSection';
 import { useRecommendations } from '../hooks/useRecommendations';
-import type { RecommendationItem } from '../types/recommendations.types';
 
-const MONO_META = {
-  fontFamily: 'var(--font-mono)',
-  fontSize: '0.6rem',
-  letterSpacing: '0.18em',
-  textTransform: 'uppercase',
-  fontWeight: 500,
-} as const;
-
-function RecRow({ item }: { item: RecommendationItem }) {
-  return (
-    <div className="border-gris-50 grid grid-cols-[1fr_auto] items-center gap-3 border-b border-dashed py-[11px]">
-      <div>
-        <div className="text-ink text-[13.5px] font-medium">{item.nombre}</div>
-        <div className="text-gris-400 mt-[2px]" style={MONO_META}>
-          {item.marca.nombre}
-        </div>
-      </div>
-      {/* Cold start: matchPct null → recomendado por calidad, sin afinidad que mostrar. */}
-      {item.matchPct !== null && (
-        <div className="text-right">
-          <div
-            className="text-curry-deep text-[13px] font-bold"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            {Math.round(item.matchPct)}%
-          </div>
-          <div className="text-gris-400 mt-[2px]" style={MONO_META}>
-            afinidad
-          </div>
-        </div>
-      )}
-    </div>
-  );
+/** Cold start: matchPct null → recomendado por calidad, sin afinidad que mostrar. */
+function pct(matchPct: number | null): string | undefined {
+  return matchPct === null ? undefined : `${Math.round(matchPct)}%`;
 }
 
 export function RecommendedForYou() {
@@ -46,35 +18,20 @@ export function RecommendedForYou() {
   // El bloque no tiene sentido para un invitado: no se muestra.
   if (!user) return null;
 
-  return (
-    <section className="mb-8">
-      <h5
-        className="text-cinnamon mb-4"
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
-          letterSpacing: '0.26em',
-          textTransform: 'uppercase',
-          fontWeight: 700,
-        }}
-      >
-        Recomendado para vos
-      </h5>
+  const [lead, ...tail] = data ?? [];
 
+  return (
+    <RailSection
+      title="Recomendado para vos"
+      meta={data && data.length > 0 ? String(data.length) : undefined}
+    >
       {isLoading && (
-        <div aria-hidden className="animate-pulse">
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="grid grid-cols-[1fr_auto] items-center gap-3 py-[11px]"
-            >
-              <div>
-                <div className="bg-gris-50 h-3 w-28 rounded" />
-                <div className="bg-gris-50 mt-2 h-2 w-16 rounded" />
-              </div>
-              <div className="bg-gris-50 h-3 w-8 rounded" />
-            </div>
-          ))}
+        <div className="flex items-start gap-3.5">
+          <Skeleton className="h-11 w-11 flex-none rounded-[10px]" />
+          <div className="flex flex-1 flex-col gap-2">
+            <Skeleton className="h-[13px] w-full" />
+            <Skeleton className="h-[9px] w-[70%]" />
+          </div>
         </div>
       )}
 
@@ -90,9 +47,32 @@ export function RecommendedForYou() {
         </p>
       )}
 
-      {data &&
-        data.length > 0 &&
-        data.map((item) => <RecRow key={item.id} item={item} />)}
-    </section>
+      {lead && (
+        <div className="flex flex-col gap-4">
+          {/* Sin slot izquierdo: el endpoint de recomendaciones no trae
+              imagenUrl, así que una miniatura sería siempre el placeholder
+              vacío. El nombre arranca al ras del borde. */}
+          <RailLead
+            href={`/alfajores/${lead.id}`}
+            title={lead.nombre}
+            meta={lead.marca.nombre}
+            value={pct(lead.matchPct)}
+          />
+
+          {tail.length > 0 && (
+            <div className="flex flex-col gap-[7px]">
+              {tail.map((item) => (
+                <RailTailRow
+                  key={item.id}
+                  href={`/alfajores/${item.id}`}
+                  title={item.nombre}
+                  value={pct(item.matchPct)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </RailSection>
   );
 }

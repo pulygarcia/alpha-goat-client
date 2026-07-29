@@ -13,7 +13,8 @@ import {
 import { useFeedHero } from '../hooks/useFeedHero';
 import { useFeedFilters } from '../store/feedFilters.store';
 import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
-import type { FeedHeroRatings } from '../types/feed.types';
+import { NoPhoto } from '@/shared/components/media/NoPhoto';
+import type { FeedHeroAlfajor, FeedHeroRatings } from '../types/feed.types';
 import { FeedHeroSkeleton } from './FeedHeroSkeleton';
 
 const AXIS_LABELS: Record<keyof FeedHeroRatings, string> = {
@@ -43,13 +44,7 @@ export function FeedHero() {
 
   if (collapsed) {
     if (!isLoading && !isError && data) {
-      content = (
-        <CollapsedHero
-          alfajorId={data.alfajor.id}
-          alfajorNombre={data.alfajor.nombre}
-          ratings={data.ratings}
-        />
-      );
+      content = <CollapsedHero alfajor={data.alfajor} ratings={data.ratings} />;
     }
   } else if (isLoading) {
     content = <FeedHeroSkeleton />;
@@ -182,12 +177,10 @@ export function FeedHero() {
 }
 
 function CollapsedHero({
-  alfajorId,
-  alfajorNombre,
+  alfajor,
   ratings,
 }: {
-  alfajorId: string;
-  alfajorNombre: string;
+  alfajor: FeedHeroAlfajor;
   ratings: FeedHeroRatings;
 }) {
   return (
@@ -204,7 +197,27 @@ function CollapsedHero({
       >
         Goat del momento
       </p>
-      <div className="mt-1 flex items-center gap-5">
+      <div className="mt-1 flex items-center gap-4">
+        {/* La miniatura ancla el hero colapsado: sin el radar grande ni las
+            stats, la foto es lo único que identifica al alfajor de un vistazo. */}
+        <Link
+          href={`/alfajores/${alfajor.id}`}
+          aria-hidden
+          tabIndex={-1}
+          className="border-gris-50 bg-gris-25 h-11 w-11 shrink-0 overflow-hidden rounded-[10px] border"
+        >
+          {alfajor.imagenUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={alfajor.imagenUrl}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <NoPhoto size="sm" />
+          )}
+        </Link>
+
         <p
           className="text-ink flex items-baseline gap-2 truncate"
           style={{
@@ -214,10 +227,10 @@ function CollapsedHero({
           }}
         >
           <Link
-            href={`/alfajores/${alfajorId}`}
+            href={`/alfajores/${alfajor.id}`}
             className="hover:text-curry-deep focus-visible:ring-curry-deep truncate rounded-[4px] underline-offset-4 transition-colors hover:underline focus-visible:ring-2 focus-visible:outline-none"
           >
-            {alfajorNombre}
+            {alfajor.nombre}
           </Link>
           <span className="text-cinnamon text-[15px] font-semibold">
             {ratings.general.toFixed(1)}

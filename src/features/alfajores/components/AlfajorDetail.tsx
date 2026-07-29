@@ -79,28 +79,44 @@ export function AlfajorDetail({ id }: { id: string }) {
         {data && (
           <>
             <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-[400px_1fr] lg:gap-14">
+              {/* Entrada escalonada: la ficha primero y el resto detrás, para
+                  que el salto del skeleton al contenido se lea como un
+                  asentamiento y no como un parpadeo. Los delays son cortos a
+                  propósito — arriba de ~250ms la página se siente lenta. */}
               <aside className="flex flex-col gap-[22px] self-start lg:sticky lg:top-6">
-                <AlfajorIdCard alfajor={data} />
-                <AlfajorScoreBlock
-                  avgRating={data.avgRating}
-                  reviewsCount={reviewsCount}
-                  onReview={() => setReviewOpen(true)}
-                />
-                <AlfajorEjesAverage avgEjes={data.avgEjes} />
+                <div className="fade-up">
+                  <AlfajorIdCard alfajor={data} />
+                </div>
+                <div className="fade-up" style={{ animationDelay: '70ms' }}>
+                  <AlfajorScoreBlock
+                    avgRating={data.avgRating}
+                    reviewsCount={reviewsCount}
+                    onReview={() => setReviewOpen(true)}
+                  />
+                </div>
+                <div className="fade-up" style={{ animationDelay: '140ms' }}>
+                  <AlfajorEjesAverage avgEjes={data.avgEjes} />
+                </div>
                 {data.descripcion && (
                   <p
-                    className="text-[14px] leading-[1.65]"
-                    style={{ color: 'var(--ap-muted)', textWrap: 'pretty' }}
+                    className="fade-up text-[14px] leading-[1.65]"
+                    style={{
+                      color: 'var(--ap-muted)',
+                      textWrap: 'pretty',
+                      animationDelay: '210ms',
+                    }}
                   >
                     {data.descripcion}
                   </p>
                 )}
               </aside>
 
-              <AlfajorReviewsPanel
-                alfajorId={data.id}
-                onReview={() => setReviewOpen(true)}
-              />
+              <div className="fade-up" style={{ animationDelay: '140ms' }}>
+                <AlfajorReviewsPanel
+                  alfajorId={data.id}
+                  onReview={() => setReviewOpen(true)}
+                />
+              </div>
             </div>
 
             <QuickReviewModal

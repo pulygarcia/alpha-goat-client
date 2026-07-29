@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { NoPhoto } from '@/shared/components/media/NoPhoto';
 import type { Alfajor } from '../types/alfajores.types';
 
 /** "CHOCOLATE" → "Chocolate". */
@@ -25,12 +26,7 @@ export function AlfajorCard({ alfajor }: { alfajor: Alfajor }) {
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
-          <div
-            className="text-cinnamon flex h-full w-full items-center justify-center text-[0.62rem] tracking-[0.22em] uppercase"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            {tipoLabel(tipo)}
-          </div>
+          <NoPhoto />
         )}
         <span
           className="bg-paper/90 text-curry-deep absolute top-2 left-2 rounded-full px-2 py-[3px] text-[0.55rem] font-bold tracking-[0.16em] uppercase backdrop-blur-sm"

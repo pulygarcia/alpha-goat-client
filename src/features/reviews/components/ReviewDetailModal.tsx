@@ -41,7 +41,9 @@ const PALETTE = {
   '--rd-faint-2': 'var(--color-gris-300)',
   '--rd-hair': 'var(--color-gris-25)',
   '--rd-hair-2': 'var(--color-gris-25)',
-  '--rd-chip': 'var(--color-blanco-tibio)',
+  // gris-25 y no blanco-tibio: el panel del modal es blanco puro, y a un paso
+  // de él la pastilla del alfajor desaparecía en vez de leerse como control.
+  '--rd-chip': 'var(--color-gris-25)',
   '--rd-accent': 'var(--color-cinnamon)',
   '--rd-deep': 'var(--color-deep)',
 } as React.CSSProperties;
@@ -210,7 +212,8 @@ export function ReviewDetailModal({
           {alfajor && (
             <Link
               href={`/alfajores/${alfajor.id}`}
-              className="mt-4 inline-flex items-center gap-2 rounded-full py-1.5 pr-3 pl-1.5 no-underline"
+              aria-label={`Ver ${alfajor.nombre}`}
+              className="hover:bg-gris-50 mt-4 inline-flex items-center gap-2 rounded-full py-1.5 pr-3 pl-1.5 no-underline transition-colors"
               style={{ background: 'var(--rd-chip)' }}
             >
               <span className="bg-gris-100 block h-6 w-6 shrink-0 overflow-hidden rounded-full">

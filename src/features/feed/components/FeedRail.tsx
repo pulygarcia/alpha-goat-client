@@ -6,10 +6,11 @@ import { RecommendedForYou } from '@/features/recommendations/components/Recomme
 
 export function FeedRail() {
   return (
-    // El rail va un escalón más claro que la página (blanco sobre blanco
-    // tibio), que es la relación que tenía con el papel: se despega sin
-    // necesidad de un borde propio en desktop.
-    <aside className="bg-blanco border-gris-50 border-t px-5 py-8 sm:px-7 lg:border-t-0 lg:py-9">
+    // El rail comparte el fondo de la página en vez de ir un escalón más
+    // claro: las secciones ya no son tarjetas, se separan por hairlines a
+    // sangre, y una superficie propia volvería a encajonarlas. El padding
+    // horizontal vive en cada sección para que esos hairlines lleguen al borde.
+    <aside className="border-gris-50 flex flex-col border-t py-8 lg:border-t-0 lg:py-9">
       <WeeklyRanking />
       <WorstRatedCard />
       <RecommendedForYou />

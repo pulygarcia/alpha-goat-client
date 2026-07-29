@@ -98,6 +98,8 @@ src/
 ├── shared/
 │   ├── components/
 │   │   ├── ui/                           # shadcn/ui (Button, Input, Dialog, etc)
+│   │   ├── media/                        # NoPhoto (relleno de slots de imagen vacíos)
+│   │   ├── rail/                         # RailSection, RailLead, RailTailRow (rail del feed)
 │   │   └── layout/
 │   │       ├── Header.tsx
 │   │       ├── Footer.tsx

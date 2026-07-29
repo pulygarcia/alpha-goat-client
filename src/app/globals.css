@@ -72,6 +72,35 @@
   --color-gris-600: #3b3630;
   --color-negro: #1c1916;
 
+  /* Paleta oscura de auth/marketing. Estaban sueltos como hexadecimales en los
+     formularios (`#fdf6e8` seis veces, `#ff7a59` tres) y no había forma de
+     tocarlos sin ir componente por componente. Las variantes con alfa NO se
+     tokenizan: salen del modificador de opacidad sobre el token base
+     (`text-curry-soft/45`), que es la misma escala y no inventa un color. */
+  --color-crema: #fdf6e8;
+  --color-alerta: #ff7a59;
+  --color-alerta-soft: #ff9b6b;
+  --color-ok: #7dd693;
+  --color-ambar: #c87a20;
+
+  /* Stops del degradé del botón sólido. Se repetían inline en nueve lugares
+     (header, wizard, moderación, perfil, uploader); ahora los consumen las
+     utilidades `.btn-solid` / `.btn-solid-ink` de más abajo. */
+  --color-cta-from: #a86432;
+  --color-cta-to: #3a1808;
+  --color-cta-ink-to: #1c0a03;
+
+  /* Escala de sombras. Cada una traía su propio `rgba()` inline, así que la
+     app tenía ocho sombras distintas sin nombre y ninguna reutilizable. */
+  --shadow-lift: 0 18px 36px -22px rgba(44, 18, 9, 0.5);
+  --shadow-card: 0 10px 22px -12px rgba(74, 30, 8, 0.45);
+  --shadow-menu: 0 18px 40px -18px rgba(28, 25, 22, 0.35);
+  --shadow-toast: 0 18px 40px -18px rgba(28, 25, 22, 0.55);
+  --shadow-sheet: 0 18px 60px -20px rgba(28, 25, 22, 0.45);
+  --shadow-modal: 0 50px 90px -35px rgba(28, 25, 22, 0.45);
+  --shadow-fab: 0 12px 30px -8px rgba(28, 25, 22, 0.4);
+  --shadow-cta: 0 8px 24px -8px rgba(244, 160, 43, 0.6);
+
   --font-archivo: var(--font-archivo);
   --font-inter: var(--font-inter);
   --font-mono: var(--font-mono);
@@ -122,7 +151,18 @@
     @apply bg-curry text-sienna hover:bg-curry-bright inline-flex items-center rounded-full px-[26px] py-3 text-[13px] font-bold tracking-[0.04em] uppercase transition-colors duration-200;
   }
   .btn-curry-lg {
-    @apply bg-curry text-sienna hover:bg-curry-bright inline-flex items-center rounded-full px-9 py-4 text-sm font-bold tracking-[0.06em] uppercase shadow-[0_8px_24px_-8px_rgba(244,160,43,0.6)] transition-all duration-200 hover:-translate-y-px;
+    @apply bg-curry text-sienna hover:bg-curry-bright shadow-cta inline-flex items-center rounded-full px-9 py-4 text-sm font-bold tracking-[0.06em] uppercase transition-all duration-200 hover:-translate-y-px;
+  }
+  /* Botón sólido de acción primaria en las pantallas claras. Solo pinta: el
+     alto, el padding y el tipo los sigue poniendo cada llamador, porque
+     conviven un botón de 48px en el wizard y uno de 36px en el header. */
+  .btn-solid {
+    @apply text-blanco-tibio from-cta-from to-cta-to bg-gradient-to-br transition-[filter] hover:brightness-110;
+  }
+  /* Variante oscura (subir foto, guardar perfil): mismo gesto, menos peso
+     cromático, para acciones que no compiten con el CTA principal. */
+  .btn-solid-ink {
+    @apply text-blanco-tibio from-cta-to to-cta-ink-to bg-gradient-to-br transition-[filter] hover:brightness-125;
   }
   .icon-btn {
     @apply bg-curry text-sienna hover:bg-curry-bright inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors;
@@ -199,8 +239,12 @@
 /* Auth input focus */
 .auth-input:focus {
   outline: none;
-  border-color: rgba(244, 160, 43, 0.6) !important;
-  box-shadow: 0 0 0 3px rgba(244, 160, 43, 0.12);
+  border-color: color-mix(
+    in oklab,
+    var(--color-curry) 60%,
+    transparent
+  ) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-curry) 12%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

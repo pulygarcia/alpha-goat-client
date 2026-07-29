@@ -20,7 +20,7 @@ const InputGroup = forwardRef<HTMLInputElement, InputGroupProps>(
         <label
           htmlFor={fieldId}
           className="text-[0.85rem] font-medium"
-          style={{ color: '#fdf6e8' }}
+          style={{ color: 'var(--color-crema)' }}
         >
           {label}
         </label>
@@ -30,9 +30,11 @@ const InputGroup = forwardRef<HTMLInputElement, InputGroupProps>(
             ref={ref}
             className={`auth-input h-12 w-full rounded-xl border px-4 text-[14px] font-medium transition-all duration-150 ${className ?? ''}`}
             style={{
-              background: '#3b1a0a',
-              borderColor: error ? '#ff7a59' : 'rgba(244,160,43,0.18)',
-              color: '#fdf6e8',
+              background: 'var(--color-field-bg)',
+              borderColor: error
+                ? 'var(--color-alerta)'
+                : 'color-mix(in oklab, var(--color-curry) 18%, transparent)',
+              color: 'var(--color-crema)',
             }}
             {...props}
           />
@@ -51,7 +53,7 @@ const InputGroup = forwardRef<HTMLInputElement, InputGroupProps>(
         {error && (
           <p
             className="text-[0.72rem] leading-[1.3]"
-            style={{ color: '#ff7a59' }}
+            style={{ color: 'var(--color-alerta)' }}
           >
             {error}
           </p>
@@ -59,7 +61,10 @@ const InputGroup = forwardRef<HTMLInputElement, InputGroupProps>(
         {!error && helper && (
           <p
             className="text-[0.72rem] leading-[1.3]"
-            style={{ color: 'rgba(246,201,119,0.45)' }}
+            style={{
+              color:
+                'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
+            }}
           >
             {helper}
           </p>

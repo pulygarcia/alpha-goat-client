@@ -33,7 +33,7 @@ const labelClass =
 const errorClass = 'text-error mt-1.5 text-[11.5px]';
 // Chocolate casi negro; el hover apenas levanta el brillo (un toque cálido, sin saturar).
 const submitClass =
-  'text-blanco-tibio mt-2 inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#3a1808] to-[#1c0a03] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase transition-[filter] hover:brightness-125 disabled:opacity-60';
+  'btn-solid-ink mt-2 inline-flex h-10 items-center justify-center rounded-[10px] px-5 text-[13px] font-semibold tracking-[0.03em] uppercase disabled:opacity-60';
 
 function TabButton({
   active,

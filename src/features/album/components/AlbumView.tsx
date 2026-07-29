@@ -96,7 +96,7 @@ export function AlbumView({ username }: { username: string }) {
         />
         <AlbumHoja hoja={activeHoja} index={activeIndex + 1} />
       </div>
-      <div className="bg-paper/95 fixed inset-x-0 bottom-0 z-40 border-t border-[rgba(74,30,8,0.14)] px-5 py-3 backdrop-blur-sm md:static md:mt-auto md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+      <div className="bg-paper/95 border-deep/14 fixed inset-x-0 bottom-0 z-40 border-t px-5 py-3 backdrop-blur-sm md:static md:mt-auto md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
         <HojaPager
           hojas={album.hojas}
           activeIndex={activeIndex}

@@ -81,14 +81,14 @@ export function ReviewFab() {
             right: EDGE_GAP,
             bottom: '2rem',
           }}
-          className="bg-blanco-tibio border-gris-50 pointer-events-auto absolute flex touch-none items-center justify-center overflow-hidden rounded-full border p-[7px] shadow-[0_12px_30px_-8px_rgba(28,25,22,0.4)] active:cursor-grabbing"
+          className="bg-blanco-tibio border-gris-50 shadow-fab pointer-events-auto absolute flex touch-none items-center justify-center overflow-hidden rounded-full border p-[7px] active:cursor-grabbing"
         >
           <span
             aria-hidden
             className="absolute inset-0 rounded-full"
             style={{
               background:
-                'radial-gradient(circle at 50% 35%, rgba(244,160,43,0.30), transparent 70%)',
+                'radial-gradient(circle at 50% 35%, color-mix(in oklab, var(--color-curry) 30%, transparent), transparent 70%)',
             }}
           />
           <Image

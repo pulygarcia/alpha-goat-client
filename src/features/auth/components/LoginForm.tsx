@@ -55,7 +55,10 @@ export default function LoginForm() {
         </h1>
         <p
           className="mt-1.5 text-[0.88rem] leading-[1.4]"
-          style={{ color: 'rgba(246,201,119,0.55)' }}
+          style={{
+            color:
+              'color-mix(in oklab, var(--color-curry-soft) 55%, transparent)',
+          }}
         >
           Bienvenido de vuelta a AlphaGoat.
         </p>
@@ -89,7 +92,10 @@ export default function LoginForm() {
           <button
             type="button"
             className="hover:text-curry cursor-pointer text-[0.78rem] transition-colors"
-            style={{ color: 'rgba(246,201,119,0.45)' }}
+            style={{
+              color:
+                'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
+            }}
           >
             Olvidé mi contraseña
           </button>
@@ -99,7 +105,7 @@ export default function LoginForm() {
           <p
             role="alert"
             className="text-[0.82rem]"
-            style={{ color: '#ff9b6b' }}
+            style={{ color: 'var(--color-alerta-soft)' }}
           >
             {extractError(login.error)}
           </p>
@@ -108,7 +114,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={!isValid || login.isPending}
-          className="btn-curry-lg mt-2 w-full cursor-pointer justify-center !text-[#fdf6e8] disabled:cursor-not-allowed disabled:opacity-40"
+          className="btn-curry-lg !text-crema mt-2 w-full cursor-pointer justify-center disabled:cursor-not-allowed disabled:opacity-40"
         >
           {login.isPending ? (
             <>
@@ -124,13 +130,16 @@ export default function LoginForm() {
       {/* Footer */}
       <p
         className="text-center text-[0.82rem]"
-        style={{ color: 'rgba(246,201,119,0.45)' }}
+        style={{
+          color:
+            'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
+        }}
       >
         ¿Todavía no tenés cuenta?{' '}
         <Link
           href="/register"
           className="underline-offset-2 hover:underline"
-          style={{ color: '#fdf6e8' }}
+          style={{ color: 'var(--color-crema)' }}
         >
           Crear cuenta
         </Link>

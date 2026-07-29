@@ -31,10 +31,10 @@ export function Stepper({
               className={cn(
                 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums transition-colors',
                 status === 'current' &&
-                  'text-paper bg-gradient-to-br from-[#a86432] to-[#3a1808]',
+                  'text-paper from-cta-from to-cta-to bg-gradient-to-br',
                 status === 'done' && 'bg-cinnamon/20 text-cinnamon',
                 status === 'upcoming' &&
-                  'bg-paper-sunken text-cinnamon/60 ring-1 ring-[rgba(74,30,8,0.18)] ring-inset',
+                  'bg-paper-sunken text-cinnamon/60 ring-deep/18 ring-1 ring-inset',
               )}
             >
               {status === 'done' ? (
@@ -54,10 +54,7 @@ export function Stepper({
             </span>
 
             {!isLast && (
-              <span
-                aria-hidden
-                className="ml-1 h-px flex-1 bg-[rgba(74,30,8,0.18)]"
-              />
+              <span aria-hidden className="bg-deep/18 ml-1 h-px flex-1" />
             )}
           </li>
         );

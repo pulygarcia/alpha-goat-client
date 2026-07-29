@@ -10,7 +10,7 @@ export function AlfajoresGridSkeleton({ count = 8 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="bg-paper-raised overflow-hidden rounded-[14px] border border-[rgba(74,30,8,0.14)]"
+          className="bg-paper-raised border-deep/14 overflow-hidden rounded-[14px] border"
         >
           <Skeleton className="aspect-[4/3] w-full rounded-none" />
           <div className="flex flex-col gap-2 p-4">

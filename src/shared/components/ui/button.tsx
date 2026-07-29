@@ -12,7 +12,7 @@ const buttonVariants = cva(
       },
       size: {
         sm: 'px-[26px] py-3 text-[13px] tracking-[0.04em]',
-        lg: 'px-9 py-4 text-sm tracking-[0.06em] shadow-[0_8px_24px_-8px_rgba(244,160,43,0.6)] hover:-translate-y-px',
+        lg: 'px-9 py-4 text-sm tracking-[0.06em] shadow-cta hover:-translate-y-px',
         icon: 'h-11 w-11',
       },
     },

@@ -40,7 +40,7 @@ export function FeedSubnav() {
           textTransform: 'uppercase',
         }}
       >
-        <span className="bg-curry-deep relative inline-block h-2 w-2 rounded-full before:absolute before:inset-[-4px] before:rounded-full before:bg-[rgba(244,160,43,0.22)] before:content-['']" />
+        <span className="bg-curry-deep before:bg-curry/22 relative inline-block h-2 w-2 rounded-full before:absolute before:inset-[-4px] before:rounded-full before:content-['']" />
         <span>{issue}</span>
       </div>
 

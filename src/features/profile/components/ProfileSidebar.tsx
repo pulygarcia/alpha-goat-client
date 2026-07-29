@@ -42,7 +42,7 @@ function CoreRow({
         <CountUp value={value} />
       </span>
       <span
-        className="text-[rgba(255,253,246,0.6)]"
+        className="text-blanco-tibio/60"
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: 10,
@@ -98,7 +98,7 @@ export function ProfileSidebar({
           <ProfileAvatarModal
             avatarUrl={profile.avatarUrl}
             username={profile.username}
-            className="h-20 w-20 rounded-full border-[3px] border-[rgba(255,255,255,0.22)] object-cover"
+            className="h-20 w-20 rounded-full border-[3px] border-white/22 object-cover"
           />
         </div>
 
@@ -106,7 +106,7 @@ export function ProfileSidebar({
           {profile.username}
         </h1>
         <p
-          className="mt-[6px] text-[rgba(255,253,246,0.62)]"
+          className="text-blanco-tibio/62 mt-[6px]"
           style={{
             fontFamily: 'var(--font-mono)',
             fontSize: 12,
@@ -121,7 +121,7 @@ export function ProfileSidebar({
             <button
               type="button"
               onClick={onEditClick}
-              className="text-blanco-tibio w-full rounded-[10px] border border-[rgba(255,255,255,0.32)] bg-[rgba(255,255,255,0.08)] py-[9px] text-[12.5px] font-semibold transition-colors hover:bg-[rgba(255,255,255,0.16)]"
+              className="text-blanco-tibio w-full rounded-[10px] border border-white/32 bg-white/8 py-[9px] text-[12.5px] font-semibold transition-colors hover:bg-white/16"
             >
               Editar perfil
             </button>
@@ -142,9 +142,9 @@ export function ProfileSidebar({
         </div>
 
         <div className="my-5 flex flex-col gap-[9px]">
-          <div className="flex gap-[10px] text-[12.5px] text-[rgba(255,253,246,0.85)]">
+          <div className="text-blanco-tibio/85 flex gap-[10px] text-[12.5px]">
             <span
-              className="w-[70px] text-[rgba(255,253,246,0.5)] uppercase"
+              className="text-blanco-tibio/50 w-[70px] uppercase"
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: 9.5,
@@ -155,9 +155,9 @@ export function ProfileSidebar({
             </span>
             {memberSince(profile.createdAt)}
           </div>
-          <div className="flex gap-[10px] text-[12.5px] text-[rgba(255,253,246,0.85)]">
+          <div className="text-blanco-tibio/85 flex gap-[10px] text-[12.5px]">
             <span
-              className="w-[70px] text-[rgba(255,253,246,0.5)] uppercase"
+              className="text-blanco-tibio/50 w-[70px] uppercase"
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: 9.5,
@@ -170,7 +170,7 @@ export function ProfileSidebar({
           </div>
         </div>
 
-        <div className="flex flex-col gap-[13px] border-t border-[rgba(255,255,255,0.16)] pt-4">
+        <div className="flex flex-col gap-[13px] border-t border-white/16 pt-4">
           <CoreRow
             testid="stat-reviews"
             value={profile.reviewsCount}

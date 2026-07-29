@@ -21,7 +21,7 @@ export function AlbumHeader({
               <UserAvatar
                 username={owner.username}
                 avatarUrl={owner.avatarUrl}
-                className="h-8.5 w-8.5 rounded-full border border-[rgba(74,30,8,0.25)] object-cover p-0.5"
+                className="border-deep/25 h-8.5 w-8.5 rounded-full border object-cover p-0.5"
               />
             </Link>
             <p className="text-ink/70 font-mono text-[10px] tracking-[0.26em] uppercase">

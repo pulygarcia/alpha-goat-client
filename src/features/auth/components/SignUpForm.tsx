@@ -69,7 +69,10 @@ export default function SignUpForm() {
       <div>
         <h1
           className="leading-[1.1] font-medium tracking-[-0.022em]"
-          style={{ fontSize: 'clamp(26px, 2.6vw, 32px)', color: '#fdf6e8' }}
+          style={{
+            fontSize: 'clamp(26px, 2.6vw, 32px)',
+            color: 'var(--color-crema)',
+          }}
         >
           Crear nuevo perfil
         </h1>
@@ -115,7 +118,7 @@ export default function SignUpForm() {
           <p
             role="alert"
             className="text-[0.82rem]"
-            style={{ color: '#ff9b6b' }}
+            style={{ color: 'var(--color-alerta-soft)' }}
           >
             {extractError(signup.error)}
           </p>
@@ -124,7 +127,7 @@ export default function SignUpForm() {
         <button
           type="submit"
           disabled={!isValid || signup.isPending}
-          className="btn-curry-lg mt-2 w-full cursor-pointer justify-center !text-[#fdf6e8] disabled:cursor-not-allowed disabled:opacity-40"
+          className="btn-curry-lg !text-crema mt-2 w-full cursor-pointer justify-center disabled:cursor-not-allowed disabled:opacity-40"
         >
           {signup.isPending ? (
             <>
@@ -140,13 +143,16 @@ export default function SignUpForm() {
       {/* Footer */}
       <p
         className="text-center text-[0.82rem]"
-        style={{ color: 'rgba(246,201,119,0.45)' }}
+        style={{
+          color:
+            'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
+        }}
       >
         ¿Ya tenés cuenta?{' '}
         <Link
           href="/login"
           className="underline-offset-2 hover:underline"
-          style={{ color: '#fdf6e8' }}
+          style={{ color: 'var(--color-crema)' }}
         >
           Iniciar sesión
         </Link>

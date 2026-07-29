@@ -70,7 +70,7 @@ export function CommentForm({
           placeholder="Sumá un comentario…"
           aria-label="Comentario"
           onKeyDown={handleKeyDown}
-          className="text-ink w-full resize-none rounded-[14px] bg-[rgba(74,30,8,0.07)] py-2.5 pr-11 pl-3.5 text-[14px] leading-[1.5] placeholder:text-[rgba(74,30,8,0.4)] focus:outline-none"
+          className="text-ink bg-deep/7 placeholder:text-deep/40 w-full resize-none rounded-[14px] py-2.5 pr-11 pl-3.5 text-[14px] leading-[1.5] focus:outline-none"
         />
         <motion.button
           type="submit"
@@ -85,7 +85,7 @@ export function CommentForm({
                 }
           }
           transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="text-curry-deep absolute right-2 bottom-2.5 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-[rgba(74,30,8,0.08)] transition-colors hover:bg-[rgba(74,30,8,0.16)] disabled:cursor-not-allowed disabled:hover:bg-[rgba(74,30,8,0.08)]"
+          className="text-curry-deep bg-deep/8 hover:bg-deep/16 disabled:hover:bg-deep/8 absolute right-2 bottom-2.5 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed"
         >
           {create.isPending ? (
             <Spinner className="size-4" />
@@ -96,7 +96,7 @@ export function CommentForm({
       </div>
       <div className="mt-1 flex items-center justify-between gap-2">
         {errors.contenido ? (
-          <p role="alert" className="text-[0.78rem] text-[#c0461f]">
+          <p role="alert" className="text-error text-[0.78rem]">
             {errors.contenido.message}
           </p>
         ) : (
@@ -104,7 +104,7 @@ export function CommentForm({
         )}
         <span
           className={`text-[0.72rem] tabular-nums ${
-            overLimit ? 'font-semibold text-[#c0461f]' : 'text-cinnamon'
+            overLimit ? 'text-error font-semibold' : 'text-cinnamon'
           }`}
         >
           {length}/{COMMENT_MAX}

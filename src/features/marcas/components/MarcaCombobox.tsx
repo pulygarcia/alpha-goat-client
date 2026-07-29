@@ -57,7 +57,7 @@ export function MarcaCombobox({
         <ul
           id={listId}
           role="listbox"
-          className="bg-blanco-tibio border-gris-50 absolute z-10 mt-1 max-h-[40vh] w-full overflow-y-auto rounded-[10px] border py-1 shadow-[0_18px_36px_-22px_rgba(44,18,9,0.5)]"
+          className="bg-blanco-tibio border-gris-50 shadow-lift absolute z-10 mt-1 max-h-[40vh] w-full overflow-y-auto rounded-[10px] border py-1"
         >
           {isLoading && (
             <li className="text-gris-400 px-3 py-2 text-[13px]">Buscando...</li>

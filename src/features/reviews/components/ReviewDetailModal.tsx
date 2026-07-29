@@ -88,7 +88,7 @@ export function ReviewDetailModal({
       <DialogContent
         showClose={false}
         style={{ ...PALETTE, background: 'var(--rd-panel)' }}
-        className="top-auto bottom-0 left-1/2 flex h-[min(620px,92vh)] max-h-[92vh] w-[min(620px,100vw)] max-w-none translate-y-0 flex-col gap-0 overflow-hidden rounded-t-[20px] rounded-b-none border-0 p-0 shadow-[0_50px_90px_-35px_rgba(28,25,22,0.45)] sm:rounded-b-none"
+        className="shadow-modal top-auto bottom-0 left-1/2 flex h-[min(620px,92vh)] max-h-[92vh] w-[min(620px,100vw)] max-w-none translate-y-0 flex-col gap-0 overflow-hidden rounded-t-[20px] rounded-b-none border-0 p-0 sm:rounded-b-none"
       >
         <DialogHeader className="sr-only">
           <DialogTitle>Reseña de {author.username}</DialogTitle>

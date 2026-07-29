@@ -400,7 +400,7 @@ function WizardInner({
             key="next"
             type="button"
             onClick={() => setStep('puntajes')}
-            className="text-blanco-tibio h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110"
+            className="btn-solid h-12 flex-1 rounded-[10px] text-[12px] font-semibold tracking-[0.04em] uppercase"
           >
             Siguiente
           </button>
@@ -409,7 +409,7 @@ function WizardInner({
             key="submit"
             type="submit"
             disabled={isPending}
-            className="text-blanco-tibio h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60"
+            className="btn-solid h-12 flex-1 rounded-[10px] text-[12px] font-semibold tracking-[0.04em] uppercase disabled:opacity-60"
           >
             {isPending
               ? 'Publicando...'

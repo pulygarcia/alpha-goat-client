@@ -20,7 +20,7 @@ export function Toaster() {
           background: 'var(--color-gris-600)',
           color: 'var(--color-blanco-tibio)',
           border: '1px solid var(--color-negro)',
-          boxShadow: '0 18px 40px -18px rgba(28,25,22,0.55)',
+          boxShadow: 'var(--shadow-toast)',
         },
       }}
     />

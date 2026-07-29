@@ -42,21 +42,29 @@ Toda la paleta es monocromática warm. La jerarquía se resuelve con **opacidad 
 
 | Token | Hex | Cuándo usar |
 |---|---|---|
-| Crema cálida | `#fdf6e8` | Texto principal en pantallas funcionales (titles, labels, inputs, CTAs sobre curry). **Usar en lugar de white puro** |
-| `rgba(255,255,255,0.62)` | — | Sub-copy sobre fondos cálidos (hero, marketing) |
-| `rgba(246,201,119,0.55)` | — | Sub-copy sobre fondos oscuros funcionales |
-| `rgba(246,201,119,0.45)` | — | Helpers, microcopy, deshabilitado |
+| `crema` | `#fdf6e8` | Texto principal en pantallas funcionales (titles, labels, inputs, CTAs sobre curry). **Usar en lugar de white puro** |
+| `blanco-tibio/62` | — | Sub-copy sobre fondos cálidos (hero, marketing) |
+| `curry-soft/55` | — | Sub-copy sobre fondos oscuros funcionales |
+| `curry-soft/45` | — | Helpers, microcopy, deshabilitado |
 
 ### Excepciones (usar con criterio)
 
-| Hex | Uso único permitido |
-|---|---|
-| `#ff7a59` | Bordes/texto de error — único rojo, intencionalmente cálido |
-| `#7dd693` | Estado "perfecto" / reward — único verde, sólo como recompensa |
+| Token | Hex | Uso único permitido |
+|---|---|---|
+| `alerta` | `#ff7a59` | Bordes/texto de error — único rojo, intencionalmente cálido |
+| `alerta-soft` | `#ff9b6b` | Mensajes de error de formulario (menos peso que el borde) |
+| `ok` | `#7dd693` | Estado "perfecto" / reward — único verde, sólo como recompensa |
+| `ambar` | `#c87a20` | Glow de las palabras del hero de auth y las partículas |
 
 **Reglas duras:**
 - Nunca inventar colores fuera de la paleta.
-- Si necesitás un tono intermedio, modulá opacidad de un color existente (`rgba(244,160,43,0.x)`).
+- **Nunca escribir un hexadecimal ni un `rgba()` en un componente.** Todo color
+  sale de un token: clase de Tailwind (`text-crema`), `var(--color-x)` si va en
+  un `style`, o `color-mix(in oklab, var(--color-x) N%, transparent)` cuando la
+  clase no aplica. Un literal en un `.tsx` es deuda: obliga a repintar a mano
+  cuando cambia la paleta.
+- Si necesitás un tono intermedio, modulá la opacidad del token (`bg-curry/12`,
+  `border-deep/14`), no escribas el `rgba()` a mano.
 - Nunca usar `text-black`, `text-white` puros — siempre crema cálida o curry.
 - No mezclar warm con cool. Si un color tira a azul/violeta, está mal.
 
@@ -116,9 +124,30 @@ Para form headlines (no display) usar Inter directo: `clamp(26px, 2.6vw, 32px)`,
 
 - **Pill primario** (`.btn-curry-lg`): fondo curry, texto sienna (o crema cuando el contexto lo pide), uppercase, tracking 0.06em, sombra dorada. Para CTAs principales.
 - **Pill secundario** (`.btn-curry`): variante chica del primario.
+- **Sólido** (`.btn-solid`): degradé cálido (`cta-from` → `cta-to`) con texto
+  blanco tibio. Es el CTA de las pantallas claras (header, wizard, moderación).
+  Solo pinta: el alto, el padding y el tipo los pone cada llamador, porque
+  conviven un botón de 48px en el wizard y uno de 36px en el header.
+- **Sólido oscuro** (`.btn-solid-ink`): misma forma, degradé más oscuro, para
+  acciones que no deben competir con el CTA principal (subir foto, guardar).
 - **Icon button** (`.icon-btn`): 44×44, circular, curry sólido.
 - **Tertiary**: link de texto, sin fondo, color curry o crema, underline sutil en hover.
 - **Cursor pointer en todo**: añadir `cursor-pointer` a `<button>` (Tailwind no lo agrega por default).
+
+### Sombras
+
+Escala cerrada en `globals.css`; no escribir sombras inline.
+
+| Token | Para |
+|---|---|
+| `shadow-cta` | Halo dorado del pill primario |
+| `shadow-lift` | Card que se levanta en hover |
+| `shadow-card` | Card apoyada (figurita del álbum) |
+| `shadow-menu` | Dropdown, combobox |
+| `shadow-toast` | Sonner |
+| `shadow-sheet` | Sheet lateral |
+| `shadow-modal` | Modal a pantalla casi completa |
+| `shadow-fab` | FAB flotante |
 
 ### Inputs
 

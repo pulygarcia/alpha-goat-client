@@ -28,7 +28,7 @@ export function AlfajorIdCard({ alfajor }: { alfajor: Alfajor }) {
             style={{
               fontFamily: 'var(--font-archivo)',
               background: 'var(--ap-ink)',
-              color: '#fff',
+              color: 'var(--color-blanco)',
             }}
           >
             {inicial}

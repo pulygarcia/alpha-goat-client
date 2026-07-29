@@ -72,7 +72,8 @@ export function CommentList({ reviewId }: { reviewId: string }) {
           className="cursor-pointer rounded-full border px-[18px] py-2 text-[13px] transition-colors"
           style={{
             color: 'var(--rd-accent)',
-            borderColor: 'rgba(184,96,21,.35)',
+            borderColor:
+              'color-mix(in oklab, var(--color-cinnamon) 35%, transparent)',
           }}
         >
           Reintentar

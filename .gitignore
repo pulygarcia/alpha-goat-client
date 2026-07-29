@@ -48,3 +48,6 @@ next-env.d.ts
 
 # design references (raw HTML mockups, kept local only)
 /docs/_design-refs/
+
+# superpowers scratch (mockups del visual companion, briefs y diffs de review)
+.superpowers/

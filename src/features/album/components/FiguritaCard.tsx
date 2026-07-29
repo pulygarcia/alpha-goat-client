@@ -5,7 +5,7 @@ import type { AlbumFigurita } from '../types/album.types';
 /** Color del sello de nota: dorado desde 8, neutral en el medio, rojo por debajo de 4. */
 function ratingBadgeClasses(rating: number): string {
   if (rating >= 8) return 'bg-curry text-sienna';
-  if (rating < 4) return 'bg-[#ff7a59] text-paper';
+  if (rating < 4) return 'bg-alerta text-paper';
   return 'bg-ink text-paper';
 }
 
@@ -27,17 +27,13 @@ export function FiguritaCard({ figurita }: { figurita: AlbumFigurita }) {
       href={`/alfajores/${figurita.id}`}
       className={cn(
         'group relative block p-2',
-        collected
-          ? 'bg-paper-raised shadow-[0_10px_22px_-12px_rgba(74,30,8,0.45)]'
-          : 'bg-paper-sunken',
+        collected ? 'bg-paper-raised shadow-card' : 'bg-paper-sunken',
       )}
     >
       <div
         className={cn(
           'relative border p-2',
-          collected
-            ? 'border-[rgba(74,30,8,0.25)]'
-            : 'border-dashed border-[rgba(74,30,8,0.35)]',
+          collected ? 'border-deep/25' : 'border-deep/35 border-dashed',
         )}
       >
         <div

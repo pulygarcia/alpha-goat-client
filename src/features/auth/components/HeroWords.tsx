@@ -19,7 +19,10 @@ export default function HeroWords({ activeStep }: Props) {
           style={{
             fontSize: '30vh',
             opacity: activeStep === i + 1 ? 0.35 : baseOpacity[i],
-            color: activeStep === i + 1 ? '#ffb53d' : '#f4a02b',
+            color:
+              activeStep === i + 1
+                ? 'var(--color-curry-bright)'
+                : 'var(--color-curry)',
           }}
         >
           {word}

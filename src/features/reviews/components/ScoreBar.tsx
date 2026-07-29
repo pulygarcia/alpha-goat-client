@@ -104,7 +104,7 @@ export function ScoreBar({
         aria-hidden
         className="absolute inset-0"
         style={{
-          background: `${TICKS}${hero ? 'rgba(43,20,8,.28)' : 'var(--color-blanco-tibio)'} calc(10% - 1px) 10%)`,
+          background: `${TICKS}${hero ? 'color-mix(in oklab, var(--color-ink) 28%, transparent)' : 'var(--color-blanco-tibio)'} calc(10% - 1px) 10%)`,
         }}
       />
     </div>

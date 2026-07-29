@@ -81,18 +81,14 @@ export function MarcaIndex({
               'flex flex-none cursor-pointer items-center gap-2 rounded-full border px-4 py-2.5 text-[13px] font-medium whitespace-nowrap outline-none focus-visible:outline-none',
               active
                 ? 'bg-ink text-paper border-ink'
-                : 'bg-paper-raised text-ink border-[rgba(74,30,8,0.14)]',
+                : 'bg-paper-raised text-ink border-deep/14',
             )}
           >
             {hoja.marca.nombre}
             <span
               className={cn(
                 'font-mono text-[10px]',
-                full
-                  ? 'text-[#7dd693]'
-                  : active
-                    ? 'text-curry'
-                    : 'text-cinnamon',
+                full ? 'text-ok' : active ? 'text-curry' : 'text-cinnamon',
               )}
             >
               {hoja.stats.pct}%

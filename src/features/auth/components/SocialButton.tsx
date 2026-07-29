@@ -11,10 +11,10 @@ export default function SocialButton({ icon, label, onClick }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className="text-curry-soft flex h-[52px] w-full items-center justify-center gap-2.5 rounded-xl border text-sm font-medium transition-all duration-200 hover:border-[rgba(244,160,43,0.30)] hover:bg-[rgba(244,160,43,0.06)]"
+      className="text-curry-soft hover:border-curry/30 hover:bg-curry/6 flex h-[52px] w-full items-center justify-center gap-2.5 rounded-xl border text-sm font-medium transition-all duration-200"
       style={{
-        background: '#4f1f08',
-        borderColor: 'rgba(244,160,43,0.14)',
+        background: 'var(--color-bg-deep)',
+        borderColor: 'color-mix(in oklab, var(--color-curry) 14%, transparent)',
       }}
     >
       {icon}

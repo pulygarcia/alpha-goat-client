@@ -58,7 +58,7 @@ export function PendingAlfajorCard({ alfajor }: { alfajor: Alfajor }) {
           type="button"
           disabled={moderate.isPending}
           onClick={() => moderate.mutate({ id: alfajor.id, action: 'approve' })}
-          className="text-blanco-tibio inline-flex h-9 items-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-3 text-[12.5px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          className="btn-solid inline-flex h-9 items-center rounded-[10px] px-3 text-[12.5px] font-semibold tracking-[0.04em] uppercase disabled:cursor-not-allowed disabled:opacity-60"
         >
           Aprobar
         </button>

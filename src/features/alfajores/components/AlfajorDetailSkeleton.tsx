@@ -2,7 +2,7 @@ import { Skeleton } from '@/shared/components/ui/skeleton';
 
 // El fondo por defecto del Skeleton sale de los tokens crema; esta página vive
 // en la paleta blanca del rediseño, así que se pisa acá.
-const TONE = { background: '#f1efeb' };
+const TONE = { background: 'var(--color-gris-25)' };
 
 /** Placeholder del detalle mientras carga, con la forma de dos columnas. */
 export function AlfajorDetailSkeleton() {

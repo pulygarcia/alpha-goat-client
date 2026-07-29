@@ -202,7 +202,7 @@ export function AppHeader() {
       <button
         type="button"
         onClick={() => requireAuth(() => setQuickOpen(true))}
-        className="text-blanco-tibio hidden h-10 items-center gap-[6px] rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110 sm:inline-flex"
+        className="btn-solid hidden h-10 items-center gap-[6px] rounded-[10px] px-[14px] text-[13px] leading-none font-semibold tracking-[0.04em] whitespace-nowrap uppercase sm:inline-flex"
       >
         <Plus className="h-4 w-4" strokeWidth={2.4} />
         Reseñar
@@ -229,7 +229,7 @@ export function AppHeader() {
           <DropdownMenuContent
             align="end"
             sideOffset={10}
-            className="bg-blanco text-ink border-gris-50 min-w-[224px] rounded-[12px] p-1.5 shadow-[0_18px_40px_-18px_rgba(28,25,22,0.35)]"
+            className="bg-blanco text-ink border-gris-50 shadow-menu min-w-[224px] rounded-[12px] p-1.5"
           >
             <DropdownMenuLabel className="px-[10px] py-2">
               <span className="block text-[14px] leading-tight font-semibold">
@@ -281,7 +281,7 @@ export function AppHeader() {
       ) : (
         <Link
           href="/login?next=/feed"
-          className="text-blanco-tibio inline-flex h-9 flex-shrink-0 items-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-[14px] text-[13px] font-semibold tracking-[0.04em] whitespace-nowrap uppercase transition-[filter] hover:brightness-110"
+          className="btn-solid inline-flex h-9 flex-shrink-0 items-center rounded-[10px] px-[14px] text-[13px] font-semibold tracking-[0.04em] whitespace-nowrap uppercase"
         >
           Entrar
         </Link>

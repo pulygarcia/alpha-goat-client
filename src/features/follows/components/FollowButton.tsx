@@ -68,7 +68,7 @@ export function FollowButton({
         aria-pressed={isFollowing}
         className={
           isFollowing
-            ? 'text-cinnamon hover:border-curry-deep hover:text-curry-deep rounded-full border border-[rgba(74,30,8,0.22)] px-3 py-[3px] text-[11px] font-semibold transition-colors disabled:opacity-60'
+            ? 'text-cinnamon hover:border-curry-deep hover:text-curry-deep border-deep/22 rounded-full border px-3 py-[3px] text-[11px] font-semibold transition-colors disabled:opacity-60'
             : 'rounded-[20px] px-3 py-1 text-[11px] font-bold transition-opacity hover:opacity-90 disabled:opacity-60'
         }
         style={

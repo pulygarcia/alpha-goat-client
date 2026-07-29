@@ -13,7 +13,7 @@ export default function ParticleWords() {
           text={word}
           fontSize={400}
           fontFamily="'Archivo Black', sans-serif"
-          color="#c87a20"
+          color="var(--color-ambar)"
           particleSize={1.8}
           particleDensity={4}
           dispersionStrength={22}

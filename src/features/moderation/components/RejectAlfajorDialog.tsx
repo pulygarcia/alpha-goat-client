@@ -75,7 +75,7 @@ export function RejectAlfajorDialog({
           <button
             type="submit"
             disabled={isPending}
-            className="text-blanco-tibio inline-flex h-10 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] px-4 text-[13px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn-solid inline-flex h-10 items-center justify-center rounded-[10px] px-4 text-[13px] font-semibold tracking-[0.04em] uppercase disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? 'Rechazando…' : 'Confirmar rechazo'}
           </button>

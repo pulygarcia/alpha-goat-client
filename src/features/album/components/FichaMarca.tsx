@@ -28,7 +28,7 @@ export function FichaMarca({
   total: number;
 }) {
   return (
-    <aside className="bg-paper-sunken flex flex-col justify-between rounded-xl border border-[rgba(74,30,8,0.12)] p-4">
+    <aside className="bg-paper-sunken border-deep/12 flex flex-col justify-between rounded-xl border p-4">
       <div>
         <div className="border-ink/40 text-ink/55 font-archivo mb-3 flex h-14 w-14 -rotate-6 items-center justify-center rounded-full border-2 border-dashed text-lg">
           {initials(marca.nombre)}

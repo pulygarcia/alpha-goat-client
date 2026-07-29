@@ -32,7 +32,7 @@ const labelClass =
   'text-gris-300 mb-1.5 block text-[10px] tracking-[0.16em] uppercase';
 const errorClass = 'text-error mt-1.5 text-[11.5px]';
 const primaryClass =
-  'text-blanco-tibio h-12 flex-1 rounded-[10px] bg-gradient-to-br from-[#a86432] to-[#3a1808] text-[12px] font-semibold tracking-[0.04em] uppercase transition-[filter] hover:brightness-110 disabled:opacity-60';
+  'btn-solid h-12 flex-1 rounded-[10px] text-[12px] font-semibold tracking-[0.04em] uppercase disabled:opacity-60';
 
 /** "CHOCOLATE" → "Chocolate". */
 function tipoLabel(tipo: string) {

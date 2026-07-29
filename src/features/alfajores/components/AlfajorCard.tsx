@@ -14,7 +14,7 @@ export function AlfajorCard({ alfajor }: { alfajor: Alfajor }) {
   return (
     <Link
       href={`/alfajores/${id}`}
-      className="group bg-paper-raised flex flex-col overflow-hidden rounded-[14px] border border-[rgba(74,30,8,0.14)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-22px_rgba(44,18,9,0.5)]"
+      className="group bg-paper-raised border-deep/14 hover:shadow-lift flex flex-col overflow-hidden rounded-[14px] border transition-[transform,box-shadow] hover:-translate-y-0.5"
     >
       <div className="bg-paper-sunken relative aspect-[4/3] w-full overflow-hidden">
         {imagenUrl ? (

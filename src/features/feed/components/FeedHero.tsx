@@ -44,9 +44,7 @@ export function FeedHero() {
 
   if (collapsed) {
     if (!isLoading && !isError && data) {
-      content = (
-        <CollapsedHero alfajor={data.alfajor} ratings={data.ratings} />
-      );
+      content = <CollapsedHero alfajor={data.alfajor} ratings={data.ratings} />;
     }
   } else if (isLoading) {
     content = <FeedHeroSkeleton />;

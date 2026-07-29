@@ -27,11 +27,7 @@ function imageFile(type = 'image/png', size = 1024): File {
 
 function renderUploader() {
   return render(
-    <AlfajorImageUploader
-      alfajorId="a1"
-      imagenUrl={null}
-      nombre="Jorgito"
-    />,
+    <AlfajorImageUploader alfajorId="a1" imagenUrl={null} nombre="Jorgito" />,
   );
 }
 

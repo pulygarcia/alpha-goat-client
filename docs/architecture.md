@@ -408,12 +408,34 @@ El estado de auth se resuelve **en el servidor** en el primer render, no solo en
 - El `User | null` resultante baja como `initialUser` al `AuthProvider` y se siembra en la query `['auth','me']` como `initialData`. Así el HTML del servidor y el primer render del cliente ya conocen la sesión: sin parpadeo ni `/me` redundante en el cliente.
 - Trade-off: leer cookies en el root layout opta a todas las rutas a **render dinámico** (correcto para una app con sesión por-request).
 
+### La API se consume desde el mismo origen (proxy de rewrites)
+
+Desde el navegador **no se pega a la URL de la API**, sino a `/api`, que
+`next.config.ts` reescribe a `${NEXT_PUBLIC_API_URL}/:path*`. Con front y API en
+dominios distintos (Vercel ↔ Render) la cookie de sesión era third-party: Chrome
+la aceptaba, pero el ITP de Safari y la Total Cookie Protection de Firefox la
+bloqueaban, o sea login roto en iPhone. Siendo first-party el problema
+desaparece, y de paso los previews de Vercel dejan de depender de que su URL
+(distinta en cada deploy) esté en el `FRONTEND_URL` del back. El back no cambia:
+`SameSite=None; Secure` sigue siendo válido para una cookie first-party.
+
+El costo es un salto extra por request y ancho de banda de Vercel, despreciable
+a este volumen. El límite de body de las funciones de Vercel es 4,5 MB y el
+back acepta imágenes de hasta 5 MB: una foto que caiga en esa franja falla solo
+en prod. Si aparece, se baja el límite del back a 4 MB o se comprime en el
+cliente.
+
+`getCurrentUser.server.ts` queda como está: server-to-server no pasa por CORS ni
+por reglas de cookies, así que usa la URL absoluta.
+
 ```typescript
 // shared/lib/api-client.ts
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  // En el browser, el proxy de mismo origen; en el server, la URL absoluta.
+  baseURL:
+    typeof window === 'undefined' ? process.env.NEXT_PUBLIC_API_URL : '/api',
   withCredentials: true,
 });
 

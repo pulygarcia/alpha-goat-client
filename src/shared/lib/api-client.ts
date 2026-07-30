@@ -1,8 +1,14 @@
 import axios from 'axios';
 import { env } from '@/config/env';
 
+// En el browser pegamos a `/api`, que el rewrite de `next.config.ts` proxea a
+// la API: mismo origen, cookie first-party. En el server no hay proxy que
+// valga (la request no pasa por el front), asi que va la URL absoluta.
+const baseURL =
+  typeof window === 'undefined' ? env.NEXT_PUBLIC_API_URL : '/api';
+
 export const apiClient = axios.create({
-  baseURL: env.NEXT_PUBLIC_API_URL,
+  baseURL,
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 });

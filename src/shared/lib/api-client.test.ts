@@ -31,6 +31,12 @@ function axiosError(status: number, url: string): AxiosError {
 
 const dispatchSpy = vi.spyOn(window, 'dispatchEvent').mockReturnValue(true);
 
+describe('apiClient baseURL', () => {
+  it('uses the same-origin proxy in the browser', () => {
+    expect(apiClient.defaults.baseURL).toBe('/api');
+  });
+});
+
 describe('apiClient response interceptor', () => {
   beforeEach(() => {
     dispatchSpy.mockClear();

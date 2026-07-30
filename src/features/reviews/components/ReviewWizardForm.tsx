@@ -256,7 +256,6 @@ function WizardInner({
                 aria-label="Tu reseña"
                 rows={4}
                 maxLength={280}
-                autoFocus
                 {...register('comentario')}
                 placeholder="El baño arranca impecable pero se rinde al tercer mordisco..."
                 className="placeholder:text-gris-300 min-h-[92px] resize-none border-none bg-transparent p-0 text-[14px] leading-[1.5] shadow-none focus-visible:border-none focus-visible:ring-0 focus-visible:ring-offset-0"

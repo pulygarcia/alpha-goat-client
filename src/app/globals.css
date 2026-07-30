@@ -109,8 +109,13 @@
 @layer base {
   html,
   body {
-    background: var(--color-bg);
-    color: var(--color-curry);
+    /* El piso de la app: hueso cálido, no el marrón de la paleta oscura. Las
+       pantallas que siguen siendo oscuras pintan su propio fondo a sangre
+       (el hero de `/` y las de auth con `bg-bg-ink`), así que el marrón de acá
+       solo se veía como una franja debajo del contenido de las páginas claras
+       y en el rebote del scroll en mobile. */
+    background: var(--color-blanco-tibio);
+    color: var(--color-ink);
     font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   }
 

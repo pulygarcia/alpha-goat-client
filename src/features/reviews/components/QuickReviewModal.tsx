@@ -72,6 +72,10 @@ export function QuickReviewModal({
             primitivo en vez de forkearlo (Radix conserva foco y escape). */}
         <DialogContent
           showClose={false}
+          // Sin foco automático: en mobile enfocar el buscador al abrir levanta
+          // el teclado y tapa la lista, cuando la mayoría entra a elegir de la
+          // lista y no a escribir. El teclado aparece si tocan el input.
+          onOpenAutoFocus={(e) => e.preventDefault()}
           className="bg-blanco-tibio text-ink border-gris-50 top-auto bottom-0 left-1/2 flex h-[min(560px,92vh)] w-[min(520px,100vw)] max-w-none translate-y-0 flex-col gap-0 overflow-hidden rounded-t-[18px] rounded-b-none p-0 duration-[250ms] sm:rounded-b-none"
         >
           <DialogHeader className="flex-none space-y-0 px-[18px] pt-2.5">
@@ -230,7 +234,6 @@ function AlfajorPicker({
           <Search className="text-gris-300 h-4 w-4" strokeWidth={2} />
           <input
             type="search"
-            autoFocus
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscá por nombre"

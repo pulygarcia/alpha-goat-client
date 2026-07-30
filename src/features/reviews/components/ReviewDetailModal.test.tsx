@@ -6,7 +6,12 @@ import { ReviewDetailModal } from './ReviewDetailModal';
 import { reviewsApi } from '../api/reviews.api';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
 
-let mockUser: { id?: string; username: string; avatarUrl: string | null; role?: string } = {
+let mockUser: {
+  id?: string;
+  username: string;
+  avatarUrl: string | null;
+  role?: string;
+} = {
   username: 'yo',
   avatarUrl: null,
 };
@@ -239,9 +244,7 @@ describe('ReviewDetailModal', () => {
     fireEvent.click(screen.getByLabelText('Borrar reseña'));
     fireEvent.click(screen.getByText('Sí'));
 
-    await waitFor(() =>
-      expect(reviewsApi.remove).toHaveBeenCalledWith('r1'),
-    );
+    await waitFor(() => expect(reviewsApi.remove).toHaveBeenCalledWith('r1'));
     await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
   });
 });

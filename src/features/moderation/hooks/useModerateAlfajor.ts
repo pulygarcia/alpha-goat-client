@@ -7,7 +7,7 @@ import { moderationApi } from '../api/moderation.api';
 import { MODERATION_QUEUE_PREFIX } from './useModerationQueue';
 
 export type ModerateInput =
-  | { id: string; action: 'approve' }
+  | { id: string; action: 'approve'; marcaId?: string }
   | { id: string; action: 'reject'; rejectionReason: string };
 
 /**
@@ -22,7 +22,7 @@ export function useModerateAlfajor() {
   return useMutation({
     mutationFn: (input: ModerateInput) =>
       input.action === 'approve'
-        ? moderationApi.approve(input.id)
+        ? moderationApi.approve(input.id, input.marcaId)
         : moderationApi.reject(input.id, input.rejectionReason),
     onSuccess: (_data, input) => {
       notifySuccess(

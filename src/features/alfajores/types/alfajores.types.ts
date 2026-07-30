@@ -29,8 +29,15 @@ export interface AlfajorAvgEjes {
 export interface Alfajor {
   id: string;
   nombre: string;
-  marcaId: string;
+  /** null solo en propuestas PENDING con marca libre (la resuelve el admin). */
+  marcaId: string | null;
   marca: AlfajorMarca | null;
+  /**
+   * Marca pedida en texto libre cuando no estaba en el catálogo. El back la
+   * limpia al aprobar, así que solo llega con contenido en la cola PENDING.
+   * Opcional: solo lo consume el panel admin.
+   */
+  marcaNombrePropuesto?: string | null;
   tipo: AlfajorTipo;
   descripcion: string | null;
   imagenUrl: string | null;
@@ -53,7 +60,10 @@ export interface Alfajor {
  */
 export interface ProposeAlfajorInput {
   nombre: string;
-  marcaId: string;
+  /** Marca del catálogo. Excluyente con `marcaNombre`: va exactamente una. */
+  marcaId?: string;
+  /** Marca en texto libre cuando no está en el catálogo. */
+  marcaNombre?: string;
   tipo: AlfajorTipo;
 }
 

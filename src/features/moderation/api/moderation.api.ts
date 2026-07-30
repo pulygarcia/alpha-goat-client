@@ -27,10 +27,15 @@ export const moderationApi = {
   /**
    * PATCH /admin/alfajores/:id/approve (ADMIN)
    * PENDING → APPROVED. 400 si el alfajor ya no está PENDING.
+   *
+   * `marcaId` solo se manda para resolver una propuesta de marca libre contra
+   * una marca existente. Sin body, el back crea (o reusa) la marca del nombre
+   * propuesto, que es el caso normal.
    */
-  approve: async (id: string): Promise<Alfajor> => {
+  approve: async (id: string, marcaId?: string): Promise<Alfajor> => {
     const res = await apiClient.patch<Alfajor>(
       `/admin/alfajores/${id}/approve`,
+      marcaId ? { marcaId } : undefined,
     );
     return res.data;
   },

@@ -6,6 +6,7 @@ import { ProposeAlfajorModal } from './ProposeAlfajorModal';
 import { useProposeAlfajor } from '../hooks/useProposeAlfajor';
 import { notifyError } from '@/shared/lib/toast';
 import type { Marca } from '@/features/marcas/types/marcas.types';
+import type { MarcaSelection } from '@/features/marcas/components/MarcaCombobox';
 
 vi.mock('../hooks/useProposeAlfajor');
 vi.mock('@/shared/lib/toast', () => ({
@@ -23,10 +24,25 @@ const MARCA: Marca = {
 // Combobox real es del dominio marcas (tiene su propio test): acá lo reemplazamos
 // por un control mínimo para enfocar el modal en su lógica de submit.
 vi.mock('@/features/marcas/components/MarcaCombobox', () => ({
-  MarcaCombobox: ({ onChange }: { onChange: (m: Marca) => void }) => (
-    <button type="button" onClick={() => onChange(MARCA)}>
-      elegir marca
-    </button>
+  MarcaCombobox: ({
+    onChange,
+  }: {
+    onChange: (value: MarcaSelection | null) => void;
+  }) => (
+    <>
+      <button
+        type="button"
+        onClick={() => onChange({ kind: 'catalogo', marca: MARCA })}
+      >
+        elegir marca
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange({ kind: 'libre', nombre: 'Dulcinea' })}
+      >
+        marca libre
+      </button>
+    </>
   ),
 }));
 
@@ -170,6 +186,55 @@ describe('ProposeAlfajorModal', () => {
     await userEvent.click(screen.getByRole('button', { name: /enviar/i }));
 
     await waitFor(() => expect(notifyError).toHaveBeenCalled());
+  });
+
+  it('submits a free-text marca as marcaNombre, without marcaId', async () => {
+    setMutation(
+      (_input, opts: { onSuccess: (d: { fotoUploaded: boolean }) => void }) =>
+        opts.onSuccess({ fotoUploaded: true }),
+    );
+    render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
+
+    await userEvent.type(screen.getByLabelText(/nombre/i), 'Dulcinea Negro');
+    await userEvent.click(screen.getByText('marca libre'));
+    await userEvent.selectOptions(screen.getByLabelText(/tipo/i), 'NEGRO');
+    await userEvent.click(screen.getByRole('button', { name: /enviar/i }));
+
+    expect(mutate).toHaveBeenCalledWith(
+      {
+        input: {
+          nombre: 'Dulcinea Negro',
+          marcaId: undefined,
+          marcaNombre: 'Dulcinea',
+          tipo: 'NEGRO',
+        },
+        foto: undefined,
+      },
+      expect.anything(),
+    );
+  });
+
+  it('replaces the catalogue marca when the user switches to a free one', async () => {
+    setMutation(
+      (_input, opts: { onSuccess: (d: { fotoUploaded: boolean }) => void }) =>
+        opts.onSuccess({ fotoUploaded: true }),
+    );
+    render(<ProposeAlfajorModal open onOpenChange={vi.fn()} />);
+
+    await fillForm();
+    await userEvent.click(screen.getByText('marca libre'));
+    await userEvent.click(screen.getByRole('button', { name: /enviar/i }));
+
+    // Los dos campos son excluyentes: el back rechaza si viajan los dos.
+    expect(mutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        input: expect.objectContaining({
+          marcaId: undefined,
+          marcaNombre: 'Dulcinea',
+        }),
+      }),
+      expect.anything(),
+    );
   });
 
   it('does not submit when required fields are missing', async () => {

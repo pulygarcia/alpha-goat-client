@@ -40,7 +40,20 @@ export interface FeedHeroPeriod {
   to: string;
 }
 
+/**
+ * De dónde salió el pick del hero. `weekly` es el ganador de los últimos 7
+ * días; `allTime` es el fallback histórico, cuando nadie llegó al piso de
+ * reseñas en la ventana. Cambia el rótulo: llamar "del momento" a un pick sin
+ * actividad reciente miente sobre el dato.
+ *
+ * Ojo con el nombre: `FeedScope` (más abajo) es otra cosa — el filtro del
+ * subnav, que elige el usuario.
+ */
+export type FeedHeroScope = 'weekly' | 'allTime';
+
 export interface FeedHero {
+  /** Ausente en respuestas viejas del back; se trata como `weekly`. */
+  scope?: FeedHeroScope;
   alfajor: FeedHeroAlfajor;
   ratings: FeedHeroRatings;
   stats: FeedHeroStats;

@@ -30,8 +30,9 @@ function baseReturn(
   } as unknown as ReturnType<typeof useFeedHero>;
 }
 
-function makeHero(): FeedHeroData {
+function makeHero(over: Partial<FeedHeroData> = {}): FeedHeroData {
   return {
+    scope: 'weekly',
     alfajor: {
       id: 'a1',
       nombre: 'Jorgito',
@@ -54,6 +55,7 @@ function makeHero(): FeedHeroData {
       totalReviews: 340,
     },
     period: { from: '2026-07-14', to: '2026-07-21' },
+    ...over,
   };
 }
 
@@ -69,6 +71,41 @@ describe('FeedHero', () => {
     expect(screen.getByText('Jorgito')).toBeInTheDocument();
     expect(screen.getByText(/Havanna/)).toBeInTheDocument();
     expect(screen.getByText('Total reseñas')).toBeInTheDocument();
+  });
+
+  it('labels the pick "del momento" when the scope is weekly', () => {
+    mocked.mockReturnValue(baseReturn({ data: makeHero() }));
+    render(<FeedHero />);
+    expect(screen.getByText('Goat del momento')).toBeInTheDocument();
+  });
+
+  it('labels the pick as historic when the scope is allTime', () => {
+    mocked.mockReturnValue(
+      baseReturn({ data: makeHero({ scope: 'allTime' }) }),
+    );
+    render(<FeedHero />);
+    expect(screen.getByText('El goat histórico')).toBeInTheDocument();
+    expect(screen.queryByText('Goat del momento')).not.toBeInTheDocument();
+    // La stat semanal se queda: es dato real y explica por qué el pick no es
+    // el de la semana.
+    expect(screen.getByText('Esta semana')).toBeInTheDocument();
+  });
+
+  it('falls back to the weekly label when the back omits the scope', () => {
+    mocked.mockReturnValue(
+      baseReturn({ data: makeHero({ scope: undefined }) }),
+    );
+    render(<FeedHero />);
+    expect(screen.getByText('Goat del momento')).toBeInTheDocument();
+  });
+
+  it('labels the collapsed bar with the historic scope too', () => {
+    useFeedFilters.setState({ scope: 'today' });
+    mocked.mockReturnValue(
+      baseReturn({ data: makeHero({ scope: 'allTime' }) }),
+    );
+    render(<FeedHero />);
+    expect(screen.getByText('El goat histórico')).toBeInTheDocument();
   });
 
   it('renders a collapsed bar (no radar/marca/stats) when a scope is active', () => {

@@ -38,12 +38,78 @@ describe('MarcaCombobox', () => {
     await userEvent.type(screen.getByRole('combobox'), 'hav');
     await userEvent.click(screen.getByRole('option', { name: /Havanna/ }));
 
-    expect(onChange).toHaveBeenCalledWith(HAVANNA);
+    expect(onChange).toHaveBeenCalledWith({
+      kind: 'catalogo',
+      marca: HAVANNA,
+    });
   });
 
   it('shows the selected marca name', () => {
-    render(<MarcaCombobox value={HAVANNA} onChange={vi.fn()} />);
+    render(
+      <MarcaCombobox
+        value={{ kind: 'catalogo', marca: HAVANNA }}
+        onChange={vi.fn()}
+      />,
+    );
 
     expect(screen.getByRole('combobox')).toHaveValue('Havanna');
+  });
+
+  it('does not offer the free-brand escape unless allowFree is set', async () => {
+    render(<MarcaCombobox value={null} onChange={vi.fn()} />);
+
+    await userEvent.type(screen.getByRole('combobox'), 'dulcinea');
+
+    expect(screen.getByText(/No encontramos/)).toBeInTheDocument();
+    expect(screen.queryByText(/como marca nueva/)).not.toBeInTheDocument();
+  });
+
+  it('offers the typed text as a new marca when allowFree is set', async () => {
+    const onChange = vi.fn();
+    render(<MarcaCombobox value={null} onChange={onChange} allowFree />);
+
+    await userEvent.type(screen.getByRole('combobox'), 'dulcinea');
+    await userEvent.click(screen.getByText(/Usar “dulcinea” como marca nueva/));
+
+    expect(onChange).toHaveBeenCalledWith({
+      kind: 'libre',
+      nombre: 'dulcinea',
+    });
+  });
+
+  it('offers the escape even when the search returned matches', async () => {
+    mockSearch([HAVANNA]);
+    render(<MarcaCombobox value={null} onChange={vi.fn()} allowFree />);
+
+    await userEvent.type(screen.getByRole('combobox'), 'hav');
+
+    expect(screen.getByRole('option', { name: /Havanna/ })).toBeInTheDocument();
+    expect(screen.getByText(/Usar “hav” como marca nueva/)).toBeInTheDocument();
+  });
+
+  it('hides the escape for text shorter than the back accepts', async () => {
+    render(<MarcaCombobox value={null} onChange={vi.fn()} allowFree />);
+
+    await userEvent.type(screen.getByRole('combobox'), 'd');
+
+    expect(screen.queryByText(/como marca nueva/)).not.toBeInTheDocument();
+  });
+
+  it('labels a free marca and lets the user drop it', async () => {
+    const onChange = vi.fn();
+    render(
+      <MarcaCombobox
+        value={{ kind: 'libre', nombre: 'dulcinea' }}
+        onChange={onChange}
+      />,
+    );
+
+    expect(screen.getByRole('combobox')).toHaveValue('dulcinea');
+    expect(screen.getByText('Marca nueva')).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Quitar la marca nueva' }),
+    );
+    expect(onChange).toHaveBeenCalledWith(null);
   });
 });

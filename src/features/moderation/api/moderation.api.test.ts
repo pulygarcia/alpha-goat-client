@@ -33,8 +33,25 @@ describe('moderationApi.approve', () => {
 
     const result = await moderationApi.approve('a1');
 
-    expect(apiClient.patch).toHaveBeenCalledWith('/admin/alfajores/a1/approve');
+    // Sin marca: no se manda body, y el back resuelve la marca propuesta.
+    expect(apiClient.patch).toHaveBeenCalledWith(
+      '/admin/alfajores/a1/approve',
+      undefined,
+    );
     expect(result).toEqual({ id: 'a1', status: 'APPROVED' });
+  });
+
+  it('sends the marcaId when the admin links the proposal to a marca', async () => {
+    vi.mocked(apiClient.patch).mockResolvedValue({
+      data: { id: 'a1', status: 'APPROVED' },
+    } as never);
+
+    await moderationApi.approve('a1', 'm1');
+
+    expect(apiClient.patch).toHaveBeenCalledWith(
+      '/admin/alfajores/a1/approve',
+      { marcaId: 'm1' },
+    );
   });
 });
 

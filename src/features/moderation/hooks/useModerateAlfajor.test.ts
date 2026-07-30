@@ -53,11 +53,22 @@ describe('useModerateAlfajor', () => {
     result.current.mutate({ id: 'a1', action: 'approve' });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(moderationApi.approve).toHaveBeenCalledWith('a1');
+    expect(moderationApi.approve).toHaveBeenCalledWith('a1', undefined);
     expect(notifySuccess).toHaveBeenCalledWith('Alfajor aprobado');
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ['admin', 'pending'],
     });
+  });
+
+  it('forwards the marcaId when approving a free-brand proposal', async () => {
+    vi.mocked(moderationApi.approve).mockResolvedValue({ id: 'a1' } as never);
+    const { wrapper } = setup();
+
+    const { result } = renderHook(() => useModerateAlfajor(), { wrapper });
+    result.current.mutate({ id: 'a1', action: 'approve', marcaId: 'm1' });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(moderationApi.approve).toHaveBeenCalledWith('a1', 'm1');
   });
 
   it('rejects with the reason and toasts success', async () => {

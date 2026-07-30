@@ -16,8 +16,10 @@ import {
 import { notifyError } from '@/shared/lib/toast';
 import { imageFileSchema } from '@/shared/schemas/imageFile.schema';
 import { ALFAJOR_TIPOS } from '@/shared/types/alfajor';
-import { MarcaCombobox } from '@/features/marcas/components/MarcaCombobox';
-import type { Marca } from '@/features/marcas/types/marcas.types';
+import {
+  MarcaCombobox,
+  type MarcaSelection,
+} from '@/features/marcas/components/MarcaCombobox';
 import { useProposeAlfajor } from '../hooks/useProposeAlfajor';
 import {
   proposeAlfajorSchema,
@@ -58,7 +60,7 @@ export function ProposeAlfajorModal({
   onOpenChange: (open: boolean) => void;
 }) {
   const [submitted, setSubmitted] = useState(false);
-  const [marca, setMarca] = useState<Marca | null>(null);
+  const [marca, setMarca] = useState<MarcaSelection | null>(null);
   const [foto, setFoto] = useState<File | null>(null);
   const [fotoPreview, setFotoPreview] = useState<string | null>(null);
   const [fotoError, setFotoError] = useState<string | null>(null);
@@ -75,7 +77,12 @@ export function ProposeAlfajorModal({
     formState: { errors },
   } = useForm<ProposeAlfajorForm>({
     resolver: zodResolver(proposeAlfajorSchema),
-    defaultValues: { nombre: '', marcaId: '', tipo: undefined },
+    defaultValues: {
+      nombre: '',
+      marcaId: undefined,
+      marcaNombre: undefined,
+      tipo: undefined,
+    },
   });
 
   // Al cerrar, vuelve al estado inicial para que el próximo open arranque limpio.
@@ -112,9 +119,14 @@ export function ProposeAlfajorModal({
     setFotoPreview(URL.createObjectURL(picked));
   }
 
-  function pickMarca(next: Marca | null) {
+  // Los dos campos de marca son excluyentes en el schema: cada elección setea
+  // uno y limpia el otro, así el refine nunca ve los dos cargados.
+  function pickMarca(next: MarcaSelection | null) {
     setMarca(next);
-    setValue('marcaId', next?.id ?? '', { shouldValidate: true });
+    setValue('marcaId', next?.kind === 'catalogo' ? next.marca.id : undefined);
+    setValue('marcaNombre', next?.kind === 'libre' ? next.nombre : undefined, {
+      shouldValidate: true,
+    });
   }
 
   const onSubmit = handleSubmit((values) => {
@@ -243,9 +255,18 @@ export function ProposeAlfajorModal({
 
                 <div>
                   <span className={labelClass}>Marca</span>
-                  <MarcaCombobox value={marca} onChange={pickMarca} />
+                  <MarcaCombobox value={marca} onChange={pickMarca} allowFree />
+                  {marca?.kind === 'libre' && (
+                    <p className="text-gris-300 mt-1.5 text-[11.5px] leading-[1.45]">
+                      No está en el catálogo: la damos de alta cuando revisemos
+                      la propuesta.
+                    </p>
+                  )}
                   {errors.marcaId && (
                     <p className={errorClass}>{errors.marcaId.message}</p>
+                  )}
+                  {errors.marcaNombre && (
+                    <p className={errorClass}>{errors.marcaNombre.message}</p>
                   )}
                 </div>
 

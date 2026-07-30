@@ -7,7 +7,13 @@ import { WebGLLiquid } from '@/shared/components/ui/webgl-liquid';
 
 export function Hero() {
   return (
-    <section className="relative isolate min-h-screen overflow-hidden">
+    /*
+      `svh` y no `vh`: en mobile `100vh` mide el viewport con la barra del
+      navegador retraída, así que la página quedaba scrolleable por la altura de
+      la toolbar aunque el contenido entrara en pantalla. `svh` es el viewport
+      chico — el que se ve realmente.
+    */
+    <section className="relative isolate min-h-[100svh] overflow-hidden">
       <WebGLLiquid
         title=""
         subtitle=""
@@ -46,7 +52,7 @@ export function Hero() {
 
       <AlfajorFloat />
 
-      <div className="relative z-10 flex min-h-screen flex-col">
+      <div className="relative z-10 flex min-h-[100svh] flex-col">
         <Nav />
 
         <div className="flex flex-1 flex-col items-center px-6 pt-6 pb-12 text-center sm:pt-10">

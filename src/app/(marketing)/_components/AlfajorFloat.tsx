@@ -37,7 +37,9 @@ export function AlfajorFloat() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto w-[min(125vw,720px)] translate-y-[44%] sm:w-[min(72vw,1000px)]"
+      // En mobile queda 16 puntos más arriba: con el mismo 44% que en desktop,
+      // sobre un ancho de 125vw el alfajor se hundía casi fuera de pantalla.
+      className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto w-[min(125vw,720px)] translate-y-[28%] sm:w-[min(72vw,1000px)] sm:translate-y-[44%]"
     >
       {/* glow dorado detrás del alfajor */}
       <div

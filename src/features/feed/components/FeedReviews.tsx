@@ -106,16 +106,19 @@ export function FeedReviews() {
           {titleFor(scope)}
         </h4>
         <Tabs value={sort} onValueChange={(v) => setSort(v as FeedSort)}>
-          <TabsList
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.62rem',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-            }}
-          >
+          {/*
+            En mobile la tipografía baja un punto y el tracking se ajusta a la
+            mitad: con 0.2em, "Mejor puntuadas" no entra en 320px y los tres
+            labels se partían en dos líneas. Las pastillas también van más
+            angostas. En desktop queda el eyebrow original.
+          */}
+          <TabsList className="font-mono text-[0.56rem] tracking-[0.1em] uppercase md:text-[0.62rem] md:tracking-[0.2em]">
             {SORTS.map((s) => (
-              <TabsTrigger key={s.value} value={s.value}>
+              <TabsTrigger
+                key={s.value}
+                value={s.value}
+                className="px-2 md:px-3"
+              >
                 {s.label}
               </TabsTrigger>
             ))}

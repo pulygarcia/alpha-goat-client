@@ -30,7 +30,7 @@ const TabsTrigger = React.forwardRef<
       // 0.62rem y el escalón de arriba tapa el texto en vez de sostenerlo. El
       // texto va gris-600 y no ink por lo mismo — ink es marrón, y marrón
       // sobre gris cálido mezcla dos familias de tono en un label diminuto.
-      'text-gris-400 hover:text-ink focus-visible:ring-ring data-[state=active]:bg-gris-25 data-[state=active]:text-gris-600 rounded-[6px] px-3 py-[7px] font-medium transition-colors outline-none focus-visible:ring-2 data-[state=active]:font-bold',
+      'text-gris-400 hover:text-ink focus-visible:ring-ring data-[state=active]:bg-gris-25 data-[state=active]:text-gris-600 rounded-[6px] px-3 py-[7px] font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-2 data-[state=active]:font-bold',
       className,
     )}
     {...props}

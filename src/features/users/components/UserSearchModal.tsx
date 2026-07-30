@@ -52,7 +52,8 @@ export function UserSearchModal({
         // Sin foco automático: enfocar el buscador al abrir levanta el teclado
         // en mobile. El teclado aparece si tocan el input.
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="bg-blanco-tibio border-gris-50 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 top-[20%] max-w-md translate-y-0 gap-3 px-4 pt-4 pb-4 duration-[250ms] [&>button]:hidden">
+        className="bg-blanco-tibio border-gris-50 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 top-[20%] max-w-md translate-y-0 gap-3 px-4 pt-4 pb-4 duration-[250ms] [&>button]:hidden"
+      >
         <DialogTitle className="sr-only">Buscar usuarios</DialogTitle>
 
         <label className="bg-gris-25 border-gris-50 focus-within:border-gris-200 flex h-11 items-center gap-2 rounded-[10px] border px-3 transition-colors">

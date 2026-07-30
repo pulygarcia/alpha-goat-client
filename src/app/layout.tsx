@@ -30,7 +30,7 @@ export default async function RootLayout({
       lang="es"
       className={`${archivo.variable} ${inter.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="bg-bg text-curry flex min-h-full flex-col">
+      <body className="bg-blanco-tibio text-ink flex min-h-full flex-col">
         <QueryProvider>
           <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
           <Toaster />

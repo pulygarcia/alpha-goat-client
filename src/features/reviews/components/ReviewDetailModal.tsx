@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   Dialog,
   DialogClose,
@@ -9,7 +10,7 @@ import {
   DialogTitle,
 } from '@/shared/components/ui/dialog';
 import Link from 'next/link';
-import { X } from 'lucide-react';
+import { Trash2, X } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { CommentIcon } from './CommentIcon';
 import { LikeButton } from './LikeButton';
@@ -20,6 +21,7 @@ import { UserAvatar } from '@/shared/components/UserAvatar';
 import { CountUp } from '@/shared/components/motion/CountUp';
 import { timeAgo } from '@/features/comments/lib/timeAgo';
 import { AXIS_KEYS, AXIS_LABELS } from '../lib/axes';
+import { useDeleteReview } from '../hooks/useDeleteReview';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
 
 interface ReviewDetailModalProps {
@@ -76,6 +78,16 @@ export function ReviewDetailModal({
     commentsCount,
   } = vm;
   const reduce = useReducedMotion();
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const deleteReview = useDeleteReview();
+  const canDelete = user?.id === author.id || user?.role === 'ADMIN';
+
+  function handleConfirmDelete() {
+    deleteReview.mutate(vm.id, {
+      onSuccess: () => onOpenChange(false),
+      onSettled: () => setConfirmingDelete(false),
+    });
+  }
 
   const displayName = capitalize(author.username);
   // El eje más flojo se pinta en curry: es el dato que explica el puntaje.
@@ -126,16 +138,52 @@ export function ReviewDetailModal({
               <>Reseña de {displayName}</>
             )}
           </span>
-          <span
-            className="ml-auto text-[14px] tabular-nums"
-            style={{
-              fontFamily: 'var(--font-archivo)',
-              letterSpacing: '-0.03em',
-              color: 'var(--rd-faint)',
-            }}
-          >
-            {overall.toFixed(1)}
-          </span>
+          {confirmingDelete ? (
+            <div className="ml-auto flex items-center gap-2 text-[12px]">
+              <span style={{ color: 'var(--rd-muted)' }}>¿Borrar?</span>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={deleteReview.isPending}
+                className="text-error font-semibold hover:underline disabled:opacity-60"
+              >
+                {deleteReview.isPending ? 'Borrando…' : 'Sí'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(false)}
+                disabled={deleteReview.isPending}
+                className="font-semibold hover:underline disabled:opacity-60"
+                style={{ color: 'var(--rd-muted)' }}
+              >
+                No
+              </button>
+            </div>
+          ) : (
+            <>
+              <span
+                className="ml-auto text-[14px] tabular-nums"
+                style={{
+                  fontFamily: 'var(--font-archivo)',
+                  letterSpacing: '-0.03em',
+                  color: 'var(--rd-faint)',
+                }}
+              >
+                {overall.toFixed(1)}
+              </span>
+              {canDelete && (
+                <button
+                  type="button"
+                  aria-label="Borrar reseña"
+                  onClick={() => setConfirmingDelete(true)}
+                  className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-[var(--rd-chip)] hover:text-[var(--rd-ink)]"
+                  style={{ color: 'var(--rd-faint)' }}
+                >
+                  <Trash2 className="h-[15px] w-[15px]" />
+                </button>
+              )}
+            </>
+          )}
           <DialogClose
             aria-label="Cerrar"
             className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-[var(--rd-chip)] hover:text-[var(--rd-ink)]"

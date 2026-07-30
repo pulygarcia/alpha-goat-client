@@ -1,10 +1,29 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 import { ReviewDetailModal } from './ReviewDetailModal';
+import { reviewsApi } from '../api/reviews.api';
 import type { ReviewCardVM } from '../lib/reviewCardVM';
 
+let mockUser: {
+  id?: string;
+  username: string;
+  avatarUrl: string | null;
+  role?: string;
+} = {
+  username: 'yo',
+  avatarUrl: null,
+};
 vi.mock('@/shared/providers/AuthProvider', () => ({
-  useAuth: () => ({ user: { username: 'yo', avatarUrl: null } }),
+  useAuth: () => ({ user: mockUser }),
+}));
+vi.mock('../api/reviews.api', () => ({
+  reviewsApi: { remove: vi.fn() },
+}));
+vi.mock('@/shared/lib/toast', () => ({
+  notifySuccess: vi.fn(),
+  notifyError: vi.fn(),
 }));
 vi.mock('@/features/comments/components/CommentList', () => ({
   CommentList: ({ reviewId }: { reviewId: string }) => (
@@ -53,13 +72,30 @@ const vm: ReviewCardVM = {
   createdAt: '2026-01-01T00:00:00.000Z',
 };
 
-function setup(over: Partial<ReviewCardVM> = {}) {
+function setup(
+  over: Partial<ReviewCardVM> = {},
+  onOpenChange: (open: boolean) => void = () => {},
+) {
+  const qc = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
   render(
-    <ReviewDetailModal vm={{ ...vm, ...over }} open onOpenChange={() => {}} />,
+    <QueryClientProvider client={qc}>
+      <ReviewDetailModal
+        vm={{ ...vm, ...over }}
+        open
+        onOpenChange={onOpenChange}
+      />
+    </QueryClientProvider>,
   );
 }
 
 describe('ReviewDetailModal', () => {
+  beforeEach(() => {
+    mockUser = { username: 'yo', avatarUrl: null };
+    vi.clearAllMocks();
+  });
+
   it('shows the author and the overall rating', async () => {
     setup();
     expect(screen.getByText('Pepe')).toBeInTheDocument();
@@ -169,5 +205,46 @@ describe('ReviewDetailModal', () => {
   it('shows the comments count', () => {
     setup({ commentsCount: 3 });
     expect(screen.getByLabelText('3 comentarios')).toBeInTheDocument();
+  });
+
+  it('hides the delete action for someone who is neither author nor admin', () => {
+    setup();
+    expect(screen.queryByLabelText('Borrar reseña')).toBeNull();
+  });
+
+  it('shows the delete action for the author', () => {
+    mockUser = { id: 'u1', username: 'pepe', avatarUrl: null };
+    setup();
+    expect(screen.getByLabelText('Borrar reseña')).toBeInTheDocument();
+  });
+
+  it('shows the delete action for an admin', () => {
+    mockUser = { id: 'other', username: 'mod', avatarUrl: null, role: 'ADMIN' };
+    setup();
+    expect(screen.getByLabelText('Borrar reseña')).toBeInTheDocument();
+  });
+
+  it('asks to confirm inline before deleting, and "No" cancels', () => {
+    mockUser = { id: 'u1', username: 'pepe', avatarUrl: null };
+    setup();
+    fireEvent.click(screen.getByLabelText('Borrar reseña'));
+    expect(screen.getByText('¿Borrar?')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('No'));
+    expect(screen.queryByText('¿Borrar?')).toBeNull();
+    expect(screen.getByLabelText('Borrar reseña')).toBeInTheDocument();
+  });
+
+  it('deletes the review and closes the modal on confirm', async () => {
+    mockUser = { id: 'u1', username: 'pepe', avatarUrl: null };
+    vi.mocked(reviewsApi.remove).mockResolvedValue(undefined);
+    const onOpenChange = vi.fn();
+    setup({}, onOpenChange);
+
+    fireEvent.click(screen.getByLabelText('Borrar reseña'));
+    fireEvent.click(screen.getByText('Sí'));
+
+    await waitFor(() => expect(reviewsApi.remove).toHaveBeenCalledWith('r1'));
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
   });
 });

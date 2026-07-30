@@ -14,8 +14,23 @@ import { useFeedHero } from '../hooks/useFeedHero';
 import { useFeedFilters } from '../store/feedFilters.store';
 import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
 import { NoPhoto } from '@/shared/components/media/NoPhoto';
-import type { FeedHeroAlfajor, FeedHeroRatings } from '../types/feed.types';
+import type {
+  FeedHeroAlfajor,
+  FeedHeroRatings,
+  FeedHeroScope,
+} from '../types/feed.types';
 import { FeedHeroSkeleton } from './FeedHeroSkeleton';
+
+// El pick histórico aparece cuando nadie llegó al piso de reseñas de la
+// semana: sigue siendo un goat, pero no "del momento".
+const SCOPE_LABELS: Record<FeedHeroScope, string> = {
+  weekly: 'Goat del momento',
+  allTime: 'El goat histórico',
+};
+
+function scopeLabel(scope: FeedHeroScope | undefined) {
+  return SCOPE_LABELS[scope ?? 'weekly'];
+}
 
 const AXIS_LABELS: Record<keyof FeedHeroRatings, string> = {
   general: 'General',
@@ -44,7 +59,13 @@ export function FeedHero() {
 
   if (collapsed) {
     if (!isLoading && !isError && data) {
-      content = <CollapsedHero alfajor={data.alfajor} ratings={data.ratings} />;
+      content = (
+        <CollapsedHero
+          alfajor={data.alfajor}
+          ratings={data.ratings}
+          scope={data.scope}
+        />
+      );
     }
   } else if (isLoading) {
     content = <FeedHeroSkeleton />;
@@ -81,7 +102,7 @@ export function FeedHero() {
             fontWeight: 700,
           }}
         >
-          Goat del momento
+          {scopeLabel(data.scope)}
         </p>
 
         <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:items-center lg:gap-10">
@@ -179,9 +200,11 @@ export function FeedHero() {
 function CollapsedHero({
   alfajor,
   ratings,
+  scope,
 }: {
   alfajor: FeedHeroAlfajor;
   ratings: FeedHeroRatings;
+  scope: FeedHeroScope | undefined;
 }) {
   return (
     <div className="border-gris-50 border-b px-5 py-6 md:px-8 md:py-7">
@@ -195,7 +218,7 @@ function CollapsedHero({
           fontWeight: 700,
         }}
       >
-        Goat del momento
+        {scopeLabel(scope)}
       </p>
       <div className="mt-1 flex items-center gap-4">
         {/* La miniatura ancla el hero colapsado: sin el radar grande ni las

@@ -8,12 +8,13 @@ import { WebGLLiquid } from '@/shared/components/ui/webgl-liquid';
 export function Hero() {
   return (
     /*
-      `svh` y no `vh`: en mobile `100vh` mide el viewport con la barra del
+      `dvh` y no `vh`: en mobile `100vh` mide el viewport con la barra del
       navegador retraída, así que la página quedaba scrolleable por la altura de
-      la toolbar aunque el contenido entrara en pantalla. `svh` es el viewport
-      chico — el que se ve realmente.
+      la toolbar aunque el contenido entrara en pantalla. `dvh` sigue al área
+      visible real, y así el hero no deja una franja del fondo del `body` abajo
+      cuando la barra se esconde.
     */
-    <section className="relative isolate min-h-[100svh] overflow-hidden">
+    <section className="relative isolate min-h-[100dvh] overflow-hidden">
       <WebGLLiquid
         title=""
         subtitle=""
@@ -52,7 +53,7 @@ export function Hero() {
 
       <AlfajorFloat />
 
-      <div className="relative z-10 flex min-h-[100svh] flex-col">
+      <div className="relative z-10 flex min-h-[100dvh] flex-col">
         <Nav />
 
         <div className="flex flex-1 flex-col items-center px-6 pt-6 pb-12 text-center sm:pt-10">
@@ -60,8 +61,14 @@ export function Hero() {
             El índice nacional del alfajor
           </p>
 
+          {/*
+            El color va explícito: `.h-mega` no lo declara, así que el título
+            heredaba el `text-curry` que el `body` traía para toda la app. Ese
+            color global se fue cuando el piso pasó a claro, y las pantallas
+            oscuras no pueden depender de él.
+          */}
           <h1
-            className="h-mega fade-up mt-6"
+            className="h-mega fade-up text-curry mt-6"
             style={{ animationDelay: '120ms' }}
           >
             EL ALFAJOR

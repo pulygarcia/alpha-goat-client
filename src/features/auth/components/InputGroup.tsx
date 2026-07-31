@@ -19,8 +19,7 @@ const InputGroup = forwardRef<HTMLInputElement, InputGroupProps>(
       <div className="flex flex-col gap-1.5">
         <label
           htmlFor={fieldId}
-          className="text-[0.85rem] font-medium"
-          style={{ color: 'var(--color-crema)' }}
+          className="text-ink text-[0.85rem] font-medium"
         >
           {label}
         </label>
@@ -28,14 +27,7 @@ const InputGroup = forwardRef<HTMLInputElement, InputGroupProps>(
           <input
             id={fieldId}
             ref={ref}
-            className={`auth-input h-12 w-full rounded-xl border px-4 text-[14px] font-medium transition-all duration-150 ${className ?? ''}`}
-            style={{
-              background: 'var(--color-field-bg)',
-              borderColor: error
-                ? 'var(--color-alerta)'
-                : 'color-mix(in oklab, var(--color-curry) 18%, transparent)',
-              color: 'var(--color-crema)',
-            }}
+            className={`auth-input bg-gris-25 text-ink h-12 w-full rounded-xl border px-4 text-[14px] font-medium transition-all duration-150 ${error ? 'border-error' : 'border-gris-100'} ${className ?? ''}`}
             {...props}
           />
           {rightIcon && (
@@ -44,30 +36,17 @@ const InputGroup = forwardRef<HTMLInputElement, InputGroupProps>(
               tabIndex={-1}
               aria-label="Toggle"
               onClick={onRightIcon}
-              className="text-curry-soft hover:text-curry absolute top-1/2 right-2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg transition-colors"
+              className="text-gris-400 hover:text-ink absolute top-1/2 right-2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg transition-colors"
             >
               {rightIcon}
             </button>
           )}
         </div>
         {error && (
-          <p
-            className="text-[0.72rem] leading-[1.3]"
-            style={{ color: 'var(--color-alerta)' }}
-          >
-            {error}
-          </p>
+          <p className="text-error text-[0.72rem] leading-[1.3]">{error}</p>
         )}
         {!error && helper && (
-          <p
-            className="text-[0.72rem] leading-[1.3]"
-            style={{
-              color:
-                'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
-            }}
-          >
-            {helper}
-          </p>
+          <p className="text-gris-400 text-[0.72rem] leading-[1.3]">{helper}</p>
         )}
       </div>
     );

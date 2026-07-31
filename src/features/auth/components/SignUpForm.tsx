@@ -68,11 +68,8 @@ export default function SignUpForm() {
       {/* Header */}
       <div>
         <h1
-          className="leading-[1.1] font-medium tracking-[-0.022em]"
-          style={{
-            fontSize: 'clamp(26px, 2.6vw, 32px)',
-            color: 'var(--color-crema)',
-          }}
+          className="text-ink leading-[1.1] font-medium tracking-[-0.022em]"
+          style={{ fontSize: 'clamp(26px, 2.6vw, 32px)' }}
         >
           Crear nuevo perfil
         </h1>
@@ -115,11 +112,7 @@ export default function SignUpForm() {
         </div>
 
         {signup.isError && (
-          <p
-            role="alert"
-            className="text-[0.82rem]"
-            style={{ color: 'var(--color-alerta-soft)' }}
-          >
+          <p role="alert" className="text-error text-[0.82rem]">
             {extractError(signup.error)}
           </p>
         )}
@@ -127,7 +120,7 @@ export default function SignUpForm() {
         <button
           type="submit"
           disabled={!isValid || signup.isPending}
-          className="btn-curry-lg !text-crema mt-2 w-full cursor-pointer justify-center disabled:cursor-not-allowed disabled:opacity-40"
+          className="btn-solid mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-9 py-4 text-sm font-bold tracking-[0.06em] uppercase transition-all duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
         >
           {signup.isPending ? (
             <>
@@ -141,18 +134,11 @@ export default function SignUpForm() {
       </form>
 
       {/* Footer */}
-      <p
-        className="text-center text-[0.82rem]"
-        style={{
-          color:
-            'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
-        }}
-      >
+      <p className="text-gris-400 text-center text-[0.82rem]">
         ¿Ya tenés cuenta?{' '}
         <Link
           href="/login"
-          className="underline-offset-2 hover:underline"
-          style={{ color: 'var(--color-crema)' }}
+          className="text-curry-deep underline-offset-2 hover:underline"
         >
           Iniciar sesión
         </Link>

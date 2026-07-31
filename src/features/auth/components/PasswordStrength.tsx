@@ -13,10 +13,10 @@ function getScore(value: string): number {
 
 const levels = [
   { label: '', color: 'transparent', width: '0%' },
-  { label: 'Frágil', color: 'var(--color-alerta)', width: '25%' },
-  { label: 'Aceptable', color: 'var(--color-curry)', width: '50%' },
-  { label: 'Sólida', color: 'var(--color-curry)', width: '75%' },
-  { label: 'De fierro', color: 'var(--color-ok)', width: '100%' },
+  { label: 'Frágil', color: 'var(--color-error)', width: '25%' },
+  { label: 'Aceptable', color: 'var(--color-curry-deep)', width: '50%' },
+  { label: 'Sólida', color: 'var(--color-curry-deep)', width: '75%' },
+  { label: 'De fierro', color: 'var(--color-reward)', width: '100%' },
 ];
 
 export default function PasswordStrength({ value }: Props) {
@@ -27,7 +27,7 @@ export default function PasswordStrength({ value }: Props) {
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="bg-curry/12 h-[3px] w-full overflow-hidden rounded-full">
+      <div className="bg-gris-100 h-[3px] w-full overflow-hidden rounded-full">
         <div
           className="h-full rounded-full transition-all duration-300"
           style={{ width: level.width, background: level.color }}

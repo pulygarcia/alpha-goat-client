@@ -83,7 +83,7 @@ export function AppHeader() {
   const menu = menuMotion(!!reduceMotion);
 
   return (
-    <div className="bg-blanco border-gris-50 relative flex items-center gap-3 border-b px-4 py-4 sm:gap-[18px] sm:px-6">
+    <div className="bg-blanco border-gris-50 sticky top-0 z-40 flex items-center gap-3 border-b px-4 py-4 sm:gap-[18px] sm:px-6">
       <Link
         href="/feed"
         aria-label="AlphaGoat"

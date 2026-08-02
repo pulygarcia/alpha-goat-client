@@ -111,9 +111,9 @@
   body {
     /* El piso de la app: hueso cálido, no el marrón de la paleta oscura. Las
        pantallas que siguen siendo oscuras pintan su propio fondo a sangre
-       (el hero de `/` y las de auth con `bg-bg-ink`), así que el marrón de acá
-       solo se veía como una franja debajo del contenido de las páginas claras
-       y en el rebote del scroll en mobile. */
+       (el hero de `/`), así que el marrón de acá solo se veía como una franja
+       debajo del contenido de las páginas claras y en el rebote del scroll
+       en mobile. */
     background: var(--color-blanco-tibio);
     color: var(--color-ink);
     font-family: var(--font-inter), Arial, Helvetica, sans-serif;
@@ -246,10 +246,11 @@
   outline: none;
   border-color: color-mix(
     in oklab,
-    var(--color-curry) 60%,
+    var(--color-curry-deep) 60%,
     transparent
   ) !important;
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-curry) 12%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in oklab, var(--color-curry-deep) 12%, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -151,9 +151,22 @@ export function CursorDrivenParticleTypography({
 
       ctx.scale(dpr, dpr);
 
-      // Determine text color
+      // Determine text color. Canvas 2D's fillStyle can't resolve CSS custom
+      // properties on its own (there's no element to cascade against), so a
+      // `var(--foo)` string silently falls back to black — resolve it here.
+      const resolveColor = (value: string) => {
+        if (!value.startsWith('var(')) return value;
+        const varName = value.slice(4, -1).split(',')[0].trim();
+        const resolved = window
+          .getComputedStyle(document.documentElement)
+          .getPropertyValue(varName)
+          .trim();
+        return resolved || value;
+      };
       const computedStyle = window.getComputedStyle(container);
-      const textColor = color || computedStyle.color || '#000000';
+      const textColor = color
+        ? resolveColor(color)
+        : computedStyle.color || '#000000';
 
       ctx.clearRect(0, 0, containerWidth, containerHeight);
 

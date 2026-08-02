@@ -1,5 +1,5 @@
-import { Hero } from './(marketing)/_components/Hero';
+import { HomeExperience } from './(marketing)/_components/HomeExperience';
 
 export default function Home() {
-  return <Hero />;
+  return <HomeExperience />;
 }

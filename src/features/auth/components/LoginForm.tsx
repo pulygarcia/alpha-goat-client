@@ -48,18 +48,12 @@ export default function LoginForm() {
       {/* Header */}
       <div>
         <h1
-          className="text-curry leading-[1.1] font-medium tracking-[-0.022em]"
+          className="text-ink leading-[1.1] font-medium tracking-[-0.022em]"
           style={{ fontSize: 'clamp(26px, 2.6vw, 32px)' }}
         >
           Iniciar sesión
         </h1>
-        <p
-          className="mt-1.5 text-[0.88rem] leading-[1.4]"
-          style={{
-            color:
-              'color-mix(in oklab, var(--color-curry-soft) 55%, transparent)',
-          }}
-        >
+        <p className="text-gris-400 mt-1.5 text-[0.88rem] leading-[1.4]">
           Bienvenido de vuelta a AlphaGoat.
         </p>
       </div>
@@ -91,22 +85,14 @@ export default function LoginForm() {
         <div className="flex justify-end">
           <button
             type="button"
-            className="hover:text-curry cursor-pointer text-[0.78rem] transition-colors"
-            style={{
-              color:
-                'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
-            }}
+            className="text-gris-400 hover:text-curry-deep cursor-pointer text-[0.78rem] transition-colors"
           >
             Olvidé mi contraseña
           </button>
         </div>
 
         {login.isError && (
-          <p
-            role="alert"
-            className="text-[0.82rem]"
-            style={{ color: 'var(--color-alerta-soft)' }}
-          >
+          <p role="alert" className="text-error text-[0.82rem]">
             {extractError(login.error)}
           </p>
         )}
@@ -114,7 +100,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={!isValid || login.isPending}
-          className="btn-curry-lg !text-crema mt-2 w-full cursor-pointer justify-center disabled:cursor-not-allowed disabled:opacity-40"
+          className="btn-solid mt-2 flex w-full cursor-pointer items-center justify-center rounded-full px-9 py-4 text-sm font-bold tracking-[0.06em] uppercase transition-all duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
         >
           {login.isPending ? (
             <>
@@ -128,18 +114,11 @@ export default function LoginForm() {
       </form>
 
       {/* Footer */}
-      <p
-        className="text-center text-[0.82rem]"
-        style={{
-          color:
-            'color-mix(in oklab, var(--color-curry-soft) 45%, transparent)',
-        }}
-      >
+      <p className="text-gris-400 text-center text-[0.82rem]">
         ¿Todavía no tenés cuenta?{' '}
         <Link
           href="/register"
-          className="underline-offset-2 hover:underline"
-          style={{ color: 'var(--color-crema)' }}
+          className="text-curry-deep underline-offset-2 hover:underline"
         >
           Crear cuenta
         </Link>

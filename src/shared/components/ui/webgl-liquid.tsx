@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { cn } from '@/shared/lib/utils';
+import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 import { WebGLErrorBoundary, WebGLFallback } from './webgl-error-boundary';
 
 const VERTEX_SHADER = `
@@ -163,6 +164,7 @@ export function WebGLLiquid({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [hasWebGLError, setHasWebGLError] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 767px)');
 
   const settings = useMemo(
     () => ({
@@ -312,19 +314,7 @@ export function WebGLLiquid({
         gl.uniform2f(uRes, canvas.width, canvas.height);
       };
 
-      resize();
-      const resizeObserver = new ResizeObserver(resize);
-      resizeObserver.observe(host);
-
-      let rafId = 0;
-      const start = performance.now();
-
-      const render = (now: number) => {
-        const elapsedSec = Math.max(0, (now - start - settings.delayMs) / 1000);
-        const revealProgress = settings.reveal
-          ? Math.min(1, elapsedSec / Math.max(settings.revealDuration, 0.05))
-          : 1;
-
+      const drawFrame = (elapsedSec: number, revealProgress: number) => {
         const deep = hexToRgb01(settings.colorDeep);
         const mid = hexToRgb01(settings.colorMid);
         const highlight = hexToRgb01(settings.colorHighlight);
@@ -343,6 +333,45 @@ export function WebGLLiquid({
         gl.uniform1f(uOpacity, settings.opacity);
         gl.uniform1f(uReveal, revealProgress);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      };
+
+      resize();
+
+      // En mobile no arrancamos el loop de rAF: el fbm de 6 octavas por pixel
+      // a pantalla completa competía por el hilo principal con el marquee y
+      // la flotación del alfajor, y el conjunto se veía trabado. Se pinta un
+      // solo frame (revelado completo, en un punto ya "en movimiento" del
+      // ruido para que no se vea plano) y queda estático.
+      if (isMobile) {
+        drawFrame(6, 1);
+        const resizeObserver = new ResizeObserver(() => {
+          resize();
+          drawFrame(6, 1);
+        });
+        resizeObserver.observe(host);
+
+        return () => {
+          resizeObserver.disconnect();
+          gl.deleteBuffer(quadBuffer);
+          gl.deleteProgram(program);
+          gl.deleteShader(vertexShader);
+          gl.deleteShader(fragmentShader);
+        };
+      }
+
+      const resizeObserver = new ResizeObserver(resize);
+      resizeObserver.observe(host);
+
+      let rafId = 0;
+      const start = performance.now();
+
+      const render = (now: number) => {
+        const elapsedSec = Math.max(0, (now - start - settings.delayMs) / 1000);
+        const revealProgress = settings.reveal
+          ? Math.min(1, elapsedSec / Math.max(settings.revealDuration, 0.05))
+          : 1;
+
+        drawFrame(elapsedSec, revealProgress);
 
         rafId = requestAnimationFrame(render);
       };
@@ -361,7 +390,7 @@ export function WebGLLiquid({
       setHasWebGLError(true);
       return;
     }
-  }, [hasWebGLError, settings]);
+  }, [hasWebGLError, settings, isMobile]);
 
   const fallbackContent = (
     <div

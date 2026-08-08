@@ -7,7 +7,7 @@ vi.mock('@/shared/hooks/useMediaQuery');
 
 const mockJoyrideProps = vi.fn();
 vi.mock('react-joyride', () => ({
-  Joyride: (props: { callback: (data: { status: string }) => void }) => {
+  Joyride: (props: { onEvent: (data: { status: string }) => void }) => {
     mockJoyrideProps(props);
     return <div data-testid="joyride-mock" />;
   },
@@ -68,7 +68,7 @@ describe('FeedTour', () => {
     act(() => vi.advanceTimersByTime(600));
 
     const lastProps = mockJoyrideProps.mock.calls.at(-1)![0];
-    act(() => lastProps.callback({ status: 'finished' }));
+    act(() => lastProps.onEvent({ status: 'finished' }));
 
     expect(window.localStorage.getItem(TOUR_KEY)).toBe('1');
   });
@@ -78,7 +78,7 @@ describe('FeedTour', () => {
     act(() => vi.advanceTimersByTime(600));
 
     const lastProps = mockJoyrideProps.mock.calls.at(-1)![0];
-    act(() => lastProps.callback({ status: 'skipped' }));
+    act(() => lastProps.onEvent({ status: 'skipped' }));
 
     expect(window.localStorage.getItem(TOUR_KEY)).toBe('1');
   });

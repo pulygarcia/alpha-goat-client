@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Joyride, type CallBackProps, type Step } from 'react-joyride';
+import { Joyride, type EventData, type Step } from 'react-joyride';
 import { useMediaQuery } from '@/shared/hooks/useMediaQuery';
 import { useFeedTourSeen } from '../hooks/useFeedTourSeen';
 
@@ -10,7 +10,7 @@ const STEPS: Step[] = [
     target: '[data-tour="feed-fab"]',
     content: 'Clickeá el alfajor flotante para hacer una reseña rápido.',
     placement: 'top',
-    disableBeacon: true,
+    skipBeacon: true,
   },
 ];
 
@@ -43,7 +43,7 @@ export function FeedTour({ forceClose }: { forceClose: boolean }) {
 
   if (!eligible || forceClose || !ready) return null;
 
-  function handleCallback(data: CallBackProps) {
+  function handleEvent(data: EventData) {
     if (data.status === 'finished' || data.status === 'skipped') {
       markSeen();
     }
@@ -54,19 +54,16 @@ export function FeedTour({ forceClose }: { forceClose: boolean }) {
       steps={STEPS}
       run
       continuous={false}
-      showSkipButton={false}
-      callback={handleCallback}
+      onEvent={handleEvent}
       locale={{ close: 'Cerrar', last: 'Entendido' }}
-      styles={{
-        options: {
-          arrowColor: 'var(--color-blanco-tibio)',
-          backgroundColor: 'var(--color-blanco-tibio)',
-          textColor: 'var(--color-ink)',
-          primaryColor: 'var(--color-curry)',
-          overlayColor:
-            'color-mix(in oklab, var(--color-ink) 55%, transparent)',
-          zIndex: 60,
-        },
+      options={{
+        buttons: ['close'],
+        arrowColor: 'var(--color-blanco-tibio)',
+        backgroundColor: 'var(--color-blanco-tibio)',
+        textColor: 'var(--color-ink)',
+        primaryColor: 'var(--color-curry)',
+        overlayColor: 'color-mix(in oklab, var(--color-ink) 55%, transparent)',
+        zIndex: 60,
       }}
     />
   );

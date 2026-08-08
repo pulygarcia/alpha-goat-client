@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { animate, motion, useMotionValue, type PanInfo } from 'framer-motion';
 import { useRef, useState } from 'react';
+import { FeedTour } from '@/features/onboarding/components/FeedTour';
 import { QuickReviewModal } from '@/features/reviews/components/QuickReviewModal';
 import { useRequireAuth } from '@/shared/hooks/useRequireAuth';
 import { clampY, snapSide } from '../lib/fabPosition';
@@ -66,6 +67,7 @@ export function ReviewFab() {
           ref={btnRef}
           type="button"
           aria-label="Reseñar un alfajor"
+          data-tour="feed-fab"
           drag
           dragConstraints={layerRef}
           dragMomentum={false}
@@ -79,7 +81,7 @@ export function ReviewFab() {
             width: SIZE,
             height: SIZE,
             right: EDGE_GAP,
-            bottom: '2rem',
+            bottom: '8rem',
           }}
           className="bg-blanco-tibio border-gris-50 shadow-fab pointer-events-auto absolute flex touch-none items-center justify-center overflow-hidden rounded-full border p-[7px] active:cursor-grabbing"
         >
@@ -100,6 +102,8 @@ export function ReviewFab() {
           />
         </motion.button>
       </div>
+
+      <FeedTour forceClose={open} />
 
       <QuickReviewModal open={open} onOpenChange={setOpen} />
     </>

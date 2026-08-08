@@ -62,6 +62,12 @@ src/
 │   │   └── types/
 │   │       └── auth.types.ts
 │   │
+│   ├── onboarding/
+│   │   ├── components/
+│   │   │   └── FeedTour.tsx              # spotlight de 1 paso apuntando al FAB, mobile only
+│   │   └── hooks/
+│   │       └── useFeedTourSeen.ts        # persistencia en localStorage
+│   │
 │   ├── alfajores/
 │   │   ├── components/
 │   │   │   ├── AlfajorCard.tsx

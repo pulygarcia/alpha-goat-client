@@ -90,7 +90,7 @@ export function ReviewCard({
             <UserAvatar
               avatarUrl={author.avatarUrl}
               username={author.username}
-              className="h-[26px] w-[26px] rounded-full object-cover"
+              className="h-[26px] w-[26px] shrink-0 rounded-full object-cover"
             />
             <StopClick>
               <Link

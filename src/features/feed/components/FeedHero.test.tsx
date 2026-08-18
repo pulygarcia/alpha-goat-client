@@ -65,12 +65,12 @@ describe('FeedHero', () => {
     useFeedFilters.setState({ scope: null });
   });
 
-  it('renders the full hero with radar data when scope is null', () => {
+  it('renders the full hero with the alfajor name and review count when scope is null', () => {
     mocked.mockReturnValue(baseReturn({ data: makeHero() }));
     render(<FeedHero />);
     expect(screen.getByText('Jorgito')).toBeInTheDocument();
-    expect(screen.getByText(/Havanna/)).toBeInTheDocument();
-    expect(screen.getByText('Total reseñas')).toBeInTheDocument();
+    expect(screen.getByText(/340 reseñas/)).toBeInTheDocument();
+    expect(screen.getByText(/20% esta semana/)).toBeInTheDocument();
   });
 
   it('labels the pick "del momento" when the scope is weekly', () => {
@@ -86,9 +86,9 @@ describe('FeedHero', () => {
     render(<FeedHero />);
     expect(screen.getByText('El goat histórico')).toBeInTheDocument();
     expect(screen.queryByText('Goat del momento')).not.toBeInTheDocument();
-    // La stat semanal se queda: es dato real y explica por qué el pick no es
-    // el de la semana.
-    expect(screen.getByText('Esta semana')).toBeInTheDocument();
+    // La variación semanal se queda: es dato real y explica por qué el pick
+    // no es el de la semana.
+    expect(screen.getByText(/20% esta semana/)).toBeInTheDocument();
   });
 
   it('falls back to the weekly label when the back omits the scope', () => {

@@ -2,14 +2,7 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import {
-  PolarAngleAxis,
-  PolarGrid,
-  PolarRadiusAxis,
-  Radar,
-  RadarChart,
-  ResponsiveContainer,
-} from 'recharts';
+import { Radar, RadarChart, ResponsiveContainer } from 'recharts';
 import { useFeedHero } from '../hooks/useFeedHero';
 import { useFeedFilters } from '../store/feedFilters.store';
 import { useRevealOnScroll } from '@/shared/hooks/useRevealOnScroll';
@@ -88,100 +81,148 @@ export function FeedHero() {
     const deltaText =
       stats.deltaPct === null
         ? undefined
-        : `${deltaSign} ${Math.abs(stats.deltaPct).toFixed(0)}% vs sem. anterior`;
+        : `${deltaSign} ${Math.abs(stats.deltaPct).toFixed(0)}% esta semana`;
+    const dim = 'color-mix(in oklab, var(--color-crema) 78%, transparent)';
 
     content = (
-      <section className="border-gris-50 border-b px-5 py-8 md:px-8 md:py-9">
-        <p
-          className="text-curry-deep"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.7rem',
-            letterSpacing: '0.26em',
-            textTransform: 'uppercase',
-            fontWeight: 700,
-          }}
+      <section className="border-gris-50 border-b px-5 py-6 md:px-8 md:py-9">
+        <div
+          className="bg-bg-deep text-crema relative overflow-hidden rounded-2xl bg-cover bg-center"
+          style={{ backgroundImage: "url('/backgrounds/feed-hero-bg.jpg')" }}
         >
-          {scopeLabel(data.scope)}
-        </p>
-
-        <div className="mt-3 grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_360px] lg:items-center lg:gap-10">
-          <div>
-            <h2
-              className="text-[40px] md:text-[48px] lg:text-[56px]"
-              style={{
-                fontFamily: 'var(--font-archivo)',
-                letterSpacing: '-0.045em',
-                lineHeight: 0.96,
-              }}
-            >
+          <div aria-hidden className="absolute inset-0 bg-black/15" />
+          <div className="relative z-10 flex flex-col-reverse md:flex-row md:items-stretch md:gap-10">
+            <div className="flex flex-col justify-center gap-3 px-6 py-6 md:max-w-[440px] md:gap-[18px] md:py-0 md:pl-16">
+              <span
+                className="text-curry"
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.68rem',
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                }}
+              >
+                {scopeLabel(data.scope)}
+              </span>
               <Link
                 href={`/alfajores/${alfajor.id}`}
-                className="text-ink hover:text-curry-deep focus-visible:ring-curry-deep rounded-[4px] underline-offset-[6px] transition-colors hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                className="hover:text-curry-bright focus-visible:ring-curry-bright w-fit rounded-[4px] underline-offset-[6px] transition-colors hover:underline focus-visible:ring-2 focus-visible:outline-none"
+                style={{
+                  fontFamily: 'var(--font-archivo)',
+                  fontSize: 'clamp(38px, 8vw, 56px)',
+                  lineHeight: 0.92,
+                  letterSpacing: '-0.045em',
+                }}
               >
                 {alfajor.nombre}
               </Link>
-            </h2>
-            <p className="text-gris-400 mt-2 text-[15px]">
-              {alfajor.marca.nombre}
-              {alfajor.marca.provincia
-                ? ` · ${alfajor.marca.provincia}`
-                : ''} · <span className="lowercase">{alfajor.tipo}</span>
-            </p>
+              <span
+                className="text-[13.5px] md:text-[15px]"
+                style={{ color: dim }}
+              >
+                {stats.totalReviews} reseñas
+                {deltaText && (
+                  <>
+                    {' · '}
+                    <span className="text-curry font-semibold">
+                      {deltaText}
+                    </span>
+                  </>
+                )}
+              </span>
+            </div>
 
-            <dl className="mt-6 grid grid-cols-3 gap-3 md:gap-6">
-              <Stat label="Rating" value={ratings.general.toFixed(1)} />
-              <Stat
-                label="Esta semana"
-                value={String(stats.reviewsThisWeek)}
-                hint={deltaText}
-              />
-              <Stat label="Total reseñas" value={String(stats.totalReviews)} />
-            </dl>
+            <motion.div
+              ref={ref}
+              className="flex items-center justify-center px-6 pt-6 pb-7 md:flex-1 md:px-16 md:py-10"
+              initial={animate ? { opacity: 0, scale: 0.85 } : false}
+              animate={revealed ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="relative shrink-0">
+                <div
+                  className="border-crema/15 h-[96px] w-[96px] overflow-hidden rounded-2xl border md:h-[152px] md:w-[152px]"
+                  style={{ boxShadow: '0 20px 40px -12px rgba(0,0,0,0.5)' }}
+                >
+                  {alfajor.imagenUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={alfajor.imagenUrl}
+                      alt={alfajor.nombre}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <NoPhoto />
+                  )}
+                </div>
+                <span
+                  className="bg-curry text-sienna absolute -right-2 -bottom-2 flex h-9 w-9 items-center justify-center rounded-full text-[12px] md:h-12 md:w-12 md:text-[15px]"
+                  style={{
+                    fontFamily: 'var(--font-archivo)',
+                    letterSpacing: '-0.02em',
+                    boxShadow: '0 8px 18px -4px rgba(0,0,0,0.45)',
+                  }}
+                >
+                  {ratings.general.toFixed(1)}
+                </span>
+              </div>
+            </motion.div>
           </div>
 
-          <motion.div
-            ref={ref}
-            className="h-[280px] w-full"
-            style={{ transformOrigin: 'center' }}
-            initial={animate ? { opacity: 0, scale: 0.7 } : false}
-            animate={revealed ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          <div
+            className="relative z-10 flex flex-col gap-2 border-t px-6 py-5 md:gap-3 md:px-16 md:py-7"
+            style={{
+              borderColor:
+                'color-mix(in oklab, var(--color-crema) 18%, transparent)',
+            }}
           >
-            <ResponsiveContainer
-              width="100%"
-              height="100%"
-              minWidth={0}
-              minHeight={0}
-            >
-              <RadarChart data={toRadarData(ratings)} outerRadius="78%">
-                <PolarGrid stroke="var(--color-gris-50)" />
-                <PolarAngleAxis
-                  dataKey="axis"
-                  tick={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 10,
-                    letterSpacing: '0.18em',
-                    fill: 'var(--color-gris-400)',
-                  }}
-                />
-                <PolarRadiusAxis
-                  domain={[0, 10]}
-                  tick={false}
-                  axisLine={false}
-                />
-                {revealed && (
-                  <Radar
-                    dataKey="value"
-                    stroke="var(--color-curry-deep)"
-                    fill="var(--color-curry-deep)"
-                    fillOpacity={0.28}
-                    isAnimationActive={false}
-                  />
-                )}
-              </RadarChart>
-            </ResponsiveContainer>
-          </motion.div>
+            {(Object.keys(AXIS_LABELS) as Array<keyof FeedHeroRatings>)
+              .filter((k) => k !== 'general')
+              .map((key) => {
+                const value = ratings[key];
+                return (
+                  <div
+                    key={key}
+                    className="flex items-center gap-3 md:max-w-[440px] md:gap-4"
+                  >
+                    <span
+                      className="w-[78px] shrink-0 text-right text-[9px] md:w-[104px] md:text-[10px]"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        color:
+                          'color-mix(in oklab, var(--color-crema) 60%, transparent)',
+                      }}
+                    >
+                      {AXIS_LABELS[key]}
+                    </span>
+                    <span
+                      className="relative h-[3px] flex-1 overflow-hidden rounded-full md:h-[4px]"
+                      style={{
+                        background:
+                          'color-mix(in oklab, var(--color-crema) 14%, transparent)',
+                      }}
+                    >
+                      <span
+                        className="bg-crema absolute inset-y-0 left-0 rounded-full"
+                        style={{ width: `${value * 10}%` }}
+                      />
+                    </span>
+                    <span
+                      className="text-crema w-7 shrink-0 text-right text-[13px] md:w-9 md:text-[16px]"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {value.toFixed(1)}
+                    </span>
+                  </div>
+                );
+              })}
+          </div>
         </div>
       </section>
     );
@@ -280,42 +321,6 @@ function CollapsedHero({
           </ResponsiveContainer>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-}) {
-  return (
-    <div className="flex min-w-0 flex-col items-center text-center">
-      <p
-        className="text-cinnamon truncate text-[9.5px] tracking-[0.14em] uppercase md:text-[0.62rem] md:tracking-[0.26em]"
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontWeight: 700,
-        }}
-      >
-        {label}
-      </p>
-      <p
-        className="text-ink mt-1 text-[23px] md:text-[28px]"
-        style={{
-          fontFamily: 'var(--font-archivo)',
-          letterSpacing: '-0.02em',
-        }}
-      >
-        {value}
-      </p>
-      {hint && (
-        <p className="text-gris-400 mt-1 text-[10px] md:text-[11px]">{hint}</p>
-      )}
     </div>
   );
 }
